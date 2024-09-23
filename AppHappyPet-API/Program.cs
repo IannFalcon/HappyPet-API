@@ -11,6 +11,15 @@ builder.Services.AddDbContext<BD_HAPPY_PETContext>(opt => opt.UseSqlServer(conex
 // Add services to the container.
 builder.Services.AddScoped<AutenticacionDAO>();
 
+// Configuramos el cors para permitir todas las rutas
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -25,6 +34,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Configurar el pipeline HTTP
+app.UseRouting();
+
+// Configuramos el cors para permitir todas las rutas
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
