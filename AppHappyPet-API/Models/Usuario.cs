@@ -21,7 +21,7 @@ namespace AppHappyPet_API.Models
         public string Telefono { get; set; } = null!;
         public string Direccion { get; set; } = null!;
         public string Correo { get; set; } = null!;
-        public string Contraseña { get; set; } = null!;
+        public string Contrasenia { get; set; } = null!;
         public string Activo { get; set; } = null!;
         public DateTime FecRegistro { get; set; }
 

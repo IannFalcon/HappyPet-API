@@ -249,7 +249,7 @@ namespace AppHappyPet_API.Models
                     .IsUnicode(false)
                     .HasColumnName("apellido_paterno");
 
-                entity.Property(e => e.Contraseña)
+                entity.Property(e => e.Contrasenia)
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("contraseña");
