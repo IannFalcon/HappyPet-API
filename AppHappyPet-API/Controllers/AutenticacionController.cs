@@ -17,20 +17,6 @@ namespace AppHappyPet_API.Controllers
             dao = aut_dao;
         }
 
-        // GET: api/<AutenticacionController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<AutenticacionController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<AutenticacionController>
         [HttpPost("login")]
         public IActionResult IniciarSesion([FromBody] LoginRequest request)
@@ -38,31 +24,34 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var respuesta = dao.IniciarSesion(request);
-                if (respuesta.IdUsuario != null)
+
+                if (request.idTipoUsuario == 0)
                 {
-                    return Ok(new { mensaje = respuesta.Mensaje, id = respuesta.IdUsuario });
+                    return Ok(new { status = 401, mensaje = "Por favor seleccione su tipo de usuario"});
+                }
+                if (request.correo == "" || request.correo == null)
+                {
+                    return Ok(new { status = 401, mensaje = "Por favor ingrese su correo" });
+                }
+                if (request.contrasenia == "" || request.contrasenia == null)
+                {
+                    return Ok(new { status = 401, mensaje = "Por favor ingrese su contraseña" });
+                }
+
+                if (respuesta.IdUsuario != null && respuesta.IdUsuario != 0)
+                {
+                    return Ok(new { status = 200, mensaje = respuesta.Mensaje, id = respuesta.IdUsuario });
                 }
                 else
                 {
-                    return Unauthorized(new { mensaje = respuesta.Mensaje });
+                    return Ok(new { status = 401, mensaje = respuesta.Mensaje, id = respuesta.IdUsuario });
                 }
             } 
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error: Ocurrió un error durante la autenticación: ${ex.Message}");
+                return BadRequest($"Error: Ocurrió un error durante la autenticación: {ex.Message}");
             }
         }
 
-        // PUT api/<AutenticacionController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<AutenticacionController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
