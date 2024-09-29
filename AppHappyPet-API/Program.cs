@@ -10,6 +10,7 @@ builder.Services.AddDbContext<BD_HAPPY_PETContext>(opt => opt.UseSqlServer(conex
 
 // Add services to the container.
 builder.Services.AddScoped<AutenticacionDAO>();
+builder.Services.AddScoped<ProductoDAO>();
 
 // Configuramos el cors para permitir todas las rutas
 builder.Services.AddCors(options =>

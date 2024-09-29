@@ -23,28 +23,31 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                var respuesta = dao.IniciarSesion(request);
-
+                // Validaciones
                 if (request.idTipoUsuario == 0)
                 {
-                    return Ok(new { status = 401, mensaje = "Por favor seleccione su tipo de usuario"});
+                    return BadRequest(new { mensaje = "Por favor seleccione su tipo de usuario"});
                 }
                 if (request.correo == "" || request.correo == null)
                 {
-                    return Ok(new { status = 401, mensaje = "Por favor ingrese su correo" });
+                    return BadRequest(new { mensaje = "Por favor ingrese su correo" });
                 }
                 if (request.contrasenia == "" || request.contrasenia == null)
                 {
-                    return Ok(new { status = 401, mensaje = "Por favor ingrese su contraseña" });
+                    return BadRequest(new { mensaje = "Por favor ingrese su contraseña" });
                 }
 
+                // Mandar a llamar al método de autenticación
+                var respuesta = dao.IniciarSesion(request);
+
+                // Validar si el usuario existe
                 if (respuesta.IdUsuario != null && respuesta.IdUsuario != 0)
                 {
-                    return Ok(new { status = 200, mensaje = respuesta.Mensaje, id = respuesta.IdUsuario });
+                    return Ok(new { mensaje = respuesta.Mensaje, id = respuesta.IdUsuario });
                 }
                 else
                 {
-                    return Ok(new { status = 401, mensaje = respuesta.Mensaje, id = respuesta.IdUsuario });
+                    return Unauthorized(new { mensaje = respuesta.Mensaje, id = respuesta.IdUsuario });
                 }
             } 
             catch (Exception ex)

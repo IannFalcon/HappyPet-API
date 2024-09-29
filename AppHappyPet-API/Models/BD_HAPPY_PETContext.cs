@@ -172,13 +172,13 @@ namespace AppHappyPet_API.Models
 
                 entity.Property(e => e.Stock).HasColumnName("stock");
 
-                entity.HasOne(d => d.IdCategoriaNavigation)
+                entity.HasOne(d => d.ProductoCategoria)
                     .WithMany(p => p.Productos)
                     .HasForeignKey(d => d.IdCategoria)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Producto__id_cat__46E78A0C");
 
-                entity.HasOne(d => d.IdMarcaNavigation)
+                entity.HasOne(d => d.ProductoMarca)
                     .WithMany(p => p.Productos)
                     .HasForeignKey(d => d.IdMarca)
                     .OnDelete(DeleteBehavior.ClientSetNull)
