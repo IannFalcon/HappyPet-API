@@ -13,7 +13,7 @@ namespace AppHappyPet_API.DAO
         }
 
         // Obtener productos
-        public List<Producto> ObtenerProductos(int id_categoria, int id_marca, string nombre)
+        public List<Producto> ObtenerProductos(int? id_categoria, int? id_marca, string? nombre)
         {
             // Crear lista de productos
             List<Producto> productos = new List<Producto>();
@@ -37,9 +37,9 @@ namespace AppHappyPet_API.DAO
                 SqlCommand cmd = new SqlCommand(query, con);
 
                 // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
-                cmd.Parameters.AddWithValue("@id_marca", id_marca);
-                cmd.Parameters.AddWithValue("@nombre", nombre);
+                cmd.Parameters.AddWithValue("@id_categoria", id_categoria.HasValue ? (object)id_categoria.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@id_marca", id_marca.HasValue ? (object)id_marca.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? (object)DBNull.Value : nombre);
 
                 // Abrir conexión
                 con.Open();

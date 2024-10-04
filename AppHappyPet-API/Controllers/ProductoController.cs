@@ -17,8 +17,8 @@ namespace AppHappyPet_API.Controllers
         }
 
         // GET: api/<ProductoController>
-        [HttpGet("{id_categoria}&{id_marca}&{nombre}")]
-        public IActionResult ListarProductos(int id_categoria, int id_marca, string nombre)
+        [HttpGet]
+        public IActionResult ListarProductos([FromQuery] int? id_categoria, [FromQuery] int? id_marca, [FromQuery] string? nombre)
         {
             try
             {
