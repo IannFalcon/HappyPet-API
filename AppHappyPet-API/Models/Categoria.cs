@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace AppHappyPet_API.Models
 {
-    public partial class Categorium
+    public partial class Categoria
     {
-        public Categorium()
+        public Categoria()
         {
             Productos = new HashSet<Producto>();
         }

@@ -24,7 +24,7 @@ namespace AppHappyPet_API.Models
         public DateTime? FecVencimiento { get; set; }
         public DateTime FecRegistro { get; set; }
 
-        public virtual Categorium ProductoCategoria { get; set; } = null!;
+        public virtual Categoria ProductoCategoria { get; set; } = null!;
         public virtual Marca ProductoMarca { get; set; } = null!;
         public virtual ICollection<Carrito> Carritos { get; set; }
         public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }

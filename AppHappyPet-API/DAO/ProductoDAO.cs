@@ -64,7 +64,7 @@ namespace AppHappyPet_API.DAO
                         Eliminado = dr.GetString(11),
                         FecVencimiento = dr.IsDBNull(12) ? null : dr.GetDateTime(12),
                         FecRegistro = dr.GetDateTime(13),
-                        ProductoCategoria = new Categorium
+                        ProductoCategoria = new Categoria
                         {
                             IdCategoria = dr.GetInt32(2),
                             Nombre = dr.GetString(3)

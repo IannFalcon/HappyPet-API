@@ -14,7 +14,7 @@ namespace AppHappyPet_API.Models
         }
 
         public virtual DbSet<Carrito> Carritos { get; set; } = null!;
-        public virtual DbSet<Categorium> Categoria { get; set; } = null!;
+        public virtual DbSet<Categoria> Categoria { get; set; } = null!;
         public virtual DbSet<DetalleVentum> DetalleVenta { get; set; } = null!;
         public virtual DbSet<Marca> Marcas { get; set; } = null!;
         public virtual DbSet<Producto> Productos { get; set; } = null!;
@@ -61,7 +61,7 @@ namespace AppHappyPet_API.Models
                     .HasConstraintName("FK__Carrito__id_usua__52593CB8");
             });
 
-            modelBuilder.Entity<Categorium>(entity =>
+            modelBuilder.Entity<Categoria>(entity =>
             {
                 entity.HasKey(e => e.IdCategoria)
                     .HasName("PK__Categori__CD54BC5AD5B82299");
