@@ -1,4 +1,5 @@
 ﻿using AppHappyPet_API.DAO;
+using AppHappyPet_API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,7 +19,7 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<MarcaController>
         [HttpGet]
-        public IActionResult ListarProductos([FromQuery] string? nombre)
+        public IActionResult ListarMarcas([FromQuery] string? nombre)
         {
             try
             {
@@ -40,17 +41,27 @@ namespace AppHappyPet_API.Controllers
 
         }
 
-        // GET api/<MarcaController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<MarcaController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult RegistrarMarcas([FromBody] Marca marca)
         {
+            try
+            {
+                if (marca == null || marca.Nombre == null || marca.Nombre == "")
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la marca" });
+                }
+
+                // Mandar a llamar al método de registrar marcas
+                var resultado = dao.NuevaMarca(marca);
+
+                // Obtener resultado
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al registrar la marca: {ex.Message}");
+            }
         }
 
         // PUT api/<MarcaController>/5

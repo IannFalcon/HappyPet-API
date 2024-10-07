@@ -1,4 +1,5 @@
 ﻿using AppHappyPet_API.DAO;
+using AppHappyPet_API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,7 +19,7 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<CategoriaController>
         [HttpGet]
-        public IActionResult ListarCategias([FromQuery] string? nombre)
+        public IActionResult ListarCategorias([FromQuery] string? nombre)
         {
             try
             {
@@ -39,17 +40,27 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
-        // GET api/<CategoriaController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<CategoriaController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult RegistrarCategorias([FromBody] Categoria categoria)
         {
+            try
+            {
+                if (categoria == null || categoria.Nombre == null || categoria.Nombre == "") 
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la categoría" });
+                }
+
+                // Mandar a llamar al método de registrar categorias
+                var resultado = dao.NuevaCategoria(categoria);
+
+                // Obtener resultado
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al registrar la categoria: {ex.Message}");
+            }
         }
 
         // PUT api/<CategoriaController>/5

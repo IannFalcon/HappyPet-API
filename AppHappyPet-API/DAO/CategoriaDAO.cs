@@ -57,5 +57,75 @@ namespace AppHappyPet_API.DAO
 
             }
         }
+
+        // Obtener categoria por id
+        public Categoria ObtenerCategoriaPorId(int id_categoria)
+        {
+            Categoria? categoria = null;
+
+            // Query para obtener categoría
+            string query = "SELECT id_categoria, nombre FROM Categoria WHERE id_categoria = @id_categoria";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                // Leer resultados
+                if (dr.Read())
+                {
+                    categoria = new Categoria
+                    {
+                        IdCategoria = dr.GetInt32(0),
+                        Nombre = dr.GetString(1),
+                    };
+                }
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar nulo
+                return categoria!;
+            }
+        }   
+
+        // Nueva categoría
+        public string NuevaCategoria(Categoria categoria)
+        {
+            // Query para insertar categoría
+            string query = "INSERT INTO Categoria (nombre) VALUES (@nombre)";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                return $"La categoría {categoria.Nombre} fue registrada correctamente";
+            }
+
+        }
     }
 }

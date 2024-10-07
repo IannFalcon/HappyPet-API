@@ -58,5 +58,76 @@ namespace AppHappyPet_API.DAO
             }
         }
 
+        // Obtener marca por id
+        public Marca ObtenerMarcaPorId(int id_categoria)
+        {
+            Marca? categoria = null;
+
+            // Query para obtener marca por id
+            string query = "SELECT id_marca, nombre FROM Marca WHERE id_marca = @id_marca";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@id_marca", id_categoria);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                // Leer resultados
+                if (dr.Read())
+                {
+                    categoria = new Marca
+                    {
+                        IdMarca = dr.GetInt32(0),
+                        Nombre = dr.GetString(1),
+                    };
+                }
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar marca
+                return categoria!;
+
+            }
+        }
+
+        // Nueva marca
+        public string NuevaMarca(Marca marca)
+        {
+            // Query para insertar marca
+            string query = "INSERT INTO Marca (nombre) VALUES (@nombre)";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", marca.Nombre);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar mensaje de éxito
+                return $"La marca {marca.Nombre} fue registrada correctamente";
+            }
+        }
+
     }
 }

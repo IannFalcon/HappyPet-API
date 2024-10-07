@@ -141,6 +141,53 @@ namespace AppHappyPet_API.DAO
             }
         }
 
+        // Nuevo producto
+        public string NuevoProducto(Producto producto)
+        {
+            // Asignar la fecha de registro como la fecha actual si no está ya asignada
+            if (producto.FecRegistro == default(DateTime))
+            {
+                producto.FecRegistro = DateTime.Now;
+            }
+
+            // Query para insertar producto
+            string query = @"INSERT INTO Producto (nombre, id_categoria, id_marca, descripcion, precio_unitario, 
+                                                   stock, nombre_imagen, ruta_imagen, fec_vencimiento, fec_registro)
+                            VALUES (@nombre, @id_categoria, @id_marca, @Descripcion, @precio_unitario, 
+                                    @stock, @nombre_imagen, @ruta_imagen, @fec_vencimiento, @fec_registro)";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", producto.Nombre);
+                cmd.Parameters.AddWithValue("@id_categoria", producto.IdCategoria);
+                cmd.Parameters.AddWithValue("@id_marca", producto.IdMarca);
+                cmd.Parameters.AddWithValue("@descripcion", producto.Descripcion);
+                cmd.Parameters.AddWithValue("@precio_unitario", producto.PrecioUnitario);
+                cmd.Parameters.AddWithValue("@stock", producto.Stock);
+                cmd.Parameters.AddWithValue("@nombre_imagen", producto.NombreImagen ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ruta_imagen", producto.RutaImagen ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@fec_vencimiento", producto.FecVencimiento ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@fec_registro", producto.FecRegistro);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar mensaje de éxito
+                return $"El producto {producto.Nombre} fue registrado correctamente";
+            }   
+        }
+
     }
 
 }

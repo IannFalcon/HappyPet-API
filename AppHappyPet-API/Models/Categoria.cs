@@ -13,6 +13,6 @@ namespace AppHappyPet_API.Models
         public int IdCategoria { get; set; }
         public string Nombre { get; set; } = null!;
 
-        public virtual ICollection<Producto> Productos { get; set; }
+        public virtual ICollection<Producto>? Productos { get; set; }
     }
 }
