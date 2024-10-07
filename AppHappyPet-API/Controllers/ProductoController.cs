@@ -33,7 +33,7 @@ namespace AppHappyPet_API.Controllers
                 // Validar si existen productos
                 if (productos == null || productos.Count == 0)
                 {
-                    return NotFound(new { mensaje = "No se encontraron productos", data = productos });
+                    return Ok(new { mensaje = "No se encontraron productos", data = productos });
                 }
 
                 return Ok(new { mensaje = "Productos encontrados", data = productos });

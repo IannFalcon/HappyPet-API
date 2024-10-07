@@ -13,6 +13,8 @@ builder.Services.AddScoped<AutenticacionDAO>();
 builder.Services.AddScoped<CategoriaDAO>();
 builder.Services.AddScoped<MarcaDAO>();
 builder.Services.AddScoped<ProductoDAO>();
+builder.Services.AddScoped<ClienteDAO>();
+builder.Services.AddScoped<VendedorDAO>();
 
 // Configuramos el cors para permitir todas las rutas
 builder.Services.AddCors(options =>

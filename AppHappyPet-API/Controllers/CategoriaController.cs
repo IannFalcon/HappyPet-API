@@ -29,7 +29,7 @@ namespace AppHappyPet_API.Controllers
                 // Validar si existen categorias
                 if (categorias == null || categorias.Count == 0)
                 {
-                    return NotFound(new { mensaje = "No se encontraron categorias", data = categorias });
+                    return Ok(new { mensaje = "No se encontraron categorias", data = categorias });
                 }
 
                 return Ok(new { mensaje = "Categorias encontradas", data = categorias });

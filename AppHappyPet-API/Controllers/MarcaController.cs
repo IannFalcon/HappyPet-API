@@ -29,7 +29,7 @@ namespace AppHappyPet_API.Controllers
                 // Validar si existen marcas
                 if (marcas == null || marcas.Count == 0)
                 {
-                    return NotFound(new { mensaje = "No se encontraron marcas", data = marcas });
+                    return Ok(new { mensaje = "No se encontraron marcas", data = marcas });
                 }
 
                 return Ok(new { mensaje = "Marcas encontradas", data = marcas });

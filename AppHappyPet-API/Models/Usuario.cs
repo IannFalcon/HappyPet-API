@@ -25,9 +25,9 @@ namespace AppHappyPet_API.Models
         public string Activo { get; set; } = null!;
         public DateTime FecRegistro { get; set; }
 
-        public virtual TipoDocumento IdTipoDocumentoNavigation { get; set; } = null!;
-        public virtual TipoUsuario IdTipoUsuarioNavigation { get; set; } = null!;
-        public virtual ICollection<Carrito> Carritos { get; set; }
-        public virtual ICollection<Ventum> Venta { get; set; }
+        public virtual TipoDocumento? UsuTipoDoc { get; set; }
+        public virtual TipoUsuario? UsuTipoUsu { get; set; }
+        public virtual ICollection<Carrito>? Carritos { get; set; }
+        public virtual ICollection<Ventum>? Venta { get; set; }
     }
 }

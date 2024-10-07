@@ -287,13 +287,13 @@ namespace AppHappyPet_API.Models
                     .IsUnicode(false)
                     .HasColumnName("telefono");
 
-                entity.HasOne(d => d.IdTipoDocumentoNavigation)
+                entity.HasOne(d => d.UsuTipoDoc)
                     .WithMany(p => p.Usuarios)
                     .HasForeignKey(d => d.IdTipoDocumento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Usuario__id_tipo__3F466844");
 
-                entity.HasOne(d => d.IdTipoUsuarioNavigation)
+                entity.HasOne(d => d.UsuTipoUsu)
                     .WithMany(p => p.Usuarios)
                     .HasForeignKey(d => d.IdTipoUsuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
