@@ -166,7 +166,7 @@ namespace AppHappyPet_API.Models
                     .HasColumnName("precio_unitario");
 
                 entity.Property(e => e.RutaImagen)
-                    .HasMaxLength(255)
+                    .HasColumnType("varchar(max)")
                     .IsUnicode(false)
                     .HasColumnName("ruta_imagen");
 

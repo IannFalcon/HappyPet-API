@@ -144,17 +144,11 @@ namespace AppHappyPet_API.DAO
         // Nuevo producto
         public string NuevoProducto(Producto producto)
         {
-            // Asignar la fecha de registro como la fecha actual si no está ya asignada
-            if (producto.FecRegistro == default(DateTime))
-            {
-                producto.FecRegistro = DateTime.Now;
-            }
-
             // Query para insertar producto
             string query = @"INSERT INTO Producto (nombre, id_categoria, id_marca, descripcion, precio_unitario, 
-                                                   stock, nombre_imagen, ruta_imagen, fec_vencimiento, fec_registro)
+                                                   stock, nombre_imagen, ruta_imagen, fec_vencimiento)
                             VALUES (@nombre, @id_categoria, @id_marca, @Descripcion, @precio_unitario, 
-                                    @stock, @nombre_imagen, @ruta_imagen, @fec_vencimiento, @fec_registro)";
+                                    @stock, @nombre_imagen, @ruta_imagen, @fec_vencimiento)";
 
             // Crear conexión a la base de datos
             using (SqlConnection con = new SqlConnection(cnx))
@@ -172,7 +166,6 @@ namespace AppHappyPet_API.DAO
                 cmd.Parameters.AddWithValue("@nombre_imagen", producto.NombreImagen ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ruta_imagen", producto.RutaImagen ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@fec_vencimiento", producto.FecVencimiento ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@fec_registro", producto.FecRegistro);
 
                 // Abrir conexión
                 con.Open();
@@ -185,7 +178,8 @@ namespace AppHappyPet_API.DAO
 
                 // Retornar mensaje de éxito
                 return $"El producto {producto.Nombre} fue registrado correctamente";
-            }   
+            }
+
         }
 
     }

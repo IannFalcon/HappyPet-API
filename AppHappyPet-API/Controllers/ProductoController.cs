@@ -11,14 +11,10 @@ namespace AppHappyPet_API.Controllers
     public class ProductoController : ControllerBase
     {
         private readonly ProductoDAO dao;
-        private readonly CategoriaDAO dao_cate;
-        private readonly MarcaDAO dao_marca;
 
-        public ProductoController(ProductoDAO dao, CategoriaDAO dao_cate, MarcaDAO dao_marca)
+        public ProductoController(ProductoDAO dao)
         {
             this.dao = dao;
-            this.dao_cate = dao_cate;
-            this.dao_marca = dao_marca;
         }
 
         // GET: api/<ProductoController>
@@ -102,15 +98,6 @@ namespace AppHappyPet_API.Controllers
                 {
                     return BadRequest(new { mensaje = "Error: Por favor ingrese el stock del producto" });
                 }
-
-                if (producto.FecRegistro == default(DateTime))
-                {
-                    producto.FecRegistro = DateTime.Now;
-                }
-
-                // Obtener la categoria y marca del producto
-                producto.ProductoCategoria = dao_cate.ObtenerCategoriaPorId(producto.IdCategoria);
-                producto.ProductoMarca = dao_marca.ObtenerMarcaPorId(producto.IdMarca);
 
                 // Mandar a llamar al método de registrar productos
                 var resultado = dao.NuevoProducto(producto);

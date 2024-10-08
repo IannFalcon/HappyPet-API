@@ -84,5 +84,43 @@ namespace AppHappyPet_API.DAO
 
             }
         }
+
+        // Nuevo vendedor
+        public string NuevoVendedor(Usuario vendedor)
+        {
+            // Query para insertar vendedor
+            string query = @"INSERT INTO Usuario (id_tipo_usuario, nombre, apellido_paterno, apellido_materno, id_tipo_documento, nro_documento, telefono, direccion, correo, contrasenia)
+                            VALUES (2, @nombre, @apellido_paterno, @apellido_materno, @id_tipo_documento, @nro_documento, @telefono, @direccion, @correo, @contrasenia)";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", vendedor.Nombre);
+                cmd.Parameters.AddWithValue("@apellido_paterno", vendedor.ApellidoPaterno);
+                cmd.Parameters.AddWithValue("@apellido_materno", vendedor.ApellidoMaterno);
+                cmd.Parameters.AddWithValue("@id_tipo_documento", vendedor.IdTipoDocumento);
+                cmd.Parameters.AddWithValue("@nro_documento", vendedor.NroDocumento);
+                cmd.Parameters.AddWithValue("@telefono", vendedor.Telefono);
+                cmd.Parameters.AddWithValue("@direccion", vendedor.Direccion);
+                cmd.Parameters.AddWithValue("@correo", vendedor.Correo);
+                cmd.Parameters.AddWithValue("@contrasenia", vendedor.NroDocumento);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar mensaje de éxito
+                return $"El vendedor {vendedor.Nombre} {vendedor.ApellidoPaterno} {vendedor.ApellidoMaterno} ha sido registrado exitosamente";
+            }
+        }
     }
 }

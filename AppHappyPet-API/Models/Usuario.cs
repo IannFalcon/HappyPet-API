@@ -12,7 +12,7 @@ namespace AppHappyPet_API.Models
         }
 
         public int IdUsuario { get; set; }
-        public int IdTipoUsuario { get; set; }
+        public int? IdTipoUsuario { get; set; }
         public string Nombre { get; set; } = null!;
         public string ApellidoPaterno { get; set; } = null!;
         public string ApellidoMaterno { get; set; } = null!;
@@ -21,9 +21,9 @@ namespace AppHappyPet_API.Models
         public string Telefono { get; set; } = null!;
         public string Direccion { get; set; } = null!;
         public string Correo { get; set; } = null!;
-        public string Contrasenia { get; set; } = null!;
-        public string Activo { get; set; } = null!;
-        public DateTime FecRegistro { get; set; }
+        public string? Contrasenia { get; set; }
+        public string? Activo { get; set; }
+        public DateTime? FecRegistro { get; set; }
 
         public virtual TipoDocumento? UsuTipoDoc { get; set; }
         public virtual TipoUsuario? UsuTipoUsu { get; set; }

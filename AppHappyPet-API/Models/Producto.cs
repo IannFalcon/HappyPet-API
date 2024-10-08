@@ -20,9 +20,9 @@ namespace AppHappyPet_API.Models
         public int Stock { get; set; }
         public string? NombreImagen { get; set; }
         public string? RutaImagen { get; set; }
-        public string Eliminado { get; set; } = null!;
+        public string? Eliminado { get; set; }
         public DateTime? FecVencimiento { get; set; }
-        public DateTime FecRegistro { get; set; } = DateTime.Now;
+        public DateTime? FecRegistro { get; set; }
 
         public virtual Categoria? ProductoCategoria { get; set; }
         public virtual Marca? ProductoMarca { get; set; }
