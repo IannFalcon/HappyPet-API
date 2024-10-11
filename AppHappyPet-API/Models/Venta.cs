@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace AppHappyPet_API.Models
 {
-    public partial class Ventum
+    public partial class Venta
     {
-        public Ventum()
+        public Venta()
         {
-            DetalleVenta = new HashSet<DetalleVentum>();
+            DetalleVenta = new HashSet<DetalleVenta>();
         }
 
         public int IdVenta { get; set; }
@@ -15,9 +15,9 @@ namespace AppHappyPet_API.Models
         public int TotalProductos { get; set; }
         public decimal MontoTotal { get; set; }
         public string IdTransaccion { get; set; } = null!;
-        public DateTime FecVenta { get; set; }
+        public DateTime? FecVenta { get; set; }
 
-        public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
-        public virtual ICollection<DetalleVentum> DetalleVenta { get; set; }
+        public virtual Usuario? UsuarioVenta { get; set; } = null!;
+        public virtual ICollection<DetalleVenta> DetalleVenta { get; set; }
     }
 }

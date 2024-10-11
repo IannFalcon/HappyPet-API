@@ -8,7 +8,7 @@ namespace AppHappyPet_API.Models
         public Producto()
         {
             Carritos = new HashSet<Carrito>();
-            DetalleVenta = new HashSet<DetalleVentum>();
+            DetalleVenta = new HashSet<DetalleVenta>();
         }
 
         public int IdProducto { get; set; }
@@ -27,6 +27,6 @@ namespace AppHappyPet_API.Models
         public virtual Categoria? ProductoCategoria { get; set; }
         public virtual Marca? ProductoMarca { get; set; }
         public virtual ICollection<Carrito>? Carritos { get; set; }
-        public virtual ICollection<DetalleVentum>? DetalleVenta { get; set; }
+        public virtual ICollection<DetalleVenta>? DetalleVenta { get; set; }
     }
 }

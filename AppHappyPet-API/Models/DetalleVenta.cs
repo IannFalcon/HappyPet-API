@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AppHappyPet_API.Models
 {
-    public partial class DetalleVentum
+    public partial class DetalleVenta
     {
         public int IdDetalleVenta { get; set; }
         public int IdVenta { get; set; }
@@ -11,7 +11,7 @@ namespace AppHappyPet_API.Models
         public int Cantidad { get; set; }
         public decimal Total { get; set; }
 
-        public virtual Producto IdProductoNavigation { get; set; } = null!;
-        public virtual Ventum IdVentaNavigation { get; set; } = null!;
+        public virtual Producto ProductoDetalle { get; set; } = null!;
+        public virtual Venta IdVentaNavigation { get; set; } = null!;
     }
 }

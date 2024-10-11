@@ -6,10 +6,14 @@ namespace AppHappyPet_API.DAO
     public class ProductoDAO
     {
         private string cnx = string.Empty;
+        private readonly CategoriaDAO dao_cate;
+        private readonly MarcaDAO dao_marca;
 
-        public ProductoDAO(IConfiguration cfg)
+        public ProductoDAO(IConfiguration cfg, CategoriaDAO dao_cate, MarcaDAO dao_marca)
         {
             cnx = cfg.GetConnectionString("conexion_bd");
+            this.dao_cate = dao_cate;
+            this.dao_marca = dao_marca;
         }
 
         // Obtener productos
@@ -19,16 +23,13 @@ namespace AppHappyPet_API.DAO
             List<Producto> productos = new List<Producto>();
 
             // Query para obtener productos
-            string query = @"SELECT p.id_producto, p.nombre, p.id_categoria, c.nombre AS NombreCategoria, 
-                            p.id_marca, m.nombre NombreMarca, p.Descripcion, p.precio_unitario, 
-                            p.Stock, p.nombre_imagen, p.ruta_imagen, p.eliminado, p.fec_vencimiento, p.fec_registro
-                            FROM Producto p
-                            JOIN Categoria c ON p.id_categoria = c.id_categoria
-                            JOIN Marca m ON p.id_marca = m.id_marca
-	                        WHERE p.eliminado = 'No'
-	                        AND (@id_categoria IS NULL OR p.id_categoria = @id_categoria)
-	                        AND (@id_marca IS NULL OR p.id_marca = @id_marca)
-	                        AND (@nombre IS NULL OR p.nombre LIKE '%' + @nombre + '%')";
+            string query = @"SELECT id_producto, nombre, id_categoria, id_marca, descripcion, precio_unitario, 
+                            stock, nombre_imagen, ruta_imagen, eliminado, fec_vencimiento, fec_registro
+                            FROM Producto
+	                        WHERE eliminado = 'No'
+	                        AND (@id_categoria IS NULL OR id_categoria = @id_categoria)
+	                        AND (@id_marca IS NULL OR id_marca = @id_marca)
+	                        AND (@nombre IS NULL OR nombre LIKE '%' + @nombre + '%')";
 
             // Crear conexión a la base de datos
             using (SqlConnection con = new SqlConnection(cnx))
@@ -55,25 +56,17 @@ namespace AppHappyPet_API.DAO
                         IdProducto = dr.GetInt32(0),
                         Nombre = dr.GetString(1),
                         IdCategoria = dr.GetInt32(2),
-                        IdMarca = dr.GetInt32(4),
-                        Descripcion = dr.GetString(6),
-                        PrecioUnitario = dr.GetDecimal(7),
-                        Stock = dr.GetInt32(8),
-                        NombreImagen = dr.IsDBNull(9) ? null : dr.GetString(9),
-                        RutaImagen = dr.IsDBNull(10) ? null : dr.GetString(10),
-                        Eliminado = dr.GetString(11),
-                        FecVencimiento = dr.IsDBNull(12) ? null : dr.GetDateTime(12),
-                        FecRegistro = dr.GetDateTime(13),
-                        ProductoCategoria = new Categoria
-                        {
-                            IdCategoria = dr.GetInt32(2),
-                            Nombre = dr.GetString(3)
-                        },
-                        ProductoMarca = new Marca
-                        {
-                            IdMarca = dr.GetInt32(4),
-                            Nombre = dr.GetString(5)
-                        }
+                        IdMarca = dr.GetInt32(3),
+                        Descripcion = dr.GetString(4),
+                        PrecioUnitario = dr.GetDecimal(5),
+                        Stock = dr.GetInt32(6),
+                        NombreImagen = dr.IsDBNull(7) ? null : dr.GetString(7),
+                        RutaImagen = dr.IsDBNull(8) ? null : dr.GetString(8),
+                        Eliminado = dr.GetString(9),
+                        FecVencimiento = dr.IsDBNull(10) ? null : dr.GetDateTime(10),
+                        FecRegistro = dr.GetDateTime(11),
+                        ProductoCategoria = dao_cate.ObtenerCategoriaPorId(dr.GetInt32(2)),
+                        ProductoMarca = dao_marca.ObtenerMarcaPorId(dr.GetInt32(3))
                     };
                     productos.Add(producto);
                 }
@@ -128,7 +121,9 @@ namespace AppHappyPet_API.DAO
                         RutaImagen = dr.IsDBNull(8) ? null : dr.GetString(8),
                         Eliminado = dr.GetString(9),
                         FecVencimiento = dr.IsDBNull(10) ? null : dr.GetDateTime(10),
-                        FecRegistro = dr.GetDateTime(11)
+                        FecRegistro = dr.GetDateTime(11),
+                        ProductoCategoria = dao_cate.ObtenerCategoriaPorId(dr.GetInt32(2)),
+                        ProductoMarca = dao_marca.ObtenerMarcaPorId(dr.GetInt32(3))
                     };
                 }
 

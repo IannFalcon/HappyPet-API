@@ -85,6 +85,71 @@ namespace AppHappyPet_API.DAO
             }
         }
 
+        // Obtener cliente por id
+        public Usuario ObtenerClienteId(int id_usuario)
+        {
+            Usuario? usuario = null;
+
+            // Query para obtener cliente por id
+            string query = @"SELECT id_usuario, u.id_tipo_usuario, tu.descripcion, nombre, apellido_paterno, apellido_materno,
+                            u.id_tipo_documento, td.descripcion, nro_documento, telefono, direccion, correo, fec_registro 
+                            FROM Usuario u
+                            INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
+                            INNER JOIN TipoDocumento td ON u.id_tipo_documento = td.id_tipo_documento
+                            WHERE u.id_usuario = @id_usuario";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                // Leer resultados
+                if (dr.Read())
+                {
+                    usuario = new Usuario
+                    {
+                        IdUsuario = dr.GetInt32(0),
+                        IdTipoUsuario = dr.GetInt32(1),
+                        Nombre = dr.GetString(3),
+                        ApellidoPaterno = dr.GetString(4),
+                        ApellidoMaterno = dr.GetString(5),
+                        IdTipoDocumento = dr.GetInt32(6),
+                        NroDocumento = dr.GetString(8),
+                        Telefono = dr.GetString(9),
+                        Direccion = dr.GetString(10),
+                        Correo = dr.GetString(11),
+                        FecRegistro = dr.GetDateTime(12),
+                        UsuTipoUsu = new TipoUsuario
+                        {
+                            IdTipoUsuario = dr.GetInt32(1),
+                            Descripcion = dr.GetString(2)
+                        },
+                        UsuTipoDoc = new TipoDocumento
+                        {
+                            IdTipoDocumento = dr.GetInt32(6),
+                            Descripcion = dr.GetString(7)
+                        }
+                    };
+                }
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar cliente
+                return usuario!;
+            }
+        }
+
         // Nuevo cliente
         public string NuevoCliente(Usuario cliente)
         {

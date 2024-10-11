@@ -15,13 +15,13 @@ namespace AppHappyPet_API.Models
 
         public virtual DbSet<Carrito> Carritos { get; set; } = null!;
         public virtual DbSet<Categoria> Categoria { get; set; } = null!;
-        public virtual DbSet<DetalleVentum> DetalleVenta { get; set; } = null!;
+        public virtual DbSet<DetalleVenta> DetalleVenta { get; set; } = null!;
         public virtual DbSet<Marca> Marcas { get; set; } = null!;
         public virtual DbSet<Producto> Productos { get; set; } = null!;
         public virtual DbSet<TipoDocumento> TipoDocumentos { get; set; } = null!;
         public virtual DbSet<TipoUsuario> TipoUsuarios { get; set; } = null!;
         public virtual DbSet<Usuario> Usuarios { get; set; } = null!;
-        public virtual DbSet<Ventum> Venta { get; set; } = null!;
+        public virtual DbSet<Venta> Venta { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -74,7 +74,7 @@ namespace AppHappyPet_API.Models
                     .HasColumnName("nombre");
             });
 
-            modelBuilder.Entity<DetalleVentum>(entity =>
+            modelBuilder.Entity<DetalleVenta>(entity =>
             {
                 entity.HasKey(e => e.IdDetalleVenta)
                     .HasName("PK__DetalleV__5B265D474876F53F");
@@ -91,7 +91,7 @@ namespace AppHappyPet_API.Models
                     .HasColumnType("decimal(10, 2)")
                     .HasColumnName("total");
 
-                entity.HasOne(d => d.IdProductoNavigation)
+                entity.HasOne(d => d.ProductoDetalle)
                     .WithMany(p => p.DetalleVenta)
                     .HasForeignKey(d => d.IdProducto)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -300,7 +300,7 @@ namespace AppHappyPet_API.Models
                     .HasConstraintName("FK__Usuario__id_tipo__3E52440B");
             });
 
-            modelBuilder.Entity<Ventum>(entity =>
+            modelBuilder.Entity<Venta>(entity =>
             {
                 entity.HasKey(e => e.IdVenta)
                     .HasName("PK__Venta__459533BFC85ABFF5");
@@ -324,7 +324,7 @@ namespace AppHappyPet_API.Models
 
                 entity.Property(e => e.TotalProductos).HasColumnName("total_productos");
 
-                entity.HasOne(d => d.IdUsuarioNavigation)
+                entity.HasOne(d => d.UsuarioVenta)
                     .WithMany(p => p.Venta)
                     .HasForeignKey(d => d.IdUsuario)
                     .OnDelete(DeleteBehavior.ClientSetNull)
