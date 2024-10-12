@@ -17,28 +17,36 @@ namespace Data
         // Validar inicio de sesión
         public AutenticacionResponse IniciarSesion(LoginRequest loginRequest)
         {
-            SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ValidarInicioSesion",
+            try
+            {
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ValidarInicioSesion",
                                                        loginRequest.idTipoUsuario,
                                                        loginRequest.correo,
                                                        loginRequest.contrasenia);
 
-            if (dr.Read())
-            {
-                var resultado = new AutenticacionResponse
+                if (dr.Read())
                 {
-                    Mensaje = dr.GetString(0),
-                    IdUsuario = dr.GetInt32(1)
-                };
+                    var resultado = new AutenticacionResponse
+                    {
+                        Mensaje = dr.GetString(0),
+                        IdUsuario = dr.GetInt32(1)
+                    };
 
-                return resultado;
-            }
-            else
-            {
-                return new AutenticacionResponse
+                    if(resultado.IdUsuario == 0)
+                    {
+                        throw new Exception("Error credenciales incorrectas");
+                    }
+
+                    return resultado;
+                }
+                else
                 {
-                    Mensaje = dr.GetString(0),
-                    IdUsuario = dr.GetInt32(1)
-                };
+                    throw new Exception("Error: Ocurrio un error al iniciar sesión.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
         }
