@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AppHappyPet_API.Models
+namespace Entity.Models
 {
     public partial class Venta
     {

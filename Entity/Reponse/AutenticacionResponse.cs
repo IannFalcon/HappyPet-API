@@ -1,4 +1,4 @@
-﻿namespace AppHappyPet_API.Reponse
+﻿namespace Entity.Reponse
 {
     public class AutenticacionResponse
     {

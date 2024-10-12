@@ -1,4 +1,4 @@
-﻿using AppHappyPet_API.DAO;
+﻿using Business;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,11 +9,11 @@ namespace AppHappyPet_API.Controllers
     [ApiController]
     public class DetalleVentaController : ControllerBase
     {
-        private readonly DetalleVentaDAO dao_dv;
+        private readonly DetalleVentaService dv_service;
 
-        public DetalleVentaController(DetalleVentaDAO dao_dv)
+        public DetalleVentaController(DetalleVentaService dv_service)
         {
-            this.dao_dv = dao_dv;
+            this.dv_service = dv_service;
         }
 
         // GET: api/<DetalleVentaController>
@@ -22,18 +22,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                var detalles_venta = dao_dv.ObtenerDetallesVenta(id_venta);
-
-                if (detalles_venta == null || detalles_venta.Count == 0)
-                {
-                    return Ok(new { mensaje = "No se encontraron detalles de venta", data = detalles_venta });
-                }
-
+                var detalles_venta = dv_service.ListarDetalleVenta(id_venta);
                 return Ok(new { mensaje = "Detalles de venta encontrados", data = detalles_venta });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al obtener los detalles de la venta. ${ex.Message}");
+                return BadRequest(ex.Message);
             }
         }
     }

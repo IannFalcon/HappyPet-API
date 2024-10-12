@@ -1,5 +1,5 @@
-﻿using AppHappyPet_API.DAO;
-using AppHappyPet_API.Models;
+﻿using Business;
+using Entity.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,11 +10,11 @@ namespace AppHappyPet_API.Controllers
     [ApiController]
     public class VendedorController : ControllerBase
     {
-        private readonly VendedorDAO dao_vend;
+        private readonly VendedorService ven_service;
 
-        public VendedorController(VendedorDAO dao_vend)
+        public VendedorController(VendedorService ven_service)
         {
-            this.dao_vend = dao_vend;
+            this.ven_service = ven_service;
         }
 
         // GET: api/<UsuarioController>
@@ -23,26 +23,13 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                var vendedores = dao_vend.ObtenerVendedores(nro_documento, nombre);
-
-                if (vendedores == null || vendedores.Count == 0)
-                {
-                    return Ok(new { mensaje = "No se encontraron vendedores", data = vendedores });
-                }
-
+                var vendedores = ven_service.ListarVendedores(nro_documento, nombre);
                 return Ok(new { mensaje = "Vendedores encontrados", data = vendedores });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al obtener los vendedores: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message});
             }
-        }
-
-        // GET api/<UsuarioController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
         }
 
         // POST api/<UsuarioController>
@@ -51,53 +38,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (usuario.Nombre == null || usuario.Nombre == "")
-                {
-                    return BadRequest("Error: El nombre del vendedor es requerido");
-                }
-
-                if (usuario.ApellidoPaterno == null || usuario.ApellidoPaterno == "")
-                {
-                    return BadRequest("Error: El apellido paterno del vendedor es requerido");
-                }
-
-                if (usuario.ApellidoMaterno == null || usuario.ApellidoMaterno == "")
-                {
-                    return BadRequest("Error: El apellido materno del vendedor es requerido");
-                }
-
-                if (usuario.IdTipoDocumento == 0)
-                {
-                    return BadRequest("Error: El tipo de documento del vendedor es requerido");
-                }
-
-                if (usuario.NroDocumento == null || usuario.NroDocumento == "")
-                {
-                    return BadRequest("Error: El número de documento del vendedor es requerido");
-                }
-
-                if (usuario.Telefono == null || usuario.Telefono == "")
-                {
-                    return BadRequest("Error: El teléfono del vendedor es requerido");
-                }
-
-                if (usuario.Direccion == null || usuario.Direccion == "")
-                {
-                    return BadRequest("Error: La dirección del vendedor es requerida");
-                }
-
-                if (usuario.Correo == null || usuario.Correo == "")
-                {
-                    return BadRequest("Error: El correo del vendedor es requerido");
-                }
-
-                var resultado = dao_vend.NuevoVendedor(usuario);
-
+                var resultado = ven_service.RegistrarVendedor(usuario);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al registrar el vendedor: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -107,58 +53,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (usuario.IdUsuario == 0)
-                {
-                    return BadRequest("Error: El id del vendedor es requerido");
-                }
-
-                if (usuario.Nombre == null || usuario.Nombre == "")
-                {
-                    return BadRequest("Error: El nombre del vendedor es requerido");
-                }
-
-                if (usuario.ApellidoPaterno == null || usuario.ApellidoPaterno == "")
-                {
-                    return BadRequest("Error: El apellido paterno del vendedor es requerido");
-                }
-
-                if (usuario.ApellidoMaterno == null || usuario.ApellidoMaterno == "")
-                {
-                    return BadRequest("Error: El apellido materno del vendedor es requerido");
-                }
-
-                if (usuario.IdTipoDocumento == 0)
-                {
-                    return BadRequest("Error: El tipo de documento del vendedor es requerido");
-                }
-
-                if (usuario.NroDocumento == null || usuario.NroDocumento == "")
-                {
-                    return BadRequest("Error: El número de documento del vendedor es requerido");
-                }
-
-                if (usuario.Telefono == null || usuario.Telefono == "")
-                {
-                    return BadRequest("Error: El teléfono del vendedor es requerido");
-                }
-
-                if (usuario.Direccion == null || usuario.Direccion == "")
-                {
-                    return BadRequest("Error: La dirección del vendedor es requerida");
-                }
-
-                if (usuario.Correo == null || usuario.Correo == "")
-                {
-                    return BadRequest("Error: El correo del vendedor es requerido");
-                }
-
-                var resultado = dao_vend.ActualizarVendedor(usuario);
-
+                var resultado = ven_service.ActualizarVendedor(usuario);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al actualizar el vendedor: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -168,18 +68,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (idUsuario == 0)
-                {
-                    return BadRequest("Error: El id del vendedor es requerido");
-                }
-
-                var resultado = dao_vend.EliminarVendedor(idUsuario);
-
+                var resultado = ven_service.EliminarVendedor(idUsuario);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al eliminar el vendedor: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
     }

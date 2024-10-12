@@ -1,7 +1,8 @@
-﻿using AppHappyPet_API.Models;
+﻿using Entity.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
-namespace AppHappyPet_API.DAO
+namespace Data
 {
     public class ProductoDAO
     {
@@ -11,7 +12,7 @@ namespace AppHappyPet_API.DAO
 
         public ProductoDAO(IConfiguration cfg, CategoriaDAO dao_cate, MarcaDAO dao_marca)
         {
-            cnx = cfg.GetConnectionString("conexion_bd");
+            cnx = cfg.GetConnectionString("conexion_bd")!;
             this.dao_cate = dao_cate;
             this.dao_marca = dao_marca;
         }
@@ -38,9 +39,9 @@ namespace AppHappyPet_API.DAO
                 SqlCommand cmd = new SqlCommand(query, con);
 
                 // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_categoria", id_categoria.HasValue ? (object)id_categoria.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@id_marca", id_marca.HasValue ? (object)id_marca.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? (object)DBNull.Value : nombre);
+                cmd.Parameters.AddWithValue("@id_categoria", id_categoria.HasValue ? id_categoria.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@id_marca", id_marca.HasValue ? id_marca.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
 
                 // Abrir conexión
                 con.Open();

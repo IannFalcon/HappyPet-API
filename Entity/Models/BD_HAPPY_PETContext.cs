@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AppHappyPet_API.Models
+namespace Entity.Models
 {
     public partial class BD_HAPPY_PETContext : DbContext
     {

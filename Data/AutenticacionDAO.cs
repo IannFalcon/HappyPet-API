@@ -1,8 +1,9 @@
-﻿using AppHappyPet_API.Reponse;
-using AppHappyPet_API.Request;
+﻿using Entity.Reponse;
+using Entity.Request;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
-namespace AppHappyPet_API.DAO
+namespace Data
 {
     public class AutenticacionDAO
     {
@@ -10,18 +11,18 @@ namespace AppHappyPet_API.DAO
 
         public AutenticacionDAO(IConfiguration cfg)
         {
-            cnx = cfg.GetConnectionString("conexion_bd");
+            cnx = cfg.GetConnectionString("conexion_bd")!;
         }
 
         // Validar inicio de sesión
         public AutenticacionResponse IniciarSesion(LoginRequest loginRequest)
         {
-            SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ValidarInicioSesion", 
-                                                       loginRequest.idTipoUsuario, 
-                                                       loginRequest.correo, 
+            SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ValidarInicioSesion",
+                                                       loginRequest.idTipoUsuario,
+                                                       loginRequest.correo,
                                                        loginRequest.contrasenia);
 
-            if(dr.Read())
+            if (dr.Read())
             {
                 var resultado = new AutenticacionResponse
                 {

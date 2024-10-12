@@ -1,4 +1,4 @@
-﻿namespace AppHappyPet_API.Request
+﻿namespace Entity.Request
 {
     public class LoginRequest
     {

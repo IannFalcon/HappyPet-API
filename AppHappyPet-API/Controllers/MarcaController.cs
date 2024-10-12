@@ -1,5 +1,5 @@
-﻿using AppHappyPet_API.DAO;
-using AppHappyPet_API.Models;
+﻿using Business;
+using Entity.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,11 +10,11 @@ namespace AppHappyPet_API.Controllers
     [ApiController]
     public class MarcaController : ControllerBase
     {
-        private readonly MarcaDAO dao;
+        private readonly MarcaService mar_service;
 
-        public MarcaController(MarcaDAO marca_dao)
+        public MarcaController(MarcaService mar_service)
         {
-            dao = marca_dao;
+            this.mar_service = mar_service;
         }
 
         // GET: api/<MarcaController>
@@ -23,20 +23,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                // Mandar a llamar al método de obtener marcas
-                var marcas = dao.ObtenerMarcas(nombre);
-
-                // Validar si existen marcas
-                if (marcas == null || marcas.Count == 0)
-                {
-                    return Ok(new { mensaje = "No se encontraron marcas", data = marcas });
-                }
-
+                var marcas = mar_service.ListarMarcas(nombre!);
                 return Ok(new { mensaje = "Marcas encontradas", data = marcas });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al obtener las marcas: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
 
         }
@@ -47,20 +39,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (marca == null || marca.Nombre == null || marca.Nombre == "")
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la marca" });
-                }
-
-                // Mandar a llamar al método de registrar marcas
-                var resultado = dao.NuevaMarca(marca);
-
-                // Obtener resultado
+                var resultado = mar_service.RegistrarMarcas(marca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al registrar la marca: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -70,28 +54,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (marca == null)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese los datos de la marca" });
-                }
-                if (marca.IdMarca == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id de la marca" });
-                }
-                if (marca.Nombre == null || marca.Nombre == "")
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la marca" });
-                }
-
-                // Mandar a llamar al método de actualizar marca
-                var resultado = dao.ActualizarMarca(marca);
-
-                // Obtener resultado
+                var resultado = mar_service.ActualizarMarca(marca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al actualizar la marca: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -101,20 +69,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (idMarca == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id de la marca" });
-                }
-
-                // Mandar a llamar al método de eliminar marca
-                var resultado = dao.EliminarMarca(idMarca);
-
-                // Obtener resultado
+                var resultado = mar_service.EliminarMarca(idMarca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al eliminar la marca: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
     }

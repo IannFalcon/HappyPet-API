@@ -1,7 +1,8 @@
-﻿using AppHappyPet_API.Models;
+﻿using Entity.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
-namespace AppHappyPet_API.DAO
+namespace Data
 {
     public class ClienteDAO
     {
@@ -9,7 +10,7 @@ namespace AppHappyPet_API.DAO
 
         public ClienteDAO(IConfiguration cfg)
         {
-            cnx = cfg.GetConnectionString("conexion_bd");
+            cnx = cfg.GetConnectionString("conexion_bd")!;
         }
 
         // Obtener clientes
@@ -36,8 +37,8 @@ namespace AppHappyPet_API.DAO
                 SqlCommand cmd = new SqlCommand(query, con);
 
                 // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nro_documento", string.IsNullOrEmpty(nro_documento) ? (object)DBNull.Value : nro_documento);
-                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? (object)DBNull.Value : nombre);
+                cmd.Parameters.AddWithValue("@nro_documento", string.IsNullOrEmpty(nro_documento) ? DBNull.Value : nro_documento);
+                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
 
                 // Abrir conexión
                 con.Open();

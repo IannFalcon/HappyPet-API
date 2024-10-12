@@ -1,5 +1,5 @@
-﻿using AppHappyPet_API.DAO;
-using AppHappyPet_API.Models;
+﻿using Business;
+using Entity.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,11 +10,11 @@ namespace AppHappyPet_API.Controllers
     [ApiController]
     public class CategoriaController : ControllerBase
     {
-        private readonly CategoriaDAO dao;
+        private readonly CategoriaService cat_service;
 
-        public CategoriaController(CategoriaDAO cate_dao)
+        public CategoriaController(CategoriaService cat_service)
         {
-            dao = cate_dao;
+            this.cat_service = cat_service;
         }
 
         // GET: api/<CategoriaController>
@@ -23,20 +23,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                // Mandar a llamar al método de obtener categorias
-                var categorias = dao.ObtenerCategorias(nombre);
-
-                // Validar si existen categorias
-                if (categorias == null || categorias.Count == 0)
-                {
-                    return Ok(new { mensaje = "No se encontraron categorias", data = categorias });
-                }
-
+                var categorias = cat_service.ListarCategorias(nombre!);
                 return Ok(new { mensaje = "Categorias encontradas", data = categorias });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al obtener las categorias: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -46,20 +38,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (categoria == null || categoria.Nombre == null || categoria.Nombre == "") 
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la categoría" });
-                }
-
-                // Mandar a llamar al método de registrar categorias
-                var resultado = dao.NuevaCategoria(categoria);
-
-                // Obtener resultado
+                var resultado = cat_service.RegistrarCategorias(categoria);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al registrar la categoria: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -69,28 +53,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (categoria == null)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese los datos de la categoría" });
-                }
-                if (categoria.IdCategoria == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id de la categoría" });
-                }
-                if (categoria.Nombre == null || categoria.Nombre == "")
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la categoría" });
-                }
-
-                // Mandar a llamar al método de actualizar categorias
-                var resultado = dao.ActualizarCatergoria(categoria);
-
-                // Obtener resultado
+                var resultado = cat_service.ActualizarCategoria(categoria);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al actualizar la categoria: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -100,20 +68,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (idCategoria == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id de la categoría" });
-                }
-
-                // Mandar a llamar al método de eliminar categorias
-                var resultado = dao.EliminarCategoria(idCategoria);
-
-                // Obtener resultado
+                var resultado = cat_service.EliminarCategoria(idCategoria);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al eliminar la categoria: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
     }

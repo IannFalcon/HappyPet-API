@@ -1,14 +1,17 @@
-using AppHappyPet_API.DAO;
-using AppHappyPet_API.Models;
+using Business;
+using Data;
+using Entity.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var conexion = builder.Configuration.GetConnectionString("conexion_bd");
 
+// Add services to the container.
+
 builder.Services.AddDbContext<BD_HAPPY_PETContext>(opt => opt.UseSqlServer(conexion));
 
-// Add services to the container.
+// DAO
 builder.Services.AddScoped<AutenticacionDAO>();
 builder.Services.AddScoped<CategoriaDAO>();
 builder.Services.AddScoped<MarcaDAO>();
@@ -18,6 +21,19 @@ builder.Services.AddScoped<VendedorDAO>();
 builder.Services.AddScoped<VentaDAO>();
 builder.Services.AddScoped<DetalleVentaDAO>();
 
+// Servicios
+builder.Services.AddScoped<AutenticacionService>();
+builder.Services.AddScoped<CategoriaService>();
+builder.Services.AddScoped<MarcaService>();
+builder.Services.AddScoped<ProductoService>();
+builder.Services.AddScoped<ClienteService>();
+builder.Services.AddScoped<VendedorService>();
+builder.Services.AddScoped<VentaService>();
+builder.Services.AddScoped<DetalleVentaService>();
+
+// Controllers
+builder.Services.AddControllers();
+
 // Configuramos el cors para permitir todas las rutas
 builder.Services.AddCors(options =>
 {
@@ -26,8 +42,6 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
-
-builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

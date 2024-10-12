@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AppHappyPet_API.Models
+namespace Entity.Models
 {
-    public partial class TipoUsuario
+    public partial class TipoDocumento
     {
-        public TipoUsuario()
+        public TipoDocumento()
         {
             Usuarios = new HashSet<Usuario>();
         }
 
-        public int IdTipoUsuario { get; set; }
+        public int IdTipoDocumento { get; set; }
         public string Descripcion { get; set; } = null!;
 
         public virtual ICollection<Usuario> Usuarios { get; set; }

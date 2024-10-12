@@ -1,5 +1,5 @@
-﻿using AppHappyPet_API.DAO;
-using AppHappyPet_API.Models;
+﻿using Business;
+using Entity.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,11 +10,11 @@ namespace AppHappyPet_API.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        private readonly ClienteDAO dao_cliente;
+        private readonly ClienteService cli_service;
 
-        public ClienteController(ClienteDAO dao_cliente)
+        public ClienteController(ClienteService cli_service)
         {
-            this.dao_cliente = dao_cliente;
+            this.cli_service = cli_service;
         }
 
         // GET: api/<UsuarioController>
@@ -23,26 +23,13 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                var clientes = dao_cliente.ObtenerClientes(nro_documento, nombre);
-
-                if (clientes == null || clientes.Count == 0)
-                {
-                    return Ok(new { mensaje = "No se encontraron clientes", data = clientes });
-                }
-
+                var clientes = cli_service.ListarClientes(nro_documento!, nombre!);
                 return Ok(new { mensaje = "Clientes encontrados", data = clientes });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al obtener los clientes: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
-        }
-
-        // GET api/<UsuarioController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
         }
 
         // POST api/<UsuarioController>
@@ -51,55 +38,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (usuario.Nombre == null || usuario.Nombre == "")
-                {
-                    return BadRequest("Error: El nombre del vendedor es requerido");
-                }
-
-                if (usuario.ApellidoPaterno == null || usuario.ApellidoPaterno == "")
-                {
-                    return BadRequest("Error: El apellido paterno del vendedor es requerido");
-                }
-
-                if (usuario.ApellidoMaterno == null || usuario.ApellidoMaterno == "")
-                {
-                    return BadRequest("Error: El apellido materno del vendedor es requerido");
-                }
-
-                if (usuario.IdTipoDocumento == 0)
-                {
-                    return BadRequest("Error: El tipo de documento del vendedor es requerido");
-                }
-
-                if (usuario.NroDocumento == null || usuario.NroDocumento == "")
-                {
-                    return BadRequest("Error: El número de documento del vendedor es requerido");
-                }
-
-                if (usuario.Telefono == null || usuario.Telefono == "")
-                {
-                    return BadRequest("Error: El teléfono del vendedor es requerido");
-                }
-
-                if (usuario.Direccion == null || usuario.Direccion == "")
-                {
-                    return BadRequest("Error: La dirección del vendedor es requerida");
-                }
-
-                if (usuario.Correo == null || usuario.Correo == "")
-                {
-                    return BadRequest("Error: El correo del vendedor es requerido");
-                }
-
-                // Mandar a llamar al método de registrar cliente
-                var respuesta = dao_cliente.NuevoCliente(usuario);
-
-                // Retornar respuesta
+                var respuesta = cli_service.RegistrarCliente(usuario);
                 return Ok(new { mensaje = respuesta });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al registrar el cliente: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -109,60 +53,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (usuario.IdUsuario == 0)
-                {
-                    return BadRequest("Error: El id del cliente es requerido");
-                }
-
-                if (usuario.Nombre == null || usuario.Nombre == "")
-                {
-                    return BadRequest("Error: El nombre del cliente es requerido");
-                }
-
-                if (usuario.ApellidoPaterno == null || usuario.ApellidoPaterno == "")
-                {
-                    return BadRequest("Error: El apellido paterno del cliente es requerido");
-                }
-
-                if (usuario.ApellidoMaterno == null || usuario.ApellidoMaterno == "")
-                {
-                    return BadRequest("Error: El apellido materno del cliente es requerido");
-                }
-
-                if (usuario.IdTipoDocumento == 0)
-                {
-                    return BadRequest("Error: El tipo de documento del cliente es requerido");
-                }
-
-                if (usuario.NroDocumento == null || usuario.NroDocumento == "")
-                {
-                    return BadRequest("Error: El número de documento del cliente es requerido");
-                }
-
-                if (usuario.Telefono == null || usuario.Telefono == "")
-                {
-                    return BadRequest("Error: El teléfono del cliente es requerido");
-                }
-
-                if (usuario.Direccion == null || usuario.Direccion == "")
-                {
-                    return BadRequest("Error: La dirección del cliente es requerida");
-                }
-
-                if (usuario.Correo == null || usuario.Correo == "")
-                {
-                    return BadRequest("Error: El correo del cliente es requerido");
-                }
-
-                // Mandar a llamar al método de actualizar cliente
-                var respuesta = dao_cliente.ActualizarCliente(usuario);
-
-                // Retornar respuesta
+                var respuesta = cli_service.ActualizarCliente(usuario);
                 return Ok(new { mensaje = respuesta });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al actualizar el cliente: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -172,20 +68,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (idUsuario == 0)
-                {
-                    return BadRequest("Error: El id del cliente es requerido");
-                }
-
-                // Mandar a llamar al método de eliminar cliente
-                var respuesta = dao_cliente.EliminarCliente(idUsuario);
-
-                // Retornar respuesta
+                var respuesta = cli_service.EliminarCliente(idUsuario);
                 return Ok(new { mensaje = respuesta });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al eliminar el cliente: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
     }

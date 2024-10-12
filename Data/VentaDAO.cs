@@ -1,7 +1,8 @@
-﻿using AppHappyPet_API.Models;
+﻿using Entity.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
-namespace AppHappyPet_API.DAO
+namespace Data
 {
     public class VentaDAO
     {

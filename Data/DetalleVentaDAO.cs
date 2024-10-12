@@ -1,7 +1,8 @@
-﻿using AppHappyPet_API.Models;
+﻿using Entity.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
-namespace AppHappyPet_API.DAO
+namespace Data
 {
     public class DetalleVentaDAO
     {
@@ -10,7 +11,7 @@ namespace AppHappyPet_API.DAO
 
         public DetalleVentaDAO(IConfiguration cfg, ProductoDAO dao_prod)
         {
-            cnx = cfg.GetConnectionString("conexion_bd");
+            cnx = cfg.GetConnectionString("conexion_bd")!;
             this.dao_prod = dao_prod;
         }
 

@@ -1,5 +1,5 @@
-﻿using AppHappyPet_API.DAO;
-using AppHappyPet_API.Models;
+﻿using Business;
+using Entity.Models;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,11 +10,11 @@ namespace AppHappyPet_API.Controllers
     [ApiController]
     public class ProductoController : ControllerBase
     {
-        private readonly ProductoDAO dao;
+        private readonly ProductoService prod_service;
 
-        public ProductoController(ProductoDAO dao)
+        public ProductoController(ProductoService prod_service)
         {
-            this.dao = dao;
+            this.prod_service = prod_service;
         }
 
         // GET: api/<ProductoController>
@@ -24,19 +24,12 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 // Mandar a llamar al método de obtener productos
-                var productos = dao.ObtenerProductos(id_categoria, id_marca, nombre);
-
-                // Validar si existen productos
-                if (productos == null || productos.Count == 0)
-                {
-                    return Ok(new { mensaje = "No se encontraron productos", data = productos });
-                }
-
+                var productos = prod_service.ListarProductos(id_categoria, id_marca, nombre!);
                 return Ok(new { mensaje = "Productos encontrados", data = productos });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al obtener los productos: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -47,19 +40,12 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 // Mandar a llamar al método de obtener productos
-                var producto = dao.ObtenerProductoPorId(id_producto);
-
-                // Validar si existen productos
-                if (producto == null)
-                {
-                    return NotFound(new { mensaje = "Producto no encontrado", data = producto });
-                }
-
+                var producto = prod_service.ObtenerProductoPorId(id_producto);
                 return Ok(new { mensaje = $"Se encontro el producto con id: {id_producto}", data = producto });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al obtener los datos del producto: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -69,45 +55,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (producto.Nombre == null || producto.Nombre == "")
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese en nombre del producto" });
-                }
-
-                if (producto.IdCategoria == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese la categoria del producto" });
-                }
-
-                if (producto.IdMarca == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese la marca del producto" });
-                }
-
-                if (producto.Descripcion == null || producto.Descripcion == "")
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese la descripcion del producto" });
-                }
-
-                if (producto.PrecioUnitario == 0 )
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el precio del producto" });
-                }
-
-                if (producto.Stock == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el stock del producto" });
-                }
-
-                // Mandar a llamar al método de registrar productos
-                var resultado = dao.NuevoProducto(producto);
-
-                // Obtener resultado
+                var resultado = prod_service.RegistrarProducto(producto);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al registrar el producto: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -117,54 +70,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (producto == null)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese los datos del producto" });
-                }
-                if (producto.IdProducto == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id del producto" });
-                }
-
-                if (producto.Nombre == null || producto.Nombre == "")
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese en nombre del producto" });
-                }
-
-                if (producto.IdCategoria == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese la categoria del producto" });
-                }
-
-                if (producto.IdMarca == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese la marca del producto" });
-                }
-
-                if (producto.Descripcion == null || producto.Descripcion == "")
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese la descripcion del producto" });
-                }
-
-                if (producto.PrecioUnitario == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el precio del producto" });
-                }
-
-                if (producto.Stock == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el stock del producto" });
-                }
-
-                // Mandar a llamar al método de actualizar productos
-                var resultado = dao.ActualizarProducto(producto);
-
-                // Obtener resultado
+                var resultado = prod_service.ActualizarProducto(producto);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al actualizar el producto: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 
@@ -174,20 +85,12 @@ namespace AppHappyPet_API.Controllers
         {
             try
             {
-                if (idProducto == 0)
-                {
-                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id del producto" });
-                }
-
-                // Mandar a llamar al método de eliminar productos
-                var resultado = dao.EliminarProducto(idProducto);
-
-                // Obtener resultado
+                var resultado = prod_service.EliminarProducto(idProducto);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error: Ocurrió un error al eliminar el producto: {ex.Message}");
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
     }
