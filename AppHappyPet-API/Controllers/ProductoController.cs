@@ -112,9 +112,60 @@ namespace AppHappyPet_API.Controllers
         }
 
         // PUT api/<ProductoController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public IActionResult ActualizarProducto([FromBody] Producto producto)
         {
+            try
+            {
+                if (producto == null)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese los datos del producto" });
+                }
+                if (producto.IdProducto == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id del producto" });
+                }
+
+                if (producto.Nombre == null || producto.Nombre == "")
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese en nombre del producto" });
+                }
+
+                if (producto.IdCategoria == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese la categoria del producto" });
+                }
+
+                if (producto.IdMarca == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese la marca del producto" });
+                }
+
+                if (producto.Descripcion == null || producto.Descripcion == "")
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese la descripcion del producto" });
+                }
+
+                if (producto.PrecioUnitario == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el precio del producto" });
+                }
+
+                if (producto.Stock == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el stock del producto" });
+                }
+
+                // Mandar a llamar al método de actualizar productos
+                var resultado = dao.ActualizarProducto(producto);
+
+                // Obtener resultado
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al actualizar el producto: {ex.Message}");
+            }
         }
 
         // DELETE api/<ProductoController>/5

@@ -104,9 +104,66 @@ namespace AppHappyPet_API.Controllers
         }
 
         // PUT api/<UsuarioController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public IActionResult ActualizarCliente([FromBody] Usuario usuario)
         {
+            try
+            {
+                if (usuario.IdUsuario == 0)
+                {
+                    return BadRequest("Error: El id del cliente es requerido");
+                }
+
+                if (usuario.Nombre == null || usuario.Nombre == "")
+                {
+                    return BadRequest("Error: El nombre del cliente es requerido");
+                }
+
+                if (usuario.ApellidoPaterno == null || usuario.ApellidoPaterno == "")
+                {
+                    return BadRequest("Error: El apellido paterno del cliente es requerido");
+                }
+
+                if (usuario.ApellidoMaterno == null || usuario.ApellidoMaterno == "")
+                {
+                    return BadRequest("Error: El apellido materno del cliente es requerido");
+                }
+
+                if (usuario.IdTipoDocumento == 0)
+                {
+                    return BadRequest("Error: El tipo de documento del cliente es requerido");
+                }
+
+                if (usuario.NroDocumento == null || usuario.NroDocumento == "")
+                {
+                    return BadRequest("Error: El número de documento del cliente es requerido");
+                }
+
+                if (usuario.Telefono == null || usuario.Telefono == "")
+                {
+                    return BadRequest("Error: El teléfono del cliente es requerido");
+                }
+
+                if (usuario.Direccion == null || usuario.Direccion == "")
+                {
+                    return BadRequest("Error: La dirección del cliente es requerida");
+                }
+
+                if (usuario.Correo == null || usuario.Correo == "")
+                {
+                    return BadRequest("Error: El correo del cliente es requerido");
+                }
+
+                // Mandar a llamar al método de actualizar cliente
+                var respuesta = dao_cliente.ActualizarCliente(usuario);
+
+                // Retornar respuesta
+                return Ok(new { mensaje = respuesta });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al actualizar el cliente: {ex.Message}");
+            }
         }
 
         // DELETE api/<UsuarioController>/5

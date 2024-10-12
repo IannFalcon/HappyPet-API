@@ -177,6 +177,51 @@ namespace AppHappyPet_API.DAO
 
         }
 
-    }
+        // Actualizar producto
+        public string ActualizarProducto(Producto producto)
+        {
+            // Query para actualizar producto
+            string query = @"UPDATE Producto SET 
+                            nombre = @nombre, 
+                            id_categoria = @id_categoria, 
+                            id_marca = @id_marca, 
+                            descripcion = @descripcion, 
+                            precio_unitario = @precio_unitario, stock = @stock, 
+                            nombre_imagen = @nombre_imagen, 
+                            ruta_imagen = @ruta_imagen, 
+                            fec_vencimiento = @fec_vencimiento
+                            WHERE id_producto = @id_producto";
 
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", producto.Nombre);
+                cmd.Parameters.AddWithValue("@id_categoria", producto.IdCategoria);
+                cmd.Parameters.AddWithValue("@id_marca", producto.IdMarca);
+                cmd.Parameters.AddWithValue("@descripcion", producto.Descripcion);
+                cmd.Parameters.AddWithValue("@precio_unitario", producto.PrecioUnitario);
+                cmd.Parameters.AddWithValue("@stock", producto.Stock);
+                cmd.Parameters.AddWithValue("@nombre_imagen", producto.NombreImagen ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@ruta_imagen", producto.RutaImagen ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@fec_vencimiento", producto.FecVencimiento ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@id_producto", producto.IdProducto);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar mensaje de éxito
+                return $"El producto {producto.Nombre} fue actualizado correctamente";
+            }
+        }
+    }
 }

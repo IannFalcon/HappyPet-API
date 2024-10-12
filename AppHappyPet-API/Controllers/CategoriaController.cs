@@ -64,9 +64,34 @@ namespace AppHappyPet_API.Controllers
         }
 
         // PUT api/<CategoriaController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public IActionResult ActualizarCategoria([FromBody] Categoria categoria)
         {
+            try
+            {
+                if (categoria == null)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese los datos de la categoría" });
+                }
+                if (categoria.IdCategoria == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id de la categoría" });
+                }
+                if (categoria.Nombre == null || categoria.Nombre == "")
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la categoría" });
+                }
+
+                // Mandar a llamar al método de actualizar categorias
+                var resultado = dao.ActualizarCatergoria(categoria);
+
+                // Obtener resultado
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al actualizar la categoria: {ex.Message}");
+            }
         }
 
         // DELETE api/<CategoriaController>/5

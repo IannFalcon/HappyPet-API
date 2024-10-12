@@ -65,9 +65,34 @@ namespace AppHappyPet_API.Controllers
         }
 
         // PUT api/<MarcaController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public IActionResult ActualizarMarca([FromBody] Marca marca)
         {
+            try
+            {
+                if (marca == null)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese los datos de la marca" });
+                }
+                if (marca.IdMarca == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id de la marca" });
+                }
+                if (marca.Nombre == null || marca.Nombre == "")
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el nombre de la marca" });
+                }
+
+                // Mandar a llamar al método de actualizar marca
+                var resultado = dao.ActualizarMarca(marca);
+
+                // Obtener resultado
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al actualizar la marca: {ex.Message}");
+            }
         }
 
         // DELETE api/<MarcaController>/5

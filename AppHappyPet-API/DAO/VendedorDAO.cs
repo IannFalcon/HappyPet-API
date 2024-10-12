@@ -122,5 +122,52 @@ namespace AppHappyPet_API.DAO
                 return $"El vendedor {vendedor.Nombre} {vendedor.ApellidoPaterno} {vendedor.ApellidoMaterno} ha sido registrado exitosamente";
             }
         }
+
+        // Actualizar vendedor
+        public string ActualizarVendedor(Usuario vendedor)
+        {
+            // Query para actualizar vendedor
+            string query = @"UPDATE Usuario SET 
+                            nombre = @nombre, 
+                            apellido_paterno = @apellido_paterno, 
+                            apellido_materno = @apellido_materno,
+                            id_tipo_documento = @id_tipo_documento, 
+                            nro_documento = @nro_documento, 
+                            telefono = @telefono,
+                            direccion = @direccion, 
+                            correo = @correo
+                            WHERE id_usuario = @id_usuario";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", vendedor.Nombre);
+                cmd.Parameters.AddWithValue("@apellido_paterno", vendedor.ApellidoPaterno);
+                cmd.Parameters.AddWithValue("@apellido_materno", vendedor.ApellidoMaterno);
+                cmd.Parameters.AddWithValue("@id_tipo_documento", vendedor.IdTipoDocumento);
+                cmd.Parameters.AddWithValue("@nro_documento", vendedor.NroDocumento);
+                cmd.Parameters.AddWithValue("@telefono", vendedor.Telefono);
+                cmd.Parameters.AddWithValue("@direccion", vendedor.Direccion);
+                cmd.Parameters.AddWithValue("@correo", vendedor.Correo);
+                cmd.Parameters.AddWithValue("@id_usuario", vendedor.IdUsuario);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar cantidad de filas afectadas
+                return $"El vendedor {vendedor.Nombre} {vendedor.ApellidoPaterno} {vendedor.ApellidoMaterno} fue actualizado correctamente.";
+
+            }
+        }
     }
 }

@@ -97,7 +97,7 @@ namespace AppHappyPet_API.DAO
                 // Retornar nulo
                 return categoria!;
             }
-        }   
+        }
 
         // Nueva categoría
         public string NuevaCategoria(Categoria categoria)
@@ -126,6 +126,35 @@ namespace AppHappyPet_API.DAO
                 return $"La categoría {categoria.Nombre} fue registrada correctamente";
             }
 
+        }
+
+        // Actualizar categoría
+        public string ActualizarCatergoria(Categoria categoria)
+        {
+            // Query para actualizar categoría
+            string query = "UPDATE Categoria SET nombre = @nombre WHERE id_categoria = @id_categoria";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
+                cmd.Parameters.AddWithValue("@id_categoria", categoria.IdCategoria);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                return $"La categoría {categoria.Nombre} fue actualizada correctamente";
+            }
         }
     }
 }

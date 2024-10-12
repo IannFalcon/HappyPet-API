@@ -187,5 +187,51 @@ namespace AppHappyPet_API.DAO
                 return $"El cliente {cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno} fue registrado correctamente.";
             }
         }
+
+        // Actualizar cliente
+        public string ActualizarCliente(Usuario cliente)
+        {
+            // Query para actualizar cliente
+            string query = @"UPDATE Usuario SET 
+                            nombre = @nombre, 
+                            apellido_paterno = @apellido_paterno, 
+                            apellido_materno = @apellido_materno,
+                            id_tipo_documento = @id_tipo_documento, 
+                            nro_documento = @nro_documento, 
+                            telefono = @telefono,
+                            direccion = @direccion, 
+                            correo = @correo
+                            WHERE id_usuario = @id_usuario";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
+                cmd.Parameters.AddWithValue("@apellido_paterno", cliente.ApellidoPaterno);
+                cmd.Parameters.AddWithValue("@apellido_materno", cliente.ApellidoMaterno);
+                cmd.Parameters.AddWithValue("@id_tipo_documento", cliente.IdTipoDocumento);
+                cmd.Parameters.AddWithValue("@nro_documento", cliente.NroDocumento);
+                cmd.Parameters.AddWithValue("@telefono", cliente.Telefono);
+                cmd.Parameters.AddWithValue("@direccion", cliente.Direccion);
+                cmd.Parameters.AddWithValue("@correo", cliente.Correo);
+                cmd.Parameters.AddWithValue("@id_usuario", cliente.IdUsuario);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar cantidad de filas afectadas
+                return $"El cliente {cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno} fue actualizado correctamente.";
+            }
+        }
     }
 }

@@ -102,9 +102,64 @@ namespace AppHappyPet_API.Controllers
         }
 
         // PUT api/<UsuarioController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public IActionResult ActualizarVendedor([FromBody] Usuario usuario)
         {
+            try
+            {
+                if (usuario.IdUsuario == 0)
+                {
+                    return BadRequest("Error: El id del vendedor es requerido");
+                }
+
+                if (usuario.Nombre == null || usuario.Nombre == "")
+                {
+                    return BadRequest("Error: El nombre del vendedor es requerido");
+                }
+
+                if (usuario.ApellidoPaterno == null || usuario.ApellidoPaterno == "")
+                {
+                    return BadRequest("Error: El apellido paterno del vendedor es requerido");
+                }
+
+                if (usuario.ApellidoMaterno == null || usuario.ApellidoMaterno == "")
+                {
+                    return BadRequest("Error: El apellido materno del vendedor es requerido");
+                }
+
+                if (usuario.IdTipoDocumento == 0)
+                {
+                    return BadRequest("Error: El tipo de documento del vendedor es requerido");
+                }
+
+                if (usuario.NroDocumento == null || usuario.NroDocumento == "")
+                {
+                    return BadRequest("Error: El número de documento del vendedor es requerido");
+                }
+
+                if (usuario.Telefono == null || usuario.Telefono == "")
+                {
+                    return BadRequest("Error: El teléfono del vendedor es requerido");
+                }
+
+                if (usuario.Direccion == null || usuario.Direccion == "")
+                {
+                    return BadRequest("Error: La dirección del vendedor es requerida");
+                }
+
+                if (usuario.Correo == null || usuario.Correo == "")
+                {
+                    return BadRequest("Error: El correo del vendedor es requerido");
+                }
+
+                var resultado = dao_vend.ActualizarVendedor(usuario);
+
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al actualizar el vendedor: {ex.Message}");
+            }
         }
 
         // DELETE api/<UsuarioController>/5
