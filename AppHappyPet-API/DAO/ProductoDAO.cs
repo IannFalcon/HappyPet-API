@@ -223,5 +223,34 @@ namespace AppHappyPet_API.DAO
                 return $"El producto {producto.Nombre} fue actualizado correctamente";
             }
         }
+
+        // Eliminar producto
+        public string EliminarProducto(int id_producto)
+        {
+            // Query para eliminar producto
+            string query = "UPDATE Producto SET eliminado = 'Si' WHERE id_producto = @id_producto";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetro al comando
+                cmd.Parameters.AddWithValue("@id_producto", id_producto);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar mensaje de éxito
+                return $"El producto con id {id_producto} fue eliminado correctamente";
+            }
+        }
     }
 }

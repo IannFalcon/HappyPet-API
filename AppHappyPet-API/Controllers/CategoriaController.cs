@@ -95,9 +95,26 @@ namespace AppHappyPet_API.Controllers
         }
 
         // DELETE api/<CategoriaController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{idCategoria}")]
+        public IActionResult EliminarCategoria(int idCategoria)
         {
+            try
+            {
+                if (idCategoria == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id de la categoría" });
+                }
+
+                // Mandar a llamar al método de eliminar categorias
+                var resultado = dao.EliminarCategoria(idCategoria);
+
+                // Obtener resultado
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al eliminar la categoria: {ex.Message}");
+            }
         }
     }
 }

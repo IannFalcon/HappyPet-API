@@ -169,9 +169,26 @@ namespace AppHappyPet_API.Controllers
         }
 
         // DELETE api/<ProductoController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{idProducto}")]
+        public IActionResult EliminarProducto(int idProducto)
         {
+            try
+            {
+                if (idProducto == 0)
+                {
+                    return BadRequest(new { mensaje = "Error: Por favor ingrese el id del producto" });
+                }
+
+                // Mandar a llamar al método de eliminar productos
+                var resultado = dao.EliminarProducto(idProducto);
+
+                // Obtener resultado
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al eliminar el producto: {ex.Message}");
+            }
         }
     }
 }

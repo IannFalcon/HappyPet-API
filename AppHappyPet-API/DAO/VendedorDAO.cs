@@ -169,5 +169,34 @@ namespace AppHappyPet_API.DAO
 
             }
         }
+
+        // Eliminar vendedor
+        public string EliminarVendedor(int id_usuario)
+        {
+            // Query para eliminar vendedor
+            string query = @"UPDATE Usuario SET activo = 'No' WHERE id_usuario = @id_usuario";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar cantidad de filas afectadas
+                return $"El vendedor con ID {id_usuario} ha sido eliminado correctamente.";
+            }
+        }
     }
 }

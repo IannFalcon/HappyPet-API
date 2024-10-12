@@ -156,5 +156,33 @@ namespace AppHappyPet_API.DAO
                 return $"La categoría {categoria.Nombre} fue actualizada correctamente";
             }
         }
+
+        // Eliminar categoría
+        public string EliminarCategoria(int id_categoria)
+        {
+            // Query para eliminar categoría
+            string query = "DELETE FROM Categoria WHERE id_categoria = @id_categoria";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                return $"La categoría con id {id_categoria} fue eliminada correctamente";
+            }
+        }
     }
 }

@@ -163,9 +163,24 @@ namespace AppHappyPet_API.Controllers
         }
 
         // DELETE api/<UsuarioController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{idUsuario}")]
+        public IActionResult EliminarVendedor(int idUsuario)
         {
+            try
+            {
+                if (idUsuario == 0)
+                {
+                    return BadRequest("Error: El id del vendedor es requerido");
+                }
+
+                var resultado = dao_vend.EliminarVendedor(idUsuario);
+
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: Ocurrió un error al eliminar el vendedor: {ex.Message}");
+            }
         }
     }
 }

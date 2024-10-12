@@ -233,5 +233,34 @@ namespace AppHappyPet_API.DAO
                 return $"El cliente {cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno} fue actualizado correctamente.";
             }
         }
+
+        // Eliminar cliente
+        public string EliminarCliente(int id_usuario)
+        {
+            // Query para eliminar cliente
+            string query = @"UPDATE Usuario SET activo = 'No' WHERE id_usuario = @id_usuario";
+
+            // Crear conexión a la base de datos
+            using (SqlConnection con = new SqlConnection(cnx))
+            {
+                // Crear comando para ejecutar query
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                // Agregar parámetros al comando
+                cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
+
+                // Abrir conexión
+                con.Open();
+
+                // Ejecutar query
+                cmd.ExecuteNonQuery();
+
+                // Cerrar conexión
+                con.Close();
+
+                // Retornar cantidad de filas afectadas
+                return $"El cliente con id {id_usuario} fue eliminado correctamente.";
+            }
+        }
     }
 }
