@@ -24,11 +24,11 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var respuesta = aut_service.IniciarSesion(request);
-                return Ok(respuesta);
+                return Ok(new { mensaje = "Inicio de sesión exitoso", data = respuesta });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { mensaje = ex.Message});
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 

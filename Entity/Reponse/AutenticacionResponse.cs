@@ -2,7 +2,8 @@
 {
     public class AutenticacionResponse
     {
-        public string Mensaje { get; set; } = string.Empty;
-        public int? IdUsuario { get; set; }
+        public int IdUsuario { get; set; }
+        public int IdTipoUsuario { get; set; }
+        public string? NombreUsuario { get; set; } = string.Empty;
     }
 }

@@ -28,13 +28,14 @@ namespace Data
                 {
                     var resultado = new AutenticacionResponse
                     {
-                        Mensaje = dr.GetString(0),
-                        IdUsuario = dr.GetInt32(1)
+                        IdUsuario = dr.GetInt32(0),
+                        IdTipoUsuario = dr.GetInt32(1),
+                        NombreUsuario = dr.IsDBNull(2) ? null : dr.GetString(2)
                     };
 
                     if(resultado.IdUsuario == 0)
                     {
-                        throw new Exception("Error credenciales incorrectas");
+                        throw new Exception("Error: Credenciales incorrectas");
                     }
 
                     return resultado;

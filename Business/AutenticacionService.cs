@@ -41,12 +41,6 @@ namespace Business
 
                 // Mandar a llamar al método de autenticación
                 var respuesta = dao.IniciarSesion(request);
-
-                if (respuesta == null)
-                {
-                    throw new Exception("Error: No se pudo iniciar sesión");
-                }
-
                 return respuesta;
             }
             catch (Exception ex)
