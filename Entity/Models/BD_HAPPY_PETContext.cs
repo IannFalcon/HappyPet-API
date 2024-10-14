@@ -48,7 +48,7 @@ namespace Entity.Models
 
                 entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
 
-                entity.HasOne(d => d.IdProductoNavigation)
+                entity.HasOne(d => d.ProductosCarrito)
                     .WithMany(p => p.Carritos)
                     .HasForeignKey(d => d.IdProducto)
                     .OnDelete(DeleteBehavior.ClientSetNull)

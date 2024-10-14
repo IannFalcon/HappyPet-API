@@ -14,22 +14,24 @@ builder.Services.AddDbContext<BD_HAPPY_PETContext>(opt => opt.UseSqlServer(conex
 // DAO
 builder.Services.AddScoped<AutenticacionDAO>();
 builder.Services.AddScoped<CategoriaDAO>();
+builder.Services.AddScoped<CarritoDAO>();
+builder.Services.AddScoped<ClienteDAO>();
+builder.Services.AddScoped<DetalleVentaDAO>();
 builder.Services.AddScoped<MarcaDAO>();
 builder.Services.AddScoped<ProductoDAO>();
-builder.Services.AddScoped<ClienteDAO>();
 builder.Services.AddScoped<VendedorDAO>();
 builder.Services.AddScoped<VentaDAO>();
-builder.Services.AddScoped<DetalleVentaDAO>();
 
 // Servicios
 builder.Services.AddScoped<AutenticacionService>();
 builder.Services.AddScoped<CategoriaService>();
+builder.Services.AddScoped<CarritoService>();
+builder.Services.AddScoped<ClienteService>();
+builder.Services.AddScoped<DetalleVentaService>();
 builder.Services.AddScoped<MarcaService>();
 builder.Services.AddScoped<ProductoService>();
-builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<VendedorService>();
 builder.Services.AddScoped<VentaService>();
-builder.Services.AddScoped<DetalleVentaService>();
 
 // Controllers
 builder.Services.AddControllers();

@@ -10,7 +10,7 @@ namespace Entity.Models
         public int IdProducto { get; set; }
         public int Cantidad { get; set; }
 
-        public virtual Producto IdProductoNavigation { get; set; } = null!;
-        public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+        public virtual Producto ProductosCarrito { get; set; } = null!;
+        public virtual Usuario? IdUsuarioNavigation { get; set; }
     }
 }
