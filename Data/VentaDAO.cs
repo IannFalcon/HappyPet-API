@@ -11,7 +11,7 @@ namespace Data
 
         public VentaDAO(IConfiguration cfg, ClienteDAO dao_cli)
         {
-            cnx = cfg.GetConnectionString("conexion_bd");
+            cnx = cfg.GetConnectionString("conexion_bd")!;
             this.dao_cli = dao_cli;
         }
 
@@ -63,5 +63,27 @@ namespace Data
 
         }
 
+        // Realizar nueva venta
+        public string RealizarVenta(int idUsuario, string idTransaccion)
+        {
+            string mensaje = string.Empty;
+
+            try
+            {
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarVenta", 
+                                                            idUsuario, idTransaccion);
+
+                if (dr.Read())
+                {
+                    mensaje = dr.GetString(0);        
+                }
+
+                return mensaje;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
     }
 }

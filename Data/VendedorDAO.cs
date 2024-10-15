@@ -10,7 +10,7 @@ namespace Data
 
         public VendedorDAO(IConfiguration cfg)
         {
-            cnx = cfg.GetConnectionString("conexion_bd");
+            cnx = cfg.GetConnectionString("conexion_bd")!;
         }
 
         // Obtener vendedores
