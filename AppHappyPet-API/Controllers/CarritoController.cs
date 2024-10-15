@@ -44,13 +44,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var resultado = cart_service.AgregarQuitarProductoCarrito(idUsuario, idProducto, accion);
-
-                if (resultado)
-                {
-                    return Ok(new { mensaje = "Producto eliminado del carrito" });
-                }
-
-                return Ok(new { mensaje = "Producto agregado al carrito" });
+                return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
             {

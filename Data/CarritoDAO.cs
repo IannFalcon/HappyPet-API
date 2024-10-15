@@ -58,8 +58,10 @@ namespace Data
             }
         }
 
-        public bool AccionesCarrito(int idUsuario, int idProducto, bool accion)
+        public string AccionesCarrito(int idUsuario, int idProducto, bool accion)
         {
+            string mensaje = string.Empty;
+
             try
             {
                 SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "AccionesCarrito",
@@ -67,12 +69,12 @@ namespace Data
                                                     idProducto,
                                                     accion);
 
-                if (accion == false)
+                if (dr.Read())
                 {
-                    return false;
+                    mensaje = dr.IsDBNull(0) ? "VACIO" : dr.GetString(0);
                 }
 
-                return true;
+                return mensaje;
             }
             catch (Exception ex)
             {

@@ -37,7 +37,7 @@ namespace Business
         }
 
         // Metodo para agregar o quitar productos del carrito
-        public bool AgregarQuitarProductoCarrito(int idUsuario, int idProducto, bool accion)
+        public string AgregarQuitarProductoCarrito(int idUsuario, int idProducto, bool accion)
         {
             try
             {
