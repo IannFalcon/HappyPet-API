@@ -24,6 +24,12 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var respuesta = aut_service.IniciarSesion(request);
+
+                if (respuesta.Estado == "NO_VALIDADO")
+                {
+                    return Ok(new { mensaje = "Es necesario cambiar la contraseña", data = respuesta });
+                }
+
                 return Ok(new { mensaje = "Inicio de sesión exitoso", data = respuesta });
             }
             catch (Exception ex)

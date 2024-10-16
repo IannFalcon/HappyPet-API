@@ -41,6 +41,12 @@ namespace Business
 
                 // Mandar a llamar al método de autenticación
                 var respuesta = dao.IniciarSesion(request);
+
+                if (respuesta.Estado == "NO_EXISTE" && respuesta.IdUsuario == 0)
+                {
+                    throw new Exception("Error: Credenciales incorrectas.");
+                }
+
                 return respuesta;
             }
             catch (Exception ex)
