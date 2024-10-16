@@ -32,6 +32,21 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
+        // GET api/<UsuarioController>/5
+        [HttpGet("{idUsuario}")]
+        public IActionResult ObtenerClienteId(int idUsuario)
+        {
+            try
+            {
+                var cliente = cli_service.ObtenerClienteId(idUsuario);
+                return Ok(new { mensaje = "Cliente encontrado", data = cliente });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         // POST api/<UsuarioController>
         [HttpPost]
         public IActionResult RegistrarCliente([FromBody] Usuario usuario)

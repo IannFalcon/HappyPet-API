@@ -27,7 +27,7 @@ namespace Business
         }
 
         // Método para obtener un cliente por ID
-        public Usuario ObtenerCliente(int idUsuario)
+        public Usuario ObtenerClienteId(int idUsuario)
         {
             try
             {

@@ -97,7 +97,8 @@ namespace Data
                             FROM Usuario u
                             INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
                             INNER JOIN TipoDocumento td ON u.id_tipo_documento = td.id_tipo_documento
-                            WHERE u.id_usuario = @id_usuario";
+                            WHERE u.id_tipo_usuario = 1
+                            AND u.id_usuario = @id_usuario";
 
             // Crear conexión a la base de datos
             using (SqlConnection con = new SqlConnection(cnx))

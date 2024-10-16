@@ -32,6 +32,21 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
+        // GET api/<UsuarioController>/5
+        [HttpGet("{idUsuario}")]
+        public IActionResult ObtenerVendedorId(int idUsuario)
+        {
+            try
+            {
+                var vendedor = ven_service.ObtenerVendedorId(idUsuario);
+                return Ok(new { mensaje = "Vendedor encontrado", data = vendedor });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         // POST api/<UsuarioController>
         [HttpPost]
         public IActionResult RegistrarVendedor([FromBody] Usuario usuario)

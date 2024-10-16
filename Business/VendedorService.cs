@@ -26,6 +26,26 @@ namespace Business
             }
         }
 
+        // Método para obtener un vendedor por ID
+        public Usuario ObtenerVendedorId(int idUsuario)
+        {
+            try
+            {
+                var vendedor = dao_ven.ObtenerVendedorId(idUsuario);
+
+                if (vendedor == null)
+                {
+                    throw new Exception($"El vendedor con ID: {idUsuario} no fue encontrado.");
+                }
+
+                return vendedor;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         // Método para registrar un vendedor
         public string RegistrarVendedor(Usuario vendedor)
         {
