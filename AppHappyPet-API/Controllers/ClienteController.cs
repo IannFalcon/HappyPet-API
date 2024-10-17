@@ -48,27 +48,20 @@ namespace AppHappyPet_API.Controllers
         }
 
         // POST api/<UsuarioController>
-        [HttpPost("registrar-cliente-admin")]
-        public IActionResult RegistrarClienteDesdeAdmin([FromBody] Usuario usuario)
+        [HttpPost]
+        public IActionResult RegistrarCliente([FromBody] Usuario usuario)
         {
-            try
-            {
-                var respuesta = cli_service.RegistrarClienteDesdeAdmin(usuario);
-                return Ok(new { mensaje = respuesta });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { mensaje = ex.Message });
-            }
-        }
+            string _mensaje = string.Empty;
 
-        // POST api/<UsuarioController>
-        [HttpPost("registrar-cliente-web")]
-        public IActionResult RegistrarClienteDesdeWeb([FromBody] Usuario usuario)
-        {
             try
             {
-                var respuesta = cli_service.RegistrarClienteDesdeWeb(usuario);
+                var respuesta = cli_service.RegistrarCliente(usuario);
+
+                if (respuesta == "EXITO")
+                {
+                    _mensaje = "El cliente fue registrado con exito.";
+                }
+
                 return Ok(new { mensaje = respuesta });
             }
             catch (Exception ex)

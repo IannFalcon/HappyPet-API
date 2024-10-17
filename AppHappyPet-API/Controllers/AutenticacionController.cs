@@ -1,4 +1,5 @@
 ﻿using Business;
+using Entity.Models;
 using Entity.Request;
 using Microsoft.AspNetCore.Mvc;
 
@@ -53,5 +54,27 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
+        // POST api/<AutenticacionController>
+        [HttpPost("crear-cuenta")]
+        public IActionResult RegistrarClienteDesdeWeb([FromBody] Usuario usuario)
+        {
+            string _mensaje = string.Empty;
+
+            try
+            {
+                var respuesta = aut_service.CrearCuenta(usuario);
+
+                if (respuesta == "EXITO")
+                {
+                    _mensaje = "Su cuenta ha sido creada exitosamente. Por favor inicie sesión.";
+                }
+
+                return Ok(new { mensaje = _mensaje });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

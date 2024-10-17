@@ -167,7 +167,7 @@ namespace Data
         }
 
         // Nuevo cliente desde la vista de administrador
-        public string NuevoClienteDesdeAdmin(Usuario cliente)
+        public string NuevoCliente(Usuario cliente)
         {
             string mensaje = string.Empty;
 
@@ -192,40 +192,6 @@ namespace Data
                 else
                 {
                     throw new Exception("Error: Ocurrio un error al registrar el cliente.");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        // Nuevo cliente desde la vista de registro
-        public string NuevoClienteDesdeRegistrar(Usuario cliente)
-        {
-            string mensaje = string.Empty;
-
-            try
-            {
-                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarCliente",
-                                                        cliente.Nombre,
-                                                        cliente.ApellidoPaterno,
-                                                        cliente.ApellidoMaterno,
-                                                        cliente.IdTipoDocumento,
-                                                        cliente.NroDocumento,
-                                                        cliente.Telefono,
-                                                        cliente.Direccion,
-                                                        cliente.Correo,
-                                                        cliente.Contrasenia!);
-
-                if (dr.Read())
-                {
-                    mensaje = dr.GetString(0);
-                    return mensaje;
-                }
-                else
-                {
-                    throw new Exception("Error: Ocurrio un durante el registro.");
                 }
             }
             catch (Exception ex)

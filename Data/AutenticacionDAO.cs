@@ -1,4 +1,5 @@
-﻿using Entity.Reponse;
+﻿using Entity.Models;
+using Entity.Reponse;
 using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -68,6 +69,40 @@ namespace Data
                 else
                 {
                     throw new Exception("Error: Ocurrio un error al cambiar la contraseña.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Crear cuenta
+        public string CrearCuenta(Usuario usuario)
+        {
+            string mensaje = string.Empty;
+
+            try
+            {
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarCliente",
+                                                        usuario.Nombre,
+                                                        usuario.ApellidoPaterno,
+                                                        usuario.ApellidoMaterno,
+                                                        usuario.IdTipoDocumento,
+                                                        usuario.NroDocumento,
+                                                        usuario.Telefono,
+                                                        usuario.Direccion,
+                                                        usuario.Correo,
+                                                        usuario.Contrasenia!);
+
+                if (dr.Read())
+                {
+                    mensaje = dr.GetString(0);
+                    return mensaje;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un durante el registro.");
                 }
             }
             catch (Exception ex)

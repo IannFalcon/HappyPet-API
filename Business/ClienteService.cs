@@ -47,7 +47,7 @@ namespace Business
         }
 
         // Método para registrar un cliente desde la vista de administrador
-        public string RegistrarClienteDesdeAdmin(Usuario cliente)
+        public string RegistrarCliente(Usuario cliente)
         {
             try
             {
@@ -96,93 +96,13 @@ namespace Business
                     throw new Exception("Error: El correo del cliente es requerido");
                 }
 
-                var respuesta = dao_cliente.NuevoClienteDesdeAdmin(cliente);
+                var respuesta = dao_cliente.NuevoCliente(cliente);
 
                 if (respuesta == "DNI_EXISTE")
                 {
                     throw new Exception("Error: El número de documento ya existe.");
                 }
                 
-                if (respuesta == "TEL_EXISTE")
-                {
-                    throw new Exception("Error: El numero de teléfono ya existe.");
-                }
-
-                if (respuesta == "CORREO_EXISTE")
-                {
-                    throw new Exception("Error: El correo ya existe.");
-                }
-
-                return respuesta;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        // Método para registrar un cliente desde la vista de registro
-        public string RegistrarClienteDesdeWeb(Usuario cliente)
-        {
-            try
-            {
-                if (cliente == null)
-                {
-                    throw new Exception("Error: Por favor ingrese sus datos");
-                }
-
-                if (cliente.Nombre == null || cliente.Nombre == "")
-                {
-                    throw new Exception("Error: El nombre es requerido");
-                }
-
-                if (cliente.ApellidoPaterno == null || cliente.ApellidoPaterno == "")
-                {
-                    throw new Exception("Error: El apellido paterno es requerido");
-                }
-
-                if (cliente.ApellidoMaterno == null || cliente.ApellidoMaterno == "")
-                {
-                    throw new Exception("Error: El apellido materno es requerido");
-                }
-
-                if (cliente.IdTipoDocumento == 0)
-                {
-                    throw new Exception("Error: El tipo de documento es requerido");
-                }
-
-                if (cliente.NroDocumento == null || cliente.NroDocumento == "")
-                {
-                    throw new Exception("Error: El número de documento es requerido");
-                }
-
-                if (cliente.Telefono == null || cliente.Telefono == "")
-                {
-                    throw new Exception("Error: El teléfono es requerido");
-                }
-
-                if (cliente.Direccion == null || cliente.Direccion == "")
-                {
-                    throw new Exception("Error: La dirección es requerida");
-                }
-
-                if (cliente.Correo == null || cliente.Correo == "")
-                {
-                    throw new Exception("Error: El correo es requerido");
-                }
-
-                if (cliente.Contrasenia == null || cliente.Contrasenia == "")
-                {
-                    throw new Exception("Error: La contraseña es requerida");
-                }
-
-                var respuesta = dao_cliente.NuevoClienteDesdeRegistrar(cliente);
-
-                if (respuesta == "DNI_EXISTE")
-                {
-                    throw new Exception("Error: El número de documento ya existe.");
-                }
-
                 if (respuesta == "TEL_EXISTE")
                 {
                     throw new Exception("Error: El numero de teléfono ya existe.");
