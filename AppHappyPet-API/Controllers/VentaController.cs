@@ -69,8 +69,8 @@ namespace AppHappyPet_API.Controllers
                     },
                     redirect_urls = new RedirectUrls // Redirección de la transacción
                     {
-                        return_url = "http://localhost:3000/happyPet/carrito", // URL de retorno
-                        cancel_url = "http://localhost:3000/happyPet" // URL de cancelación
+                        return_url = "http://localhost:3000/carrito", // URL de retorno
+                        cancel_url = "http://localhost:3000/cancelar-pago" // URL de cancelación
                     }
                 };
 
@@ -142,7 +142,7 @@ namespace AppHappyPet_API.Controllers
                 }
 
                 // Retornar mensaje de éxito
-                return Ok(new { mensaje = "La venta fue realizada con éxito." });
+                return Ok(new { mensaje = "Su compra fue realizada con éxito." });
             }
             catch (PayPalException ex)
             {
@@ -152,12 +152,6 @@ namespace AppHappyPet_API.Controllers
             {
                 return BadRequest(new { mensaje = ex.Message });
             }
-        }
-
-        [HttpGet("CancelarVenta")]
-        public IActionResult CancelarVenta()
-        {
-            return Ok(new { mensaje = "El pago fue cancelado." });
         }
 
         private APIContext GetAPIContext()

@@ -31,59 +31,65 @@ namespace Data
                             AND (@nombre IS NULL OR CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) LIKE '%' + @nombre + '%')
                             AND (@nro_documento IS NULL OR u.nro_documento LIKE @nro_documento + '%')";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nro_documento", string.IsNullOrEmpty(nro_documento) ? DBNull.Value : nro_documento);
-                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                while (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    Usuario cliente = new Usuario
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nro_documento", string.IsNullOrEmpty(nro_documento) ? DBNull.Value : nro_documento);
+                    cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    while (dr.Read())
                     {
-                        IdUsuario = dr.GetInt32(0),
-                        IdTipoUsuario = dr.GetInt32(1),
-                        Nombre = dr.GetString(3),
-                        ApellidoPaterno = dr.GetString(4),
-                        ApellidoMaterno = dr.GetString(5),
-                        IdTipoDocumento = dr.GetInt32(6),
-                        NroDocumento = dr.GetString(8),
-                        Telefono = dr.GetString(9),
-                        Direccion = dr.GetString(10),
-                        Correo = dr.GetString(11),
-                        FecRegistro = dr.GetDateTime(12),
-                        UsuTipoUsu = new TipoUsuario
+                        Usuario cliente = new Usuario
                         {
+                            IdUsuario = dr.GetInt32(0),
                             IdTipoUsuario = dr.GetInt32(1),
-                            Descripcion = dr.GetString(2)
-                        },
-                        UsuTipoDoc = new TipoDocumento
-                        {
+                            Nombre = dr.GetString(3),
+                            ApellidoPaterno = dr.GetString(4),
+                            ApellidoMaterno = dr.GetString(5),
                             IdTipoDocumento = dr.GetInt32(6),
-                            Descripcion = dr.GetString(7)
-                        }
-                    };
+                            NroDocumento = dr.GetString(8),
+                            Telefono = dr.GetString(9),
+                            Direccion = dr.GetString(10),
+                            Correo = dr.GetString(11),
+                            FecRegistro = dr.GetDateTime(12),
+                            UsuTipoUsu = new TipoUsuario
+                            {
+                                IdTipoUsuario = dr.GetInt32(1),
+                                Descripcion = dr.GetString(2)
+                            },
+                            UsuTipoDoc = new TipoDocumento
+                            {
+                                IdTipoDocumento = dr.GetInt32(6),
+                                Descripcion = dr.GetString(7)
+                            }
+                        };
 
-                    clientes.Add(cliente);
+                        clientes.Add(cliente);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar lista de clientes
+                    return clientes;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar lista de clientes
-                return clientes;
-
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -101,131 +107,130 @@ namespace Data
                             WHERE u.id_tipo_usuario = 1
                             AND u.id_usuario = @id_usuario";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    usuario = new Usuario
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    if (dr.Read())
                     {
-                        IdUsuario = dr.GetInt32(0),
-                        IdTipoUsuario = dr.GetInt32(1),
-                        Nombre = dr.GetString(3),
-                        ApellidoPaterno = dr.GetString(4),
-                        ApellidoMaterno = dr.GetString(5),
-                        IdTipoDocumento = dr.GetInt32(6),
-                        NroDocumento = dr.GetString(8),
-                        Telefono = dr.GetString(9),
-                        Direccion = dr.GetString(10),
-                        Correo = dr.GetString(11),
-                        FecRegistro = dr.GetDateTime(12),
-                        UsuTipoUsu = new TipoUsuario
+                        usuario = new Usuario
                         {
+                            IdUsuario = dr.GetInt32(0),
                             IdTipoUsuario = dr.GetInt32(1),
-                            Descripcion = dr.GetString(2)
-                        },
-                        UsuTipoDoc = new TipoDocumento
-                        {
+                            Nombre = dr.GetString(3),
+                            ApellidoPaterno = dr.GetString(4),
+                            ApellidoMaterno = dr.GetString(5),
                             IdTipoDocumento = dr.GetInt32(6),
-                            Descripcion = dr.GetString(7)
-                        }
-                    };
+                            NroDocumento = dr.GetString(8),
+                            Telefono = dr.GetString(9),
+                            Direccion = dr.GetString(10),
+                            Correo = dr.GetString(11),
+                            FecRegistro = dr.GetDateTime(12),
+                            UsuTipoUsu = new TipoUsuario
+                            {
+                                IdTipoUsuario = dr.GetInt32(1),
+                                Descripcion = dr.GetString(2)
+                            },
+                            UsuTipoDoc = new TipoDocumento
+                            {
+                                IdTipoDocumento = dr.GetInt32(6),
+                                Descripcion = dr.GetString(7)
+                            }
+                        };
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar cliente
+                    return usuario!;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar cliente
-                return usuario!;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
         // Nuevo cliente desde la vista de administrador
         public string NuevoClienteDesdeAdmin(Usuario cliente)
         {
-            // Query para insertar cliente
-            string query = @"INSERT INTO Usuario (id_tipo_usuario, nombre, apellido_paterno, apellido_materno, id_tipo_documento, nro_documento, telefono, direccion, correo, contrasenia)
-                            VALUES (1, @nombre, @apellido_paterno, @apellido_materno, @id_tipo_documento, @nro_documento, @telefono, @direccion, @correo, @contrasenia)";
+            string mensaje = string.Empty;
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarCliente",
+                                                        cliente.Nombre,
+                                                        cliente.ApellidoPaterno,
+                                                        cliente.ApellidoMaterno,
+                                                        cliente.IdTipoDocumento,
+                                                        cliente.NroDocumento,
+                                                        cliente.Telefono,
+                                                        cliente.Direccion,
+                                                        cliente.Correo,
+                                                        cliente.NroDocumento);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
-                cmd.Parameters.AddWithValue("@apellido_paterno", cliente.ApellidoPaterno);
-                cmd.Parameters.AddWithValue("@apellido_materno", cliente.ApellidoMaterno);
-                cmd.Parameters.AddWithValue("@id_tipo_documento", cliente.IdTipoDocumento);
-                cmd.Parameters.AddWithValue("@nro_documento", cliente.NroDocumento);
-                cmd.Parameters.AddWithValue("@telefono", cliente.Telefono);
-                cmd.Parameters.AddWithValue("@direccion", cliente.Direccion);
-                cmd.Parameters.AddWithValue("@correo", cliente.Correo);
-                cmd.Parameters.AddWithValue("@contrasenia", cliente.NroDocumento);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar cantidad de filas afectadas
-                return $"El cliente {cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno} fue registrado correctamente.";
+                if (dr.Read())
+                {
+                    mensaje = dr.GetString(0);
+                    return mensaje;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al registrar el cliente.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
         // Nuevo cliente desde la vista de registro
         public string NuevoClienteDesdeRegistrar(Usuario cliente)
         {
-            // Query para registrarse como cliente
-            string query = @"INSERT INTO Usuario (id_tipo_usuario, nombre, apellido_paterno, apellido_materno, id_tipo_documento, nro_documento, telefono, direccion, correo, contrasenia)
-                            VALUES (1, @nombre, @apellido_paterno, @apellido_materno, @id_tipo_documento, @nro_documento, @telefono, @direccion, @correo, @contrasenia)";
+            string mensaje = string.Empty;
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarCliente",
+                                                        cliente.Nombre,
+                                                        cliente.ApellidoPaterno,
+                                                        cliente.ApellidoMaterno,
+                                                        cliente.IdTipoDocumento,
+                                                        cliente.NroDocumento,
+                                                        cliente.Telefono,
+                                                        cliente.Direccion,
+                                                        cliente.Correo,
+                                                        cliente.Contrasenia!);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
-                cmd.Parameters.AddWithValue("@apellido_paterno", cliente.ApellidoPaterno);
-                cmd.Parameters.AddWithValue("@apellido_materno", cliente.ApellidoMaterno);
-                cmd.Parameters.AddWithValue("@id_tipo_documento", cliente.IdTipoDocumento);
-                cmd.Parameters.AddWithValue("@nro_documento", cliente.NroDocumento);
-                cmd.Parameters.AddWithValue("@telefono", cliente.Telefono);
-                cmd.Parameters.AddWithValue("@direccion", cliente.Direccion);
-                cmd.Parameters.AddWithValue("@correo", cliente.Correo);
-                cmd.Parameters.AddWithValue("@contrasenia", cliente.Contrasenia);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar cantidad de filas afectadas
-                return $"¡Felicidades ${cliente.Nombre}! Tu cuenta ha sido creada correctamente.";
+                if (dr.Read())
+                {
+                    mensaje = dr.GetString(0);
+                    return mensaje;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un durante el registro.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -244,34 +249,41 @@ namespace Data
                             correo = @correo
                             WHERE id_usuario = @id_usuario";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
-                cmd.Parameters.AddWithValue("@apellido_paterno", cliente.ApellidoPaterno);
-                cmd.Parameters.AddWithValue("@apellido_materno", cliente.ApellidoMaterno);
-                cmd.Parameters.AddWithValue("@id_tipo_documento", cliente.IdTipoDocumento);
-                cmd.Parameters.AddWithValue("@nro_documento", cliente.NroDocumento);
-                cmd.Parameters.AddWithValue("@telefono", cliente.Telefono);
-                cmd.Parameters.AddWithValue("@direccion", cliente.Direccion);
-                cmd.Parameters.AddWithValue("@correo", cliente.Correo);
-                cmd.Parameters.AddWithValue("@id_usuario", cliente.IdUsuario);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
+                    cmd.Parameters.AddWithValue("@apellido_paterno", cliente.ApellidoPaterno);
+                    cmd.Parameters.AddWithValue("@apellido_materno", cliente.ApellidoMaterno);
+                    cmd.Parameters.AddWithValue("@id_tipo_documento", cliente.IdTipoDocumento);
+                    cmd.Parameters.AddWithValue("@nro_documento", cliente.NroDocumento);
+                    cmd.Parameters.AddWithValue("@telefono", cliente.Telefono);
+                    cmd.Parameters.AddWithValue("@direccion", cliente.Direccion);
+                    cmd.Parameters.AddWithValue("@correo", cliente.Correo);
+                    cmd.Parameters.AddWithValue("@id_usuario", cliente.IdUsuario);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                // Retornar cantidad de filas afectadas
-                return $"El cliente {cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno} fue actualizado correctamente.";
+                    // Retornar cantidad de filas afectadas
+                    return $"El cliente {cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno} fue actualizado correctamente.";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -281,26 +293,33 @@ namespace Data
             // Query para eliminar cliente
             string query = @"UPDATE Usuario SET activo = 'No' WHERE id_usuario = @id_usuario";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                // Retornar cantidad de filas afectadas
-                return $"El cliente con id {id_usuario} fue eliminado correctamente.";
+                    // Retornar cantidad de filas afectadas
+                    return $"El cliente con id {id_usuario} fue eliminado correctamente.";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

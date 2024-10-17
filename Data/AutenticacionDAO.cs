@@ -48,5 +48,32 @@ namespace Data
 
         }
 
+        // Cambiar contraseña
+        public string CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
+        {
+            string mensaje = string.Empty;
+
+            try
+            {
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "CambiarContraseniaNuevoUsuario",
+                                                       request.IdUsuario,
+                                                       request.NuevaContrasenia,
+                                                       request.ConfirmarContrasenia);
+
+                if (dr.Read())
+                {
+                    mensaje = dr.GetString(0);
+                    return mensaje;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al cambiar la contraseña.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

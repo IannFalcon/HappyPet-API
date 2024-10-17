@@ -54,5 +54,47 @@ namespace Business
                 throw new Exception(ex.Message);
             }
         }
+
+        // Método para cambiar contraseña
+        public string CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
+        {
+            try
+            {
+                // Validaciones
+                if (request == null)
+                {
+                    throw new Exception("Error: Por favor ingrese sus credenciales.");
+                }
+
+                if (request.IdUsuario == 0)
+                {
+                    throw new Exception("Error: Por favor ingrese su id de usuario.");
+                }
+
+                if (request.NuevaContrasenia == "" || request.NuevaContrasenia == null)
+                {
+                    throw new Exception("Error: Por favor ingrese su nueva contraseña.");
+                }
+
+                if (request.ConfirmarContrasenia == "" || request.ConfirmarContrasenia == null)
+                {
+                    throw new Exception("Error: Por favor confirme su nueva contraseña.");
+                }
+
+                if (request.NuevaContrasenia != request.ConfirmarContrasenia)
+                {
+                    throw new Exception("Error: Las contraseñas no coinciden.");
+                }
+
+                // Mandar a llamar al método de cambio de contraseña
+                var respuesta = dao.CambiarContraseniaNuevoUsuario(request);
+
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

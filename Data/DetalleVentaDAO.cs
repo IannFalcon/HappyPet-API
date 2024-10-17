@@ -25,40 +25,47 @@ namespace Data
             string query = @"SELECT * FROM DetalleVenta
                             WHERE id_venta = @id_venta";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                cmd.Parameters.AddWithValue("@id_venta", id_venta);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                while (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    DetalleVenta detalleVenta = new DetalleVenta
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    cmd.Parameters.AddWithValue("@id_venta", id_venta);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    while (dr.Read())
                     {
-                        IdDetalleVenta = dr.GetInt32(0),
-                        IdVenta = dr.GetInt32(1),
-                        IdProducto = dr.GetInt32(2),
-                        Cantidad = dr.GetInt32(3),
-                        Total = dr.GetDecimal(4),
-                        ProductoDetalle = dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
-                    };
-                    detallesVenta.Add(detalleVenta);
+                        DetalleVenta detalleVenta = new DetalleVenta
+                        {
+                            IdDetalleVenta = dr.GetInt32(0),
+                            IdVenta = dr.GetInt32(1),
+                            IdProducto = dr.GetInt32(2),
+                            Cantidad = dr.GetInt32(3),
+                            Total = dr.GetDecimal(4),
+                            ProductoDetalle = dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
+                        };
+                        detallesVenta.Add(detalleVenta);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar detalles de venta
+                    return detallesVenta;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar detalles de venta
-                return detallesVenta;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

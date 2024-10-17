@@ -97,6 +97,22 @@ namespace Business
                 }
 
                 var respuesta = dao_cliente.NuevoClienteDesdeAdmin(cliente);
+
+                if (respuesta == "DNI_EXISTE")
+                {
+                    throw new Exception("Error: El número de documento ya existe.");
+                }
+                
+                if (respuesta == "TEL_EXISTE")
+                {
+                    throw new Exception("Error: El numero de teléfono ya existe.");
+                }
+
+                if (respuesta == "CORREO_EXISTE")
+                {
+                    throw new Exception("Error: El correo ya existe.");
+                }
+
                 return respuesta;
             }
             catch (Exception ex)
@@ -112,7 +128,7 @@ namespace Business
             {
                 if (cliente == null)
                 {
-                    throw new Exception("Por favor ingrese sus datos");
+                    throw new Exception("Error: Por favor ingrese sus datos");
                 }
 
                 if (cliente.Nombre == null || cliente.Nombre == "")
@@ -161,6 +177,22 @@ namespace Business
                 }
 
                 var respuesta = dao_cliente.NuevoClienteDesdeRegistrar(cliente);
+
+                if (respuesta == "DNI_EXISTE")
+                {
+                    throw new Exception("Error: El número de documento ya existe.");
+                }
+
+                if (respuesta == "TEL_EXISTE")
+                {
+                    throw new Exception("Error: El numero de teléfono ya existe.");
+                }
+
+                if (respuesta == "CORREO_EXISTE")
+                {
+                    throw new Exception("Error: El correo ya existe.");
+                }
+
                 return respuesta;
             }
             catch (Exception ex)

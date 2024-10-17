@@ -10,7 +10,7 @@ namespace Data
 
         public MarcaDAO(IConfiguration cfg)
         {
-            cnx = cfg.GetConnectionString("conexion_bd");
+            cnx = cfg.GetConnectionString("conexion_bd")!;
         }
 
         // Obtener marcas
@@ -23,39 +23,45 @@ namespace Data
             string query = @"SELECT id_marca, nombre FROM Marca
                             WHERE (@nombre IS NULL OR nombre LIKE '%' + @nombre + '%')";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                while (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    Marca marca = new Marca
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    while (dr.Read())
                     {
-                        IdMarca = dr.GetInt32(0),
-                        Nombre = dr.GetString(1),
-                    };
+                        Marca marca = new Marca
+                        {
+                            IdMarca = dr.GetInt32(0),
+                            Nombre = dr.GetString(1),
+                        };
 
-                    marcas.Add(marca);
+                        marcas.Add(marca);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar lista de marcas
+                    return marcas;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar lista de marcas
-                return marcas;
-
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -67,37 +73,43 @@ namespace Data
             // Query para obtener marca por id
             string query = "SELECT id_marca, nombre FROM Marca WHERE id_marca = @id_marca";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_marca", id_categoria);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    categoria = new Marca
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@id_marca", id_categoria);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    if (dr.Read())
                     {
-                        IdMarca = dr.GetInt32(0),
-                        Nombre = dr.GetString(1),
-                    };
+                        categoria = new Marca
+                        {
+                            IdMarca = dr.GetInt32(0),
+                            Nombre = dr.GetString(1),
+                        };
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar marca
+                    return categoria!;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar marca
-                return categoria!;
-
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -107,26 +119,33 @@ namespace Data
             // Query para insertar marca
             string query = "INSERT INTO Marca (nombre) VALUES (@nombre)";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", marca.Nombre);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nombre", marca.Nombre);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                // Retornar mensaje de éxito
-                return $"La marca {marca.Nombre} fue registrada correctamente";
+                    // Retornar mensaje de éxito
+                    return $"La marca {marca.Nombre} fue registrada correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -136,27 +155,34 @@ namespace Data
             // Query para actualizar marca
             string query = "UPDATE Marca SET nombre = @nombre WHERE id_marca = @id_marca";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", marca.Nombre);
-                cmd.Parameters.AddWithValue("@id_marca", marca.IdMarca);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nombre", marca.Nombre);
+                    cmd.Parameters.AddWithValue("@id_marca", marca.IdMarca);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                // Retornar mensaje de éxito
-                return $"La marca {marca.Nombre} fue actualizada correctamente";
+                    // Retornar mensaje de éxito
+                    return $"La marca {marca.Nombre} fue actualizada correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -166,26 +192,33 @@ namespace Data
             // Query para eliminar marca
             string query = "DELETE FROM Marca WHERE id_marca = @id_marca";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_marca", id_marca);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@id_marca", id_marca);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                // Retornar mensaje de éxito
-                return $"La marca con id {id_marca} fue eliminada correctamente";
+                    // Retornar mensaje de éxito
+                    return $"La marca con id {id_marca} fue eliminada correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

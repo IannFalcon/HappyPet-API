@@ -38,5 +38,20 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
+        // POST api/<AutenticacionController>
+        [HttpPost("cambiar-contrasenia-nuevo-usuario")]
+        public IActionResult CambiarContraseniaNuevoUsuario([FromBody] CambiarContraseniaRequest request)
+        {
+            try
+            {
+                var respuesta = aut_service.CambiarContraseniaNuevoUsuario(request);
+                return Ok(new { mensaje = respuesta });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
     }
 }

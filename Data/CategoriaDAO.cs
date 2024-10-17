@@ -23,40 +23,47 @@ namespace Data
             string query = @"SELECT id_categoria, nombre FROM Categoria
                             WHERE (@nombre IS NULL OR nombre LIKE '%' + @nombre + '%')";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                while (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    Categoria categoria = new Categoria
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    while (dr.Read())
                     {
-                        IdCategoria = dr.GetInt32(0),
-                        Nombre = dr.GetString(1),
-                    };
+                        Categoria categoria = new Categoria
+                        {
+                            IdCategoria = dr.GetInt32(0),
+                            Nombre = dr.GetString(1),
+                        };
 
-                    categorias.Add(categoria);
+                        categorias.Add(categoria);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar lista de categorías
+                    return categorias;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar lista de categorías
-                return categorias;
-
             }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
 
         // Obtener categoria por id
@@ -67,36 +74,43 @@ namespace Data
             // Query para obtener categoría
             string query = "SELECT id_categoria, nombre FROM Categoria WHERE id_categoria = @id_categoria";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    categoria = new Categoria
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    if (dr.Read())
                     {
-                        IdCategoria = dr.GetInt32(0),
-                        Nombre = dr.GetString(1),
-                    };
+                        categoria = new Categoria
+                        {
+                            IdCategoria = dr.GetInt32(0),
+                            Nombre = dr.GetString(1),
+                        };
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar nulo
+                    return categoria!;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar nulo
-                return categoria!;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -106,25 +120,32 @@ namespace Data
             // Query para insertar categoría
             string query = "INSERT INTO Categoria (nombre) VALUES (@nombre)";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                return $"La categoría {categoria.Nombre} fue registrada correctamente";
+                    return $"La categoría {categoria.Nombre} fue registrada correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
         }
@@ -135,26 +156,33 @@ namespace Data
             // Query para actualizar categoría
             string query = "UPDATE Categoria SET nombre = @nombre WHERE id_categoria = @id_categoria";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
-                cmd.Parameters.AddWithValue("@id_categoria", categoria.IdCategoria);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
+                    cmd.Parameters.AddWithValue("@id_categoria", categoria.IdCategoria);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                return $"La categoría {categoria.Nombre} fue actualizada correctamente";
+                    return $"La categoría {categoria.Nombre} fue actualizada correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -164,25 +192,32 @@ namespace Data
             // Query para eliminar categoría
             string query = "DELETE FROM Categoria WHERE id_categoria = @id_categoria";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
+                {
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
 
-                // Agregar parámetros al comando
-                cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
+                    // Agregar parámetros al comando
+                    cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
 
-                // Abrir conexión
-                con.Open();
+                    // Abrir conexión
+                    con.Open();
 
-                // Ejecutar query
-                cmd.ExecuteNonQuery();
+                    // Ejecutar query
+                    cmd.ExecuteNonQuery();
 
-                // Cerrar conexión
-                con.Close();
+                    // Cerrar conexión
+                    con.Close();
 
-                return $"La categoría con id {id_categoria} fue eliminada correctamente";
+                    return $"La categoría con id {id_categoria} fue eliminada correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

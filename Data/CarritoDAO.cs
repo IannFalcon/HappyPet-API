@@ -22,39 +22,46 @@ namespace Data
             // Query para listar los productos del carrito
             string query = "SELECT * FROM Carrito WHERE id_usuario = @idUsuario";
 
-            // Conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear un comando para ejecutar la consulta
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Agregar el parámetro idUsuario
-                cmd.Parameters.AddWithValue("@idUsuario", idUsuario);
-
-                // Abrir la conexión
-                con.Open();
-
-                // Ejecutar la consulta
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                while (dr.Read())
+                // Conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    Carrito carrito = new Carrito
+                    // Crear un comando para ejecutar la consulta
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Agregar el parámetro idUsuario
+                    cmd.Parameters.AddWithValue("@idUsuario", idUsuario);
+
+                    // Abrir la conexión
+                    con.Open();
+
+                    // Ejecutar la consulta
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
                     {
-                        IdCarrito = dr.GetInt32(0),
-                        IdUsuario = dr.GetInt32(1),
-                        IdProducto = dr.GetInt32(2),
-                        Cantidad = dr.GetInt32(3),
-                        ProductosCarrito = dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
-                    };
+                        Carrito carrito = new Carrito
+                        {
+                            IdCarrito = dr.GetInt32(0),
+                            IdUsuario = dr.GetInt32(1),
+                            IdProducto = dr.GetInt32(2),
+                            Cantidad = dr.GetInt32(3),
+                            ProductosCarrito = dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
+                        };
 
-                    listado.Add(carrito);
+                        listado.Add(carrito);
+                    }
+
+                    // Cerrar la conexión
+                    con.Close();
+
+                    return listado;
                 }
-
-                // Cerrar la conexión
-                con.Close();
-
-                return listado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 

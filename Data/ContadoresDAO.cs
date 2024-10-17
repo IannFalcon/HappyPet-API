@@ -22,35 +22,42 @@ namespace Data
                             WHERE MONTH(fec_venta) = MONTH(GETDATE())
                             AND YEAR(fec_venta) = YEAR(GETDATE())";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Si se encontraron resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    ContadorVentasResponse contador = new ContadorVentasResponse
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Si se encontraron resultados
+                    if (dr.Read())
                     {
-                        TotalVentas = dr.GetInt32(0),
-                        TotalImporteVentas = dr.GetDecimal(1)
-                    };
+                        ContadorVentasResponse contador = new ContadorVentasResponse
+                        {
+                            TotalVentas = dr.GetInt32(0),
+                            TotalImporteVentas = dr.GetDecimal(1)
+                        };
 
-                    return contador;
+                        return contador;
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar contador vacío
+                    return new ContadorVentasResponse();
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar contador vacío
-                return new ContadorVentasResponse();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -58,32 +65,39 @@ namespace Data
         {
             int totalProductos = 0;
 
-            // Query para obtener el total de productos
-            string query = @"SELECT COUNT(*) FROM Producto WHERE eliminado = 'No'";
-
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Query para obtener el total de productos
+                string query = @"SELECT COUNT(*) FROM Producto WHERE eliminado = 'No'";
 
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Si se encontraron resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    totalProductos = dr.GetInt32(0);
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Si se encontraron resultados
+                    if (dr.Read())
+                    {
+                        totalProductos = dr.GetInt32(0);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar contador vacío
+                    return totalProductos;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar contador vacío
-                return totalProductos;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -91,32 +105,39 @@ namespace Data
         {
             int totalCategorias = 0;
 
-            // Query para obtener el total de categorías
-            string query = @"SELECT COUNT(*) FROM Categoria";
-
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Query para obtener el total de categorías
+                string query = @"SELECT COUNT(*) FROM Categoria";
 
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Si se encontraron resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    totalCategorias = dr.GetInt32(0);
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Si se encontraron resultados
+                    if (dr.Read())
+                    {
+                        totalCategorias = dr.GetInt32(0);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar contador vacío
+                    return totalCategorias;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar contador vacío
-                return totalCategorias;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -124,32 +145,39 @@ namespace Data
         {
             int totalMarcas = 0;
 
-            // Query para obtener el total de marcas
-            string query = @"SELECT COUNT(*) FROM Marca";
-
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
+                // Query para obtener el total de marcas
+                string query = @"SELECT COUNT(*) FROM Marca";
 
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Si se encontraron resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    totalMarcas = dr.GetInt32(0);
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Si se encontraron resultados
+                    if (dr.Read())
+                    {
+                        totalMarcas = dr.GetInt32(0);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar contador vacío
+                    return totalMarcas;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar contador vacío
-                return totalMarcas;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -160,29 +188,36 @@ namespace Data
             // Query para obtener el total de usuarios
             string query = @"SELECT COUNT(*) FROM Usuario WHERE activo = 'Si'";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Si se encontraron resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    totalUsuarios = dr.GetInt32(0);
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Si se encontraron resultados
+                    if (dr.Read())
+                    {
+                        totalUsuarios = dr.GetInt32(0);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar contador vacío
+                    return totalUsuarios;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar contador vacío
-                return totalUsuarios;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
             }
 
         }
@@ -196,29 +231,36 @@ namespace Data
                             WHERE id_tipo_usuario = 1
                             AND activo = 'Si'";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Si se encontraron resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    totalClientes = dr.GetInt32(0);
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Si se encontraron resultados
+                    if (dr.Read())
+                    {
+                        totalClientes = dr.GetInt32(0);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar contador vacío
+                    return totalClientes;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar contador vacío
-                return totalClientes;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 
@@ -231,29 +273,36 @@ namespace Data
                             WHERE id_tipo_usuario = 2
                             AND activo = 'Si'";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Si se encontraron resultados
-                if (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    totalVendedores = dr.GetInt32(0);
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Si se encontraron resultados
+                    if (dr.Read())
+                    {
+                        totalVendedores = dr.GetInt32(0);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar contador vacío
+                    return totalVendedores;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar contador vacío
-                return totalVendedores;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

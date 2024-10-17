@@ -97,6 +97,22 @@ namespace Business
                 }
 
                 var resultado = dao_ven.NuevoVendedor(vendedor);
+
+                if (resultado == "DNI_EXISTE")
+                {
+                    throw new Exception("Error: El número de documento ya existe.");
+                }
+
+                if (resultado == "TEL_EXISTE")
+                {
+                    throw new Exception("Error: El numero de teléfono ya existe.");
+                }
+
+                if (resultado == "CORREO_EXISTE")
+                {
+                    throw new Exception("Error: El correo ya existe.");
+                }
+
                 return resultado;
             }
             catch (Exception ex)

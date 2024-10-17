@@ -24,41 +24,47 @@ namespace Data
             // Query para obtener ventas
             string query = @"SELECT * FROM Venta";
 
-            // Crear conexión a la base de datos
-            using (SqlConnection con = new SqlConnection(cnx))
+            try
             {
-                // Crear comando para ejecutar query
-                SqlCommand cmd = new SqlCommand(query, con);
-
-                // Abrir conexión
-                con.Open();
-
-                // Ejecutar query
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                // Leer resultados
-                while (dr.Read())
+                // Crear conexión a la base de datos
+                using (SqlConnection con = new SqlConnection(cnx))
                 {
-                    Venta venta = new Venta
+                    // Crear comando para ejecutar query
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    // Abrir conexión
+                    con.Open();
+
+                    // Ejecutar query
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    // Leer resultados
+                    while (dr.Read())
                     {
-                        IdVenta = dr.GetInt32(0),
-                        IdUsuario = dr.GetInt32(1),
-                        TotalProductos = dr.GetInt32(2),
-                        MontoTotal = dr.GetDecimal(3),
-                        IdTransaccion = dr.GetString(4),
-                        FecVenta = dr.GetDateTime(5),
-                        UsuarioVenta = dao_cli.ObtenerClienteId(dr.GetInt32(1))
-                    };
+                        Venta venta = new Venta
+                        {
+                            IdVenta = dr.GetInt32(0),
+                            IdUsuario = dr.GetInt32(1),
+                            TotalProductos = dr.GetInt32(2),
+                            MontoTotal = dr.GetDecimal(3),
+                            IdTransaccion = dr.GetString(4),
+                            FecVenta = dr.GetDateTime(5),
+                            UsuarioVenta = dao_cli.ObtenerClienteId(dr.GetInt32(1))
+                        };
 
-                    ventas.Add(venta);
+                        ventas.Add(venta);
+                    }
+
+                    // Cerrar conexión
+                    con.Close();
+
+                    // Retornar lista de ventas
+                    return ventas;
                 }
-
-                // Cerrar conexión
-                con.Close();
-
-                // Retornar lista de ventas
-                return ventas;
-
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
 
         }
