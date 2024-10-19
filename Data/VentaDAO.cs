@@ -16,7 +16,7 @@ namespace Data
         }
 
         // Obtener ventas
-        public List<Venta> ObtenerVentas()
+        public async Task<List<Venta>> ObtenerVentas()
         {
             // Crear lista de ventas
             List<Venta> ventas = new List<Venta>();
@@ -39,7 +39,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         Venta venta = new Venta
                         {
@@ -49,7 +49,7 @@ namespace Data
                             MontoTotal = dr.GetDecimal(3),
                             IdTransaccion = dr.GetString(4),
                             FecVenta = dr.GetDateTime(5),
-                            UsuarioVenta = dao_cli.ObtenerClienteId(dr.GetInt32(1))
+                            UsuarioVenta = await dao_cli.ObtenerClienteId(dr.GetInt32(1))
                         };
 
                         ventas.Add(venta);
@@ -70,7 +70,7 @@ namespace Data
         }
 
         // Realizar nueva venta
-        public string RealizarVenta(int idUsuario, string idTransaccion)
+        public async Task<string> RealizarVenta(int idUsuario, string idTransaccion)
         {
             string mensaje = string.Empty;
 
@@ -79,7 +79,7 @@ namespace Data
                 SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarVenta", 
                                                             idUsuario, idTransaccion);
 
-                if (dr.Read())
+                if (await dr.ReadAsync())
                 {
                     mensaje = dr.GetString(0);        
                 }

@@ -13,12 +13,12 @@ namespace Business
         }
 
         // Método para listar marcas
-        public List<Marca> ListarMarcas(string nombre)
+        public async Task<List<Marca>> ListarMarcas(string nombre)
         {
             try
             {
                 // Mandar a llamar al método de obtener marcas
-                var marcas = dao.ObtenerMarcas(nombre);
+                var marcas = await dao.ObtenerMarcas(nombre);
                 return marcas;
             }
             catch (Exception ex)
@@ -29,7 +29,7 @@ namespace Business
         }
 
         // Método para registrar marcas
-        public string RegistrarMarcas(Marca marca)
+        public async Task<string> RegistrarMarcas(Marca marca)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el nombre de la marca");
                 }
 
-                var resultado = dao.NuevaMarca(marca);
+                var resultado = await dao.NuevaMarca(marca);
                 return resultado;
             }
             catch (Exception ex)
@@ -53,7 +53,7 @@ namespace Business
         }
 
         // Método para actualizar marcas
-        public string ActualizarMarca(Marca marca)
+        public async Task<string> ActualizarMarca(Marca marca)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el nombre de la marca");
                 }
 
-                var resultado = dao.ActualizarMarca(marca);
+                var resultado = await dao.ActualizarMarca(marca);
                 return resultado;
             }
             catch (Exception ex)
@@ -80,7 +80,7 @@ namespace Business
         }
 
         // Método para eliminar marcas
-        public string EliminarMarca(int idMarca)
+        public async Task<string> EliminarMarca(int idMarca)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el id de la marca");
                 }
 
-                var resultado = dao.EliminarMarca(idMarca);
+                var resultado = await dao.EliminarMarca(idMarca);
                 return resultado;
             }
             catch (Exception ex)

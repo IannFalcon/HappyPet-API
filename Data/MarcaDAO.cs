@@ -14,7 +14,7 @@ namespace Data
         }
 
         // Obtener marcas
-        public List<Marca> ObtenerMarcas(string? nombre)
+        public async Task<List<Marca>> ObtenerMarcas(string? nombre)
         {
             // Crear lista de marcas
             List<Marca> marcas = new List<Marca>();
@@ -41,7 +41,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         Marca marca = new Marca
                         {
@@ -66,7 +66,7 @@ namespace Data
         }
 
         // Obtener marca por id
-        public Marca ObtenerMarcaPorId(int id_categoria)
+        public async Task<Marca> ObtenerMarcaPorId(int id_categoria)
         {
             Marca? categoria = null;
 
@@ -91,7 +91,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         categoria = new Marca
                         {
@@ -114,7 +114,7 @@ namespace Data
         }
 
         // Nueva marca
-        public string NuevaMarca(Marca marca)
+        public async Task<string> NuevaMarca(Marca marca)
         {
             // Query para insertar marca
             string query = "INSERT INTO Marca (nombre) VALUES (@nombre)";
@@ -131,10 +131,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@nombre", marca.Nombre);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -150,7 +150,7 @@ namespace Data
         }
 
         // Actualizar marca
-        public string ActualizarMarca(Marca marca)
+        public async Task<string> ActualizarMarca(Marca marca)
         {
             // Query para actualizar marca
             string query = "UPDATE Marca SET nombre = @nombre WHERE id_marca = @id_marca";
@@ -168,10 +168,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_marca", marca.IdMarca);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -187,7 +187,7 @@ namespace Data
         }
 
         // Eliminar marca
-        public string EliminarMarca(int id_marca)
+        public async Task<string> EliminarMarca(int id_marca)
         {
             // Query para eliminar marca
             string query = "DELETE FROM Marca WHERE id_marca = @id_marca";
@@ -204,10 +204,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_marca", id_marca);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();

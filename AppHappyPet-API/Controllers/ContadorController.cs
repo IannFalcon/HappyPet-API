@@ -18,51 +18,51 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<ContadorController>
         [HttpGet("Ventas")]
-        public IActionResult ObtenerTotalVentas()
+        public async Task<IActionResult> ObtenerTotalVentas()
         {
-            var resultado = cont_service.ObtenerTotalVentas();
+            var resultado = await cont_service.ObtenerTotalVentas();
             return Ok(new { data = resultado });
         }
 
         [HttpGet("Productos")]
-        public IActionResult ObtenerTotalProductos()
+        public async Task<IActionResult> ObtenerTotalProductos()
         {
-            var resultado = cont_service.ObtenerTotalProductos();
+            var resultado = await cont_service.ObtenerTotalProductos();
             return Ok(new { data = resultado });
         }
 
         [HttpGet("Categorias")]
-        public IActionResult ObtenerTotalCategorias()
+        public async Task<IActionResult> ObtenerTotalCategorias()
         {
-            var resultado = cont_service.ObtenerTotalCategorias();
+            var resultado = await cont_service.ObtenerTotalCategorias();
             return Ok(new { data = resultado });
         }
 
         [HttpGet("Marcas")]
-        public IActionResult ObtenerTotalMarcas()
+        public async Task<IActionResult> ObtenerTotalMarcas()
         {
-            var resultado = cont_service.ObtenerTotalMarcas();
+            var resultado = await cont_service.ObtenerTotalMarcas();
             return Ok(new { data = resultado });
         }
 
         [HttpGet("Usuarios")]
-        public IActionResult ObtenerTotalUsuarios()
+        public async Task<IActionResult> ObtenerTotalUsuarios()
         {
-            var resultado = cont_service.ObtenerTotalUsuarios();
+            var resultado = await cont_service.ObtenerTotalUsuarios();
             return Ok(new { data = resultado });
         }
 
         [HttpGet("Clientes")]
-        public IActionResult ObtenerTotalClientes()
+        public async Task<IActionResult> ObtenerTotalClientes()
         {
-            var resultado = cont_service.ObtenerTotalClientes();
+            var resultado = await cont_service.ObtenerTotalClientes();
             return Ok(new { data = resultado });
         }
 
         [HttpGet("Vendedores")]
-        public IActionResult ObtenerTotalVendedores()
+        public async Task<IActionResult> ObtenerTotalVendedores()
         {
-            var resultado = cont_service.ObtenerTotalVendedores();
+            var resultado = await cont_service.ObtenerTotalVendedores();
             return Ok(new { data = resultado });
         }
 

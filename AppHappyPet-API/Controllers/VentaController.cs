@@ -22,11 +22,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<VentaController>
         [HttpGet]
-        public IActionResult ListarVentas()
+        public async Task<IActionResult> ListarVentas()
         {
             try
             {
-                var ventas = venta_service.ListarVentas();
+                var ventas = await venta_service.ListarVentas();
                 return Ok(new { mensaje = "Ventas encontradas", data = ventas });
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<VentaController>
         [HttpPost("{idUsuario}/{totalPago}")]
-        public IActionResult RealizarVenta(int idUsuario, decimal totalPago)
+        public async Task<IActionResult> RealizarVenta(int idUsuario, decimal totalPago)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace AppHappyPet_API.Controllers
                 };
 
                 // Crear el pago
-                var createdPayment = payment.Create(apiContext); 
+                var createdPayment = await Task.Run(() => payment.Create(apiContext)); 
 
                 // Obtener la URL de aprobación
                 var approvalUrl = createdPayment.links.FirstOrDefault(link => link.rel == "approval_url")?.href;
@@ -100,7 +100,7 @@ namespace AppHappyPet_API.Controllers
         }
 
         [HttpGet("ConfirmarVenta")]
-        public IActionResult ConfirmarVenta(string paymentId, string token, string PayerID, int idUsuario)
+        public async Task<IActionResult> ConfirmarVenta(string paymentId, string token, string PayerID, int idUsuario)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace AppHappyPet_API.Controllers
                 var idTransaccion = executedPayment.id;
 
                 // Realizar la venta
-                var respuesta = venta_service.RealizarVenta(idUsuario, idTransaccion);
+                var respuesta = await venta_service.RealizarVenta(idUsuario, idTransaccion);
 
                 // Validar si la venta fue realizada con éxito
                 if (respuesta != "EXITO")

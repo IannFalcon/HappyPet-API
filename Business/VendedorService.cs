@@ -13,11 +13,11 @@ namespace Business
         }
 
         // Método para listar vendedores
-        public List<Usuario> ListarVendedores(string? nro_documento, string? nombre)
+        public async Task<List<Usuario>> ListarVendedores(string? nro_documento, string? nombre)
         {
             try
             {
-                var listado = dao_ven.ObtenerVendedores(nro_documento, nombre);
+                var listado = await dao_ven.ObtenerVendedores(nro_documento, nombre);
                 return listado;
             }
             catch (Exception ex)
@@ -27,11 +27,11 @@ namespace Business
         }
 
         // Método para obtener un vendedor por ID
-        public Usuario ObtenerVendedorId(int idUsuario)
+        public async Task<Usuario> ObtenerVendedorId(int idUsuario)
         {
             try
             {
-                var vendedor = dao_ven.ObtenerVendedorId(idUsuario);
+                var vendedor = await dao_ven.ObtenerVendedorId(idUsuario);
 
                 if (vendedor == null)
                 {
@@ -47,7 +47,7 @@ namespace Business
         }
 
         // Método para registrar un vendedor
-        public string RegistrarVendedor(Usuario vendedor)
+        public async Task<string> RegistrarVendedor(Usuario vendedor)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace Business
                     throw new Exception("Error: El correo del vendedor es requerido");
                 }
 
-                var resultado = dao_ven.NuevoVendedor(vendedor);
+                var resultado = await dao_ven.NuevoVendedor(vendedor);
 
                 if (resultado == "DNI_EXISTE")
                 {
@@ -122,7 +122,7 @@ namespace Business
         }
 
         // Método para actualizar un vendedor
-        public string ActualizarVendedor(Usuario vendedor)
+        public async Task<string> ActualizarVendedor(Usuario vendedor)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace Business
                     throw new Exception("Error: El correo del vendedor es requerido");
                 }
 
-                var resultado = dao_ven.ActualizarVendedor(vendedor);
+                var resultado = await dao_ven.ActualizarVendedor(vendedor);
                 return resultado;
             }
             catch (Exception ex)
@@ -186,7 +186,7 @@ namespace Business
         }
 
         // Método para eliminar un vendedor
-        public string EliminarVendedor(int idUsuario)
+        public async Task<string> EliminarVendedor(int idUsuario)
         {
             try
             {
@@ -195,7 +195,7 @@ namespace Business
                     throw new Exception("Error: El id del vendedor es requerido");
                 }
 
-                var respuesta = dao_ven.EliminarVendedor(idUsuario);
+                var respuesta = await dao_ven.EliminarVendedor(idUsuario);
                 return respuesta;
             }
             catch (Exception ex)

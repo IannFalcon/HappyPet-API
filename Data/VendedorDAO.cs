@@ -14,7 +14,7 @@ namespace Data
         }
 
         // Obtener vendedores
-        public List<Usuario> ObtenerVendedores(string? nro_documento, string? nombre)
+        public async Task<List<Usuario>> ObtenerVendedores(string? nro_documento, string? nombre)
         {
             // Crear lista de vendedores
             List<Usuario> vendedores = new List<Usuario>();
@@ -49,7 +49,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         Usuario vendedor = new Usuario
                         {
@@ -93,7 +93,7 @@ namespace Data
         }
 
         // Obtener vendedor por id
-        public Usuario ObtenerVendedorId(int id_usuario)
+        public async Task<Usuario> ObtenerVendedorId(int id_usuario)
         {
             Usuario? usuario = null;
 
@@ -124,7 +124,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         usuario = new Usuario
                         {
@@ -166,7 +166,7 @@ namespace Data
         }
 
         // Nuevo vendedor
-        public string NuevoVendedor(Usuario vendedor)
+        public async Task<string> NuevoVendedor(Usuario vendedor)
         {
             string mensaje = string.Empty;
 
@@ -183,7 +183,7 @@ namespace Data
                                                         vendedor.Correo,
                                                         vendedor.NroDocumento);
 
-                if (dr.Read())
+                if (await dr.ReadAsync())
                 {
                     mensaje = dr.GetString(0);
                     return mensaje;
@@ -200,7 +200,7 @@ namespace Data
         }
 
         // Actualizar vendedor
-        public string ActualizarVendedor(Usuario vendedor)
+        public async Task<string> ActualizarVendedor(Usuario vendedor)
         {
             // Query para actualizar vendedor
             string query = @"UPDATE Usuario SET 
@@ -234,10 +234,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_usuario", vendedor.IdUsuario);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -253,7 +253,7 @@ namespace Data
         }
 
         // Eliminar vendedor
-        public string EliminarVendedor(int id_usuario)
+        public async Task<string> EliminarVendedor(int id_usuario)
         {
             // Query para eliminar vendedor
             string query = @"UPDATE Usuario SET activo = 'No' WHERE id_usuario = @id_usuario";
@@ -270,10 +270,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();

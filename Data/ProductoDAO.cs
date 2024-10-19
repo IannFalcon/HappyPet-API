@@ -18,7 +18,7 @@ namespace Data
         }
 
         // Obtener productos
-        public List<Producto> ObtenerProductos(int? id_categoria, int? id_marca, string? nombre)
+        public async Task<List<Producto>> ObtenerProductos(int? id_categoria, int? id_marca, string? nombre)
         {
             // Crear lista de productos
             List<Producto> productos = new List<Producto>();
@@ -52,7 +52,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         Producto producto = new Producto
                         {
@@ -68,8 +68,8 @@ namespace Data
                             Eliminado = dr.GetString(9),
                             FecVencimiento = dr.IsDBNull(10) ? null : dr.GetDateTime(10),
                             FecRegistro = dr.GetDateTime(11),
-                            ProductoCategoria = dao_cate.ObtenerCategoriaPorId(dr.GetInt32(2)),
-                            ProductoMarca = dao_marca.ObtenerMarcaPorId(dr.GetInt32(3))
+                            ProductoCategoria = await dao_cate.ObtenerCategoriaPorId(dr.GetInt32(2)),
+                            ProductoMarca = await dao_marca.ObtenerMarcaPorId(dr.GetInt32(3))
                         };
                         productos.Add(producto);
                     }
@@ -89,7 +89,7 @@ namespace Data
         }
 
         // Obtener producto por id
-        public Producto ObtenerProductoPorId(int id_producto)
+        public async Task<Producto> ObtenerProductoPorId(int id_producto)
         {
             // Crear objeto de producto
             Producto? producto = null;
@@ -115,7 +115,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Validar si se encontró un producto
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         producto = new Producto
                         {
@@ -131,8 +131,8 @@ namespace Data
                             Eliminado = dr.GetString(9),
                             FecVencimiento = dr.IsDBNull(10) ? null : dr.GetDateTime(10),
                             FecRegistro = dr.GetDateTime(11),
-                            ProductoCategoria = dao_cate.ObtenerCategoriaPorId(dr.GetInt32(2)),
-                            ProductoMarca = dao_marca.ObtenerMarcaPorId(dr.GetInt32(3))
+                            ProductoCategoria = await dao_cate.ObtenerCategoriaPorId(dr.GetInt32(2)),
+                            ProductoMarca = await dao_marca.ObtenerMarcaPorId(dr.GetInt32(3))
                         };
                     }
 
@@ -150,7 +150,7 @@ namespace Data
         }
 
         // Nuevo producto
-        public string NuevoProducto(Producto producto)
+        public async Task<string> NuevoProducto(Producto producto)
         {
             // Query para insertar producto
             string query = @"INSERT INTO Producto (nombre, id_categoria, id_marca, descripcion, precio_unitario, 
@@ -178,10 +178,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@fec_vencimiento", producto.FecVencimiento ?? (object)DBNull.Value);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -197,7 +197,7 @@ namespace Data
         }
 
         // Actualizar producto
-        public string ActualizarProducto(Producto producto)
+        public async Task<string> ActualizarProducto(Producto producto)
         {
             // Query para actualizar producto
             string query = @"UPDATE Producto SET 
@@ -232,10 +232,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_producto", producto.IdProducto);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -251,7 +251,7 @@ namespace Data
         }
 
         // Eliminar producto
-        public string EliminarProducto(int id_producto)
+        public async Task<string> EliminarProducto(int id_producto)
         {
             // Query para eliminar producto
             string query = "UPDATE Producto SET eliminado = 'Si' WHERE id_producto = @id_producto";
@@ -268,10 +268,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_producto", id_producto);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();

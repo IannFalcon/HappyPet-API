@@ -13,7 +13,7 @@ namespace Data
             cnx = cfg.GetConnectionString("conexion_bd")!;
         }
 
-        public ContadorVentasResponse ObtenerTotalVentas()
+        public async Task<ContadorVentasResponse> ObtenerTotalVentas()
         {
 
             // Query para obtener el total de ventas del mes actual
@@ -37,12 +37,12 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Si se encontraron resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         ContadorVentasResponse contador = new ContadorVentasResponse
                         {
                             TotalVentas = dr.GetInt32(0),
-                            TotalImporteVentas = dr.GetDecimal(1)
+                            TotalImporteVentas = dr.IsDBNull(1) ? 0 : dr.GetDecimal(1)
                         };
 
                         return contador;
@@ -61,7 +61,7 @@ namespace Data
             }
         }
 
-        public int ObtenerTotalProductos()
+        public async Task<int> ObtenerTotalProductos()
         {
             int totalProductos = 0;
 
@@ -83,7 +83,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Si se encontraron resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         totalProductos = dr.GetInt32(0);
                     }
@@ -101,7 +101,7 @@ namespace Data
             }
         }
 
-        public int ObtenerTotalCategorias()
+        public async Task<int> ObtenerTotalCategorias()
         {
             int totalCategorias = 0;
 
@@ -123,7 +123,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Si se encontraron resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         totalCategorias = dr.GetInt32(0);
                     }
@@ -141,7 +141,7 @@ namespace Data
             }
         }
 
-        public int ObtenerTotalMarcas()
+        public async Task<int> ObtenerTotalMarcas()
         {
             int totalMarcas = 0;
 
@@ -163,7 +163,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Si se encontraron resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         totalMarcas = dr.GetInt32(0);
                     }
@@ -181,7 +181,7 @@ namespace Data
             }
         }
 
-        public int ObtenerTotalUsuarios()
+        public async Task<int> ObtenerTotalUsuarios()
         {
             int totalUsuarios = 0;
 
@@ -203,7 +203,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Si se encontraron resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         totalUsuarios = dr.GetInt32(0);
                     }
@@ -222,7 +222,7 @@ namespace Data
 
         }
 
-        public int ObtenerTotalClientes()
+        public async Task<int> ObtenerTotalClientes()
         {
             int totalClientes = 0;
 
@@ -246,7 +246,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Si se encontraron resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         totalClientes = dr.GetInt32(0);
                     }
@@ -264,7 +264,7 @@ namespace Data
             }
         }
 
-        public int ObtenerTotalVendedores()
+        public async Task<int> ObtenerTotalVendedores()
         {
             int totalVendedores = 0;
 
@@ -288,7 +288,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Si se encontraron resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         totalVendedores = dr.GetInt32(0);
                     }

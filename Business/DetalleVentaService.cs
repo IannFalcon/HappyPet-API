@@ -13,7 +13,7 @@ namespace Business
         }
 
         // Método para listar detalles de venta por ID de venta
-        public List<DetalleVenta> ListarDetalleVenta(int id_venta)
+        public async Task<List<DetalleVenta>> ListarDetalleVenta(int id_venta)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace Business
                     throw new Exception("Error: El ID de la venta no es valido.");
                 }
 
-                var listado = dao_dv.ObtenerDetallesVenta(id_venta);
+                var listado = await dao_dv.ObtenerDetallesVenta(id_venta);
 
                 if (listado == null || listado.Count == 0)
                 {

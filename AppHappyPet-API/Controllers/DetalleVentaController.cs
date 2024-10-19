@@ -18,11 +18,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<DetalleVentaController>
         [HttpGet("{id_venta}")]
-        public IActionResult ListarDetalleVenta(int id_venta)
+        public async Task<IActionResult> ListarDetalleVenta(int id_venta)
         {
             try
             {
-                var detalles_venta = dv_service.ListarDetalleVenta(id_venta);
+                var detalles_venta = await dv_service.ListarDetalleVenta(id_venta);
                 return Ok(new { mensaje = "Detalles de venta encontrados", data = detalles_venta });
             }
             catch (Exception ex)

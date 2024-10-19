@@ -18,7 +18,7 @@ namespace Business
         }
 
         // Método para listar los productos del carrito
-        public List<Carrito> ListarProductosCarrito(int idUsuario)
+        public async Task<List<Carrito>> ListarProductosCarrito(int idUsuario)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese un idUsuario.");
                 }
 
-                var listado = dao_carrito.ListarProductosCarrito(idUsuario);
+                var listado = await dao_carrito.ListarProductosCarrito(idUsuario);
                 return listado;
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace Business
         }
 
         // Metodo para agregar o quitar productos del carrito
-        public string AgregarQuitarProductoCarrito(int idUsuario, int idProducto, bool accion)
+        public async Task<string> AgregarQuitarProductoCarrito(int idUsuario, int idProducto, bool accion)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Business
                     throw new Exception("Error: Por favor seleccione un producto.");
                 }
 
-                var resultado = dao_carrito.AccionesCarrito(idUsuario, idProducto, accion);
+                var resultado = await dao_carrito.AccionesCarrito(idUsuario, idProducto, accion);
                 return resultado;
             }
             catch (Exception ex)

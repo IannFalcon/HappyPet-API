@@ -13,11 +13,11 @@ namespace Business
         }
 
         // Método para listar productos
-        public List<Producto> ListarProductos(int? id_categoria, int? id_marca, string nombre)
+        public async Task<List<Producto>> ListarProductos(int? id_categoria, int? id_marca, string nombre)
         {
             try
             {
-                var listado = dao.ObtenerProductos(id_categoria, id_marca, nombre);
+                var listado = await dao.ObtenerProductos(id_categoria, id_marca, nombre);
                 return listado;
             }
             catch (Exception ex)
@@ -27,7 +27,7 @@ namespace Business
         }
 
         // Método para obtener un producto por ID
-        public Producto ObtenerProductoPorId(int id_producto)
+        public async Task<Producto> ObtenerProductoPorId(int id_producto)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Business
                     throw new Exception("El ID del producto no es válido.");
                 }
 
-                var producto = dao.ObtenerProductoPorId(id_producto);
+                var producto = await dao.ObtenerProductoPorId(id_producto);
 
                 if (producto == null)
                 {
@@ -52,7 +52,7 @@ namespace Business
         }
 
         // Método para agregar un producto
-        public string RegistrarProducto(Producto producto)
+        public async Task<string> RegistrarProducto(Producto producto)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace Business
                     throw new Exception("El stock del producto es requerido.");
                 }
 
-                var resultado = dao.NuevoProducto(producto);
+                var resultado = await dao.NuevoProducto(producto);
                 return resultado;
             }
             catch (Exception ex)
@@ -96,7 +96,7 @@ namespace Business
         }
 
         // Método para actualizar un producto
-        public string ActualizarProducto(Producto producto)
+        public async Task<string> ActualizarProducto(Producto producto)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace Business
                     throw new Exception("El stock del producto es requerido.");
                 }
 
-                var resultado = dao.ActualizarProducto(producto);
+                var resultado = await dao.ActualizarProducto(producto);
                 return resultado;
             }
             catch (Exception ex)
@@ -145,7 +145,7 @@ namespace Business
         }
 
         // Método para eliminar un producto
-        public string EliminarProducto(int id_producto)
+        public async Task<string> EliminarProducto(int id_producto)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace Business
                     throw new Exception("El ID del producto es requerido.");
                 }
 
-                var resultado = dao.EliminarProducto(id_producto);
+                var resultado = await dao.EliminarProducto(id_producto);
                 return resultado;
             }
             catch (Exception ex)

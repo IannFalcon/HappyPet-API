@@ -14,7 +14,7 @@ namespace Data
         }
 
         // Obtener categorías
-        public List<Categoria> ObtenerCategorias(string? nombre)
+        public async Task<List<Categoria>> ObtenerCategorias(string? nombre)
         {
             // Crear lista de categorías
             List<Categoria> categorias = new List<Categoria>();
@@ -41,7 +41,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         Categoria categoria = new Categoria
                         {
@@ -67,7 +67,7 @@ namespace Data
         }
 
         // Obtener categoria por id
-        public Categoria ObtenerCategoriaPorId(int id_categoria)
+        public async Task<Categoria> ObtenerCategoriaPorId(int id_categoria)
         {
             Categoria? categoria = null;
 
@@ -92,7 +92,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         categoria = new Categoria
                         {
@@ -115,7 +115,7 @@ namespace Data
         }
 
         // Nueva categoría
-        public string NuevaCategoria(Categoria categoria)
+        public async Task<string> NuevaCategoria(Categoria categoria)
         {
             // Query para insertar categoría
             string query = "INSERT INTO Categoria (nombre) VALUES (@nombre)";
@@ -132,10 +132,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -151,7 +151,7 @@ namespace Data
         }
 
         // Actualizar categoría
-        public string ActualizarCatergoria(Categoria categoria)
+        public async Task<string> ActualizarCatergoria(Categoria categoria)
         {
             // Query para actualizar categoría
             string query = "UPDATE Categoria SET nombre = @nombre WHERE id_categoria = @id_categoria";
@@ -169,10 +169,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_categoria", categoria.IdCategoria);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -187,7 +187,7 @@ namespace Data
         }
 
         // Eliminar categoría
-        public string EliminarCategoria(int id_categoria)
+        public async Task<string> EliminarCategoria(int id_categoria)
         {
             // Query para eliminar categoría
             string query = "DELETE FROM Categoria WHERE id_categoria = @id_categoria";
@@ -204,10 +204,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();

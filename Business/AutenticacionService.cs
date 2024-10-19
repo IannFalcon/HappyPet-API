@@ -15,7 +15,7 @@ namespace Business
         }
 
         // Método para iniciar sesión
-        public AutenticacionResponse IniciarSesion(LoginRequest request)
+        public async Task<AutenticacionResponse> IniciarSesion(LoginRequest request)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace Business
                 }
 
                 // Mandar a llamar al método de autenticación
-                var respuesta = dao.IniciarSesion(request);
+                var respuesta = await dao.IniciarSesion(request);
 
                 if (respuesta.Estado == "NO_EXISTE" && respuesta.IdUsuario == 0)
                 {
@@ -57,7 +57,7 @@ namespace Business
         }
 
         // Método para cambiar contraseña
-        public string CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
+        public async Task<string> CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace Business
                 }
 
                 // Mandar a llamar al método de cambio de contraseña
-                var respuesta = dao.CambiarContraseniaNuevoUsuario(request);
+                var respuesta = await dao.CambiarContraseniaNuevoUsuario(request);
 
                 if (respuesta == "NO_COINCIDE")
                 {
@@ -109,7 +109,7 @@ namespace Business
         }
 
         // Método para crear una cuenta
-        public string CrearCuenta(Usuario cliente)
+        public async Task<string> CrearCuenta(Usuario cliente)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace Business
                     throw new Exception("Error: La contraseña es requerida");
                 }
 
-                var respuesta = dao.CrearCuenta(cliente);
+                var respuesta = await dao.CrearCuenta(cliente);
 
                 if (respuesta == "DNI_EXISTE")
                 {

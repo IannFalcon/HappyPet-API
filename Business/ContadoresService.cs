@@ -12,39 +12,39 @@ namespace Business
             this.dao_contador = dao_contador;
         }
 
-        public ContadorVentasResponse ObtenerTotalVentas()
+        public async Task<ContadorVentasResponse> ObtenerTotalVentas()
         {
-            return dao_contador.ObtenerTotalVentas();
+            return await dao_contador.ObtenerTotalVentas();
         }
 
-        public int ObtenerTotalProductos()
+        public async Task<int> ObtenerTotalProductos()
         {
-            return dao_contador.ObtenerTotalProductos();
+            return await dao_contador.ObtenerTotalProductos();
         }
 
-        public int ObtenerTotalCategorias()
+        public async Task<int> ObtenerTotalCategorias()
         {
-            return dao_contador.ObtenerTotalCategorias();
+            return await dao_contador.ObtenerTotalCategorias();
         }
 
-        public int ObtenerTotalMarcas()
+        public async Task<int> ObtenerTotalMarcas()
         {
-            return dao_contador.ObtenerTotalMarcas();
+            return await dao_contador.ObtenerTotalMarcas();
         }
 
-        public int ObtenerTotalUsuarios()
+        public async Task<int> ObtenerTotalUsuarios()
         {
-            return dao_contador.ObtenerTotalUsuarios();
+            return await dao_contador.ObtenerTotalUsuarios();
         }
 
-        public int ObtenerTotalClientes()
+        public async Task<int> ObtenerTotalClientes()
         {
-            return dao_contador.ObtenerTotalClientes();
+            return await dao_contador.ObtenerTotalClientes();
         }
 
-        public int ObtenerTotalVendedores()
+        public async Task<int> ObtenerTotalVendedores()
         {
-            return dao_contador.ObtenerTotalVendedores();
+            return await dao_contador.ObtenerTotalVendedores();
         }
     }
 }

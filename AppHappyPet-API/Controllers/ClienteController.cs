@@ -19,11 +19,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<UsuarioController>
         [HttpGet]
-        public IActionResult ListarClientes([FromQuery] string? nro_documento, [FromQuery] string? nombre)
+        public async Task<IActionResult> ListarClientes([FromQuery] string? nro_documento, [FromQuery] string? nombre)
         {
             try
             {
-                var clientes = cli_service.ListarClientes(nro_documento!, nombre!);
+                var clientes = await cli_service.ListarClientes(nro_documento!, nombre!);
                 return Ok(new { mensaje = "Clientes encontrados", data = clientes });
             }
             catch (Exception ex)
@@ -34,11 +34,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET api/<UsuarioController>/5
         [HttpGet("{idUsuario}")]
-        public IActionResult ObtenerClienteId(int idUsuario)
+        public async Task<IActionResult> ObtenerClienteId(int idUsuario)
         {
             try
             {
-                var cliente = cli_service.ObtenerClienteId(idUsuario);
+                var cliente = await cli_service.ObtenerClienteId(idUsuario);
                 return Ok(new { mensaje = "Cliente encontrado", data = cliente });
             }
             catch (Exception ex)
@@ -49,13 +49,13 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<UsuarioController>
         [HttpPost]
-        public IActionResult RegistrarCliente([FromBody] Usuario usuario)
+        public async Task<IActionResult> RegistrarCliente([FromBody] Usuario usuario)
         {
             string _mensaje = string.Empty;
 
             try
             {
-                var respuesta = cli_service.RegistrarCliente(usuario);
+                var respuesta = await cli_service.RegistrarCliente(usuario);
 
                 if (respuesta == "EXITO")
                 {
@@ -72,11 +72,11 @@ namespace AppHappyPet_API.Controllers
 
         // PUT api/<UsuarioController>/5
         [HttpPut]
-        public IActionResult ActualizarCliente([FromBody] Usuario usuario)
+        public async Task<IActionResult> ActualizarCliente([FromBody] Usuario usuario)
         {
             try
             {
-                var respuesta = cli_service.ActualizarCliente(usuario);
+                var respuesta = await cli_service.ActualizarCliente(usuario);
                 return Ok(new { mensaje = respuesta });
             }
             catch (Exception ex)
@@ -87,11 +87,11 @@ namespace AppHappyPet_API.Controllers
 
         // DELETE api/<UsuarioController>/5
         [HttpDelete("{idUsuario}")]
-        public IActionResult EliminarCliente(int idUsuario)
+        public async Task<IActionResult> EliminarCliente(int idUsuario)
         {
             try
             {
-                var respuesta = cli_service.EliminarCliente(idUsuario);
+                var respuesta = await cli_service.EliminarCliente(idUsuario);
                 return Ok(new { mensaje = respuesta });
             }
             catch (Exception ex)

@@ -20,11 +20,11 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<AutenticacionController>
         [HttpPost("login")]
-        public IActionResult IniciarSesion([FromBody] LoginRequest request)
+        public async Task<IActionResult> IniciarSesion([FromBody] LoginRequest request)
         {
             try
             {
-                var respuesta = aut_service.IniciarSesion(request);
+                var respuesta = await aut_service.IniciarSesion(request);
 
                 if (respuesta.Estado == "NO_VALIDADO")
                 {
@@ -41,11 +41,11 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<AutenticacionController>
         [HttpPost("cambiar-contrasenia-nuevo-usuario")]
-        public IActionResult CambiarContraseniaNuevoUsuario([FromBody] CambiarContraseniaRequest request)
+        public async Task<IActionResult> CambiarContraseniaNuevoUsuario([FromBody] CambiarContraseniaRequest request)
         {
             try
             {
-                var respuesta = aut_service.CambiarContraseniaNuevoUsuario(request);
+                var respuesta = await aut_service.CambiarContraseniaNuevoUsuario(request);
                 return Ok(new { mensaje = respuesta });
             }
             catch (Exception ex)
@@ -56,13 +56,13 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<AutenticacionController>
         [HttpPost("crear-cuenta")]
-        public IActionResult RegistrarClienteDesdeWeb([FromBody] Usuario usuario)
+        public async Task<IActionResult> RegistrarClienteDesdeWeb([FromBody] Usuario usuario)
         {
             string _mensaje = string.Empty;
 
             try
             {
-                var respuesta = aut_service.CrearCuenta(usuario);
+                var respuesta = await aut_service.CrearCuenta(usuario);
 
                 if (respuesta == "EXITO")
                 {

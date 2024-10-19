@@ -16,7 +16,7 @@ namespace Data
         }
 
         // Obtener detalles de venta
-        public List<DetalleVenta> ObtenerDetallesVenta(int id_venta)
+        public async Task<List<DetalleVenta>> ObtenerDetallesVenta(int id_venta)
         {
             // Crear lista de detalles de venta
             List<DetalleVenta> detallesVenta = new List<DetalleVenta>();
@@ -42,7 +42,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         DetalleVenta detalleVenta = new DetalleVenta
                         {
@@ -51,7 +51,7 @@ namespace Data
                             IdProducto = dr.GetInt32(2),
                             Cantidad = dr.GetInt32(3),
                             Total = dr.GetDecimal(4),
-                            ProductoDetalle = dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
+                            ProductoDetalle = await dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
                         };
                         detallesVenta.Add(detalleVenta);
                     }

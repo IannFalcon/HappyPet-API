@@ -15,7 +15,7 @@ namespace Data
             this.dao_prod = dao_prod;
         }
 
-        public List<Carrito> ListarProductosCarrito(int idUsuario)
+        public async Task<List<Carrito>> ListarProductosCarrito(int idUsuario)
         {
             List<Carrito> listado = new List<Carrito>();
 
@@ -39,7 +39,7 @@ namespace Data
                     // Ejecutar la consulta
                     SqlDataReader dr = cmd.ExecuteReader();
 
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         Carrito carrito = new Carrito
                         {
@@ -47,7 +47,7 @@ namespace Data
                             IdUsuario = dr.GetInt32(1),
                             IdProducto = dr.GetInt32(2),
                             Cantidad = dr.GetInt32(3),
-                            ProductosCarrito = dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
+                            ProductosCarrito = await dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
                         };
 
                         listado.Add(carrito);
@@ -65,7 +65,7 @@ namespace Data
             }
         }
 
-        public string AccionesCarrito(int idUsuario, int idProducto, bool accion)
+        public async Task<string> AccionesCarrito(int idUsuario, int idProducto, bool accion)
         {
             string mensaje = string.Empty;
 
@@ -76,7 +76,7 @@ namespace Data
                                                     idProducto,
                                                     accion);
 
-                if (dr.Read())
+                if (await dr.ReadAsync())
                 {
                     mensaje = dr.IsDBNull(0) ? "VACIO" : dr.GetString(0);
                 }

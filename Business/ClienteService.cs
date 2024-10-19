@@ -13,11 +13,11 @@ namespace Business
         }
 
         // Método para listar clientes
-        public List<Usuario> ListarClientes(string nro_documento, string nombre)
+        public async Task<List<Usuario>> ListarClientes(string nro_documento, string nombre)
         {
             try
             {
-                var clientes = dao_cliente.ObtenerClientes(nro_documento, nombre);
+                var clientes = await dao_cliente.ObtenerClientes(nro_documento, nombre);
                 return clientes;
             }
             catch (Exception ex)
@@ -27,11 +27,11 @@ namespace Business
         }
 
         // Método para obtener un cliente por ID
-        public Usuario ObtenerClienteId(int idUsuario)
+        public async Task<Usuario> ObtenerClienteId(int idUsuario)
         {
             try
             {
-                var cliente = dao_cliente.ObtenerClienteId(idUsuario);
+                var cliente = await dao_cliente.ObtenerClienteId(idUsuario);
 
                 if (cliente == null)
                 {
@@ -47,7 +47,7 @@ namespace Business
         }
 
         // Método para registrar un cliente desde la vista de administrador
-        public string RegistrarCliente(Usuario cliente)
+        public async Task<string> RegistrarCliente(Usuario cliente)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace Business
                     throw new Exception("Error: El correo del cliente es requerido");
                 }
 
-                var respuesta = dao_cliente.NuevoCliente(cliente);
+                var respuesta = await dao_cliente.NuevoCliente(cliente);
 
                 if (respuesta == "DNI_EXISTE")
                 {
@@ -122,7 +122,7 @@ namespace Business
         }
 
         // Método para actualizar un cliente
-        public string ActualizarCliente(Usuario cliente)
+        public async Task<string> ActualizarCliente(Usuario cliente)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace Business
                     throw new Exception("Error: El correo del cliente es requerido");
                 }
 
-                var respuesta = dao_cliente.ActualizarCliente(cliente);
+                var respuesta = await dao_cliente.ActualizarCliente(cliente);
                 return respuesta;
             }
             catch (Exception ex)
@@ -181,7 +181,7 @@ namespace Business
         }
 
         // Método para eliminar un cliente
-        public string EliminarCliente(int idUsuario)
+        public async Task<string> EliminarCliente(int idUsuario)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace Business
                     throw new Exception("Error: El id del cliente es requerido");
                 }
 
-                var respuesta = dao_cliente.EliminarCliente(idUsuario);
+                var respuesta = await dao_cliente.EliminarCliente(idUsuario);
                 return respuesta;
             }
             catch (Exception ex)

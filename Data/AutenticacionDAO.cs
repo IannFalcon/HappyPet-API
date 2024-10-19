@@ -16,7 +16,7 @@ namespace Data
         }
 
         // Validar inicio de sesión
-        public AutenticacionResponse IniciarSesion(LoginRequest loginRequest)
+        public async Task<AutenticacionResponse> IniciarSesion(LoginRequest loginRequest)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace Data
                                                        loginRequest.correo,
                                                        loginRequest.contrasenia);
 
-                if (dr.Read())
+                if (await dr.ReadAsync())
                 {
                     var resultado = new AutenticacionResponse
                     {
@@ -50,7 +50,7 @@ namespace Data
         }
 
         // Cambiar contraseña
-        public string CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
+        public async Task<string> CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
         {
             string mensaje = string.Empty;
 
@@ -61,7 +61,7 @@ namespace Data
                                                        request.NuevaContrasenia,
                                                        request.ConfirmarContrasenia);
 
-                if (dr.Read())
+                if (await dr.ReadAsync())
                 {
                     mensaje = dr.GetString(0);
                     return mensaje;
@@ -78,7 +78,7 @@ namespace Data
         }
 
         // Crear cuenta
-        public string CrearCuenta(Usuario usuario)
+        public async Task<string> CrearCuenta(Usuario usuario)
         {
             string mensaje = string.Empty;
 
@@ -95,7 +95,7 @@ namespace Data
                                                         usuario.Correo,
                                                         usuario.Contrasenia!);
 
-                if (dr.Read())
+                if (await dr.ReadAsync())
                 {
                     mensaje = dr.GetString(0);
                     return mensaje;

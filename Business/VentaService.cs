@@ -13,11 +13,11 @@ namespace Business
         }
 
         // Metodo para listar ventas
-        public List<Venta> ListarVentas()
+        public async Task<List<Venta>> ListarVentas()
         {
             try
             {
-                var ventas = dao_venta.ObtenerVentas();
+                var ventas = await dao_venta.ObtenerVentas();
                 return ventas;
             }
             catch (Exception ex)
@@ -27,7 +27,7 @@ namespace Business
         }
 
         // Metodo para realizar venta
-        public string RealizarVenta(int idUsuario, string idTransaccion)
+        public async Task<string> RealizarVenta(int idUsuario, string idTransaccion)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace Business
                     throw new Exception("Error: El id de la transacción no es válido.");
                 }
 
-                var resultado = dao_venta.RealizarVenta(idUsuario, idTransaccion);
+                var resultado = await dao_venta.RealizarVenta(idUsuario, idTransaccion);
 
                 if (resultado == "VACIO")
                 {

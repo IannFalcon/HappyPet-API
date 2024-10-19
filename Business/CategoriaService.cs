@@ -13,12 +13,12 @@ namespace Business
         }
 
         // Método para listar categorias
-        public List<Categoria> ListarCategorias(string nombre)
+        public async Task<List<Categoria>> ListarCategorias(string nombre)
         {
             try
             {
                 // Mandar a llamar al método de obtener categorias
-                var categorias = dao.ObtenerCategorias(nombre);
+                var categorias = await dao.ObtenerCategorias(nombre);
                 return categorias;
             }
             catch (Exception ex)
@@ -28,7 +28,7 @@ namespace Business
         }
 
         // Método para registrar categorias
-        public string RegistrarCategorias(Categoria categoria)
+        public async Task<string> RegistrarCategorias(Categoria categoria)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el nombre de la categoría");
                 }
 
-                var resultado = dao.NuevaCategoria(categoria);
+                var resultado = await dao.NuevaCategoria(categoria);
                 return resultado;
             }
             catch (Exception ex)
@@ -52,7 +52,7 @@ namespace Business
         }
 
         // Método para actualizar categorias
-        public string ActualizarCategoria(Categoria categoria)
+        public async Task<string> ActualizarCategoria(Categoria categoria)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el nombre de la categoría");
                 }
 
-                var resultado = dao.ActualizarCatergoria(categoria);
+                var resultado = await dao.ActualizarCatergoria(categoria);
                 return resultado;
             }
             catch (Exception ex)
@@ -81,7 +81,7 @@ namespace Business
         }
 
         // Método para eliminar categorias
-        public string EliminarCategoria(int idCategoria)
+        public async Task<string> EliminarCategoria(int idCategoria)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el id de la categoría");
                 }
 
-                var resultado = dao.EliminarCategoria(idCategoria);
+                var resultado = await dao.EliminarCategoria(idCategoria);
                 return resultado;
             }
             catch (Exception ex)

@@ -19,11 +19,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<CategoriaController>
         [HttpGet]
-        public IActionResult ListarCategorias([FromQuery] string? nombre)
+        public async Task<IActionResult> ListarCategorias([FromQuery] string? nombre)
         {
             try
             {
-                var categorias = cat_service.ListarCategorias(nombre!);
+                var categorias = await cat_service.ListarCategorias(nombre!);
                 return Ok(new { mensaje = "Categorias encontradas", data = categorias });
             }
             catch (Exception ex)
@@ -34,11 +34,11 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<CategoriaController>
         [HttpPost]
-        public IActionResult RegistrarCategorias([FromBody] Categoria categoria)
+        public async Task<IActionResult> RegistrarCategorias([FromBody] Categoria categoria)
         {
             try
             {
-                var resultado = cat_service.RegistrarCategorias(categoria);
+                var resultado = await cat_service.RegistrarCategorias(categoria);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -49,11 +49,11 @@ namespace AppHappyPet_API.Controllers
 
         // PUT api/<CategoriaController>/5
         [HttpPut]
-        public IActionResult ActualizarCategoria([FromBody] Categoria categoria)
+        public async Task<IActionResult> ActualizarCategoria([FromBody] Categoria categoria)
         {
             try
             {
-                var resultado = cat_service.ActualizarCategoria(categoria);
+                var resultado = await cat_service.ActualizarCategoria(categoria);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -64,11 +64,11 @@ namespace AppHappyPet_API.Controllers
 
         // DELETE api/<CategoriaController>/5
         [HttpDelete("{idCategoria}")]
-        public IActionResult EliminarCategoria(int idCategoria)
+        public async Task<IActionResult> EliminarCategoria(int idCategoria)
         {
             try
             {
-                var resultado = cat_service.EliminarCategoria(idCategoria);
+                var resultado = await cat_service.EliminarCategoria(idCategoria);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)

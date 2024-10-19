@@ -15,7 +15,7 @@ namespace Data
         }
 
         // Obtener clientes
-        public List<Usuario> ObtenerClientes(string? nro_documento, string? nombre)
+        public async Task<List<Usuario>> ObtenerClientes(string? nro_documento, string? nombre)
         {
             // Crear lista de clientes
             List<Usuario> clientes = new List<Usuario>();
@@ -50,7 +50,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    while (dr.Read())
+                    while (await dr.ReadAsync())
                     {
                         Usuario cliente = new Usuario
                         {
@@ -94,7 +94,7 @@ namespace Data
         }
 
         // Obtener cliente por id
-        public Usuario ObtenerClienteId(int id_usuario)
+        public async Task<Usuario> ObtenerClienteId(int id_usuario)
         {
             Usuario? usuario = null;
 
@@ -125,7 +125,7 @@ namespace Data
                     SqlDataReader dr = cmd.ExecuteReader();
 
                     // Leer resultados
-                    if (dr.Read())
+                    if (await dr.ReadAsync())
                     {
                         usuario = new Usuario
                         {
@@ -167,7 +167,7 @@ namespace Data
         }
 
         // Nuevo cliente desde la vista de administrador
-        public string NuevoCliente(Usuario cliente)
+        public async Task<string> NuevoCliente(Usuario cliente)
         {
             string mensaje = string.Empty;
 
@@ -184,7 +184,7 @@ namespace Data
                                                         cliente.Correo,
                                                         cliente.NroDocumento);
 
-                if (dr.Read())
+                if (await dr.ReadAsync())
                 {
                     mensaje = dr.GetString(0);
                     return mensaje;
@@ -201,7 +201,7 @@ namespace Data
         }
 
         // Actualizar cliente
-        public string ActualizarCliente(Usuario cliente)
+        public async Task<string> ActualizarCliente(Usuario cliente)
         {
             // Query para actualizar cliente
             string query = @"UPDATE Usuario SET 
@@ -235,10 +235,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_usuario", cliente.IdUsuario);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();
@@ -254,7 +254,7 @@ namespace Data
         }
 
         // Eliminar cliente
-        public string EliminarCliente(int id_usuario)
+        public async Task<string> EliminarCliente(int id_usuario)
         {
             // Query para eliminar cliente
             string query = @"UPDATE Usuario SET activo = 'No' WHERE id_usuario = @id_usuario";
@@ -271,10 +271,10 @@ namespace Data
                     cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
 
                     // Abrir conexión
-                    con.Open();
+                    await con.OpenAsync();
 
                     // Ejecutar query
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
 
                     // Cerrar conexión
                     con.Close();

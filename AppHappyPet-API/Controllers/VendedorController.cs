@@ -19,11 +19,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<UsuarioController>
         [HttpGet]
-        public IActionResult ListarVendedores([FromQuery] string? nro_documento, [FromQuery] string? nombre)
+        public async Task<IActionResult> ListarVendedores([FromQuery] string? nro_documento, [FromQuery] string? nombre)
         {
             try
             {
-                var vendedores = ven_service.ListarVendedores(nro_documento, nombre);
+                var vendedores = await ven_service.ListarVendedores(nro_documento, nombre);
                 return Ok(new { mensaje = "Vendedores encontrados", data = vendedores });
             }
             catch (Exception ex)
@@ -34,11 +34,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET api/<UsuarioController>/5
         [HttpGet("{idUsuario}")]
-        public IActionResult ObtenerVendedorId(int idUsuario)
+        public async Task<IActionResult> ObtenerVendedorId(int idUsuario)
         {
             try
             {
-                var vendedor = ven_service.ObtenerVendedorId(idUsuario);
+                var vendedor = await ven_service.ObtenerVendedorId(idUsuario);
                 return Ok(new { mensaje = "Vendedor encontrado", data = vendedor });
             }
             catch (Exception ex)
@@ -49,11 +49,11 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<UsuarioController>
         [HttpPost]
-        public IActionResult RegistrarVendedor([FromBody] Usuario usuario)
+        public async Task<IActionResult> RegistrarVendedor([FromBody] Usuario usuario)
         {
             try
             {
-                var resultado = ven_service.RegistrarVendedor(usuario);
+                var resultado = await ven_service.RegistrarVendedor(usuario);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -64,11 +64,11 @@ namespace AppHappyPet_API.Controllers
 
         // PUT api/<UsuarioController>/5
         [HttpPut]
-        public IActionResult ActualizarVendedor([FromBody] Usuario usuario)
+        public async Task<IActionResult> ActualizarVendedor([FromBody] Usuario usuario)
         {
             try
             {
-                var resultado = ven_service.ActualizarVendedor(usuario);
+                var resultado = await ven_service.ActualizarVendedor(usuario);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -79,11 +79,11 @@ namespace AppHappyPet_API.Controllers
 
         // DELETE api/<UsuarioController>/5
         [HttpDelete("{idUsuario}")]
-        public IActionResult EliminarVendedor(int idUsuario)
+        public async Task<IActionResult> EliminarVendedor(int idUsuario)
         {
             try
             {
-                var resultado = ven_service.EliminarVendedor(idUsuario);
+                var resultado = await ven_service.EliminarVendedor(idUsuario);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)

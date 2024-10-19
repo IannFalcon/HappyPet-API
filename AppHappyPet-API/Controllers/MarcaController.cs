@@ -19,11 +19,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET: api/<MarcaController>
         [HttpGet]
-        public IActionResult ListarMarcas([FromQuery] string? nombre)
+        public async Task<IActionResult> ListarMarcas([FromQuery] string? nombre)
         {
             try
             {
-                var marcas = mar_service.ListarMarcas(nombre!);
+                var marcas = await mar_service.ListarMarcas(nombre!);
                 return Ok(new { mensaje = "Marcas encontradas", data = marcas });
             }
             catch (Exception ex)
@@ -35,11 +35,11 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<MarcaController>
         [HttpPost]
-        public IActionResult RegistrarMarcas([FromBody] Marca marca)
+        public async Task<IActionResult> RegistrarMarcas([FromBody] Marca marca)
         {
             try
             {
-                var resultado = mar_service.RegistrarMarcas(marca);
+                var resultado = await mar_service.RegistrarMarcas(marca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -50,11 +50,11 @@ namespace AppHappyPet_API.Controllers
 
         // PUT api/<MarcaController>/5
         [HttpPut]
-        public IActionResult ActualizarMarca([FromBody] Marca marca)
+        public async Task<IActionResult> ActualizarMarca([FromBody] Marca marca)
         {
             try
             {
-                var resultado = mar_service.ActualizarMarca(marca);
+                var resultado = await mar_service.ActualizarMarca(marca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -65,11 +65,11 @@ namespace AppHappyPet_API.Controllers
 
         // DELETE api/<MarcaController>/5
         [HttpDelete("{idMarca}")]
-        public IActionResult EliminarMarca(int idMarca)
+        public async Task<IActionResult> EliminarMarca(int idMarca)
         {
             try
             {
-                var resultado = mar_service.EliminarMarca(idMarca);
+                var resultado = await mar_service.EliminarMarca(idMarca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
