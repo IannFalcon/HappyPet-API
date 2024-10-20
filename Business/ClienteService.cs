@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using ClosedXML.Excel;
+using Data;
 using Entity.Models;
 
 namespace Business
@@ -102,7 +103,7 @@ namespace Business
                 {
                     throw new Exception("Error: El número de documento ya existe.");
                 }
-                
+
                 if (respuesta == "TEL_EXISTE")
                 {
                     throw new Exception("Error: El numero de teléfono ya existe.");
@@ -192,6 +193,76 @@ namespace Business
 
                 var respuesta = await dao_cliente.EliminarCliente(idUsuario);
                 return respuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Método para exportar listado de clientes a un archivo Excel
+        public async Task<byte[]> ExportarListadoClientes()
+        {
+            try
+            {
+                var clientes = await dao_cliente.ObtenerClientes("", "");
+
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Clientes");
+                    worksheet.Cell(2, 2).Value = "ID Cliente";
+                    worksheet.Cell(2, 3).Value = "Nombre";
+                    worksheet.Cell(2, 4).Value = "Apellido Paterno";
+                    worksheet.Cell(2, 5).Value = "Apellido Materno";
+                    worksheet.Cell(2, 6).Value = "Tipo de Documento";
+                    worksheet.Cell(2, 7).Value = "Número de Documento";
+                    worksheet.Cell(2, 8).Value = "Teléfono";
+                    worksheet.Cell(2, 9).Value = "Dirección";
+                    worksheet.Cell(2, 10).Value = "Correo";
+                    worksheet.Cell(2, 11).Value = "Fecha de Registro";
+
+                    // Aplicar estilo al encabezado
+                    var headerRange = worksheet.Range("B2:K2");
+                    headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    headerRange.Style.Font.Bold = true;
+                    headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                    for (int i = 0; i < clientes.Count; i++)
+                    {
+                        worksheet.Cell(i + 3, 2).Value = clientes[i].IdUsuario;
+                        worksheet.Cell(i + 3, 3).Value = clientes[i].Nombre;
+                        worksheet.Cell(i + 3, 4).Value = clientes[i].ApellidoPaterno;
+                        worksheet.Cell(i + 3, 5).Value = clientes[i].ApellidoMaterno;
+                        worksheet.Cell(i + 3, 6).Value = clientes[i].UsuTipoDoc?.Descripcion;
+                        worksheet.Cell(i + 3, 7).Value = clientes[i].NroDocumento;
+                        worksheet.Cell(i + 3, 8).Value = clientes[i].Telefono;
+                        worksheet.Cell(i + 3, 9).Value = clientes[i].Direccion;
+                        worksheet.Cell(i + 3, 10).Value = clientes[i].Correo;
+                        worksheet.Cell(i + 3, 11).Value = clientes[i].FecRegistro;
+
+                        // Aplicar estilo a las celdas
+                        worksheet.Cell(i + 3, 2).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 3).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 6).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 7).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 8).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 9).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 10).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 11).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    // Ajustar el ancho de las columnas
+                    worksheet.Columns().AdjustToContents();
+
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        return stream.ToArray();
+                    }
+                }
             }
             catch (Exception ex)
             {

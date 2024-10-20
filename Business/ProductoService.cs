@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using ClosedXML.Excel;
+using Data;
 using Entity.Models;
 
 namespace Business
@@ -156,6 +157,73 @@ namespace Business
 
                 var resultado = await dao.EliminarProducto(id_producto);
                 return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Método para exportar listado de productos a un archivo Excel
+        public async Task<byte[]> ExportarListadoProductos()
+        {
+            try
+            {
+                var productos = await dao.ObtenerProductos(null, null, null);
+
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Productos");
+                    worksheet.Cell(2, 2).Value = "ID Producto";
+                    worksheet.Cell(2, 3).Value = "Nombre";
+                    worksheet.Cell(2, 4).Value = "Categoría";
+                    worksheet.Cell(2, 5).Value = "Marca";
+                    worksheet.Cell(2, 6).Value = "Descripción";
+                    worksheet.Cell(2, 7).Value = "Precio Unitario";
+                    worksheet.Cell(2, 8).Value = "Stock";
+                    worksheet.Cell(2, 9).Value = "Fecha de Registro";
+                    worksheet.Cell(2, 10).Value = "Fecha de Vencimiento";
+
+                    // Aplicar estilo al encabezado
+                    var headerRange = worksheet.Range("B2:J2");
+                    headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    headerRange.Style.Font.Bold = true;
+                    headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                    for (int i = 0; i < productos.Count; i++)
+                    {
+                        worksheet.Cell(i + 3, 2).Value = productos[i].IdProducto;
+                        worksheet.Cell(i + 3, 3).Value = productos[i].Nombre;
+                        worksheet.Cell(i + 3, 4).Value = productos[i].ProductoCategoria!.Nombre;
+                        worksheet.Cell(i + 3, 5).Value = productos[i].ProductoMarca!.Nombre;
+                        worksheet.Cell(i + 3, 6).Value = productos[i].Descripcion;
+                        worksheet.Cell(i + 3, 7).Value = productos[i].PrecioUnitario;
+                        worksheet.Cell(i + 3, 8).Value = productos[i].Stock;
+                        worksheet.Cell(i + 3, 9).Value = productos[i].FecRegistro;
+                        worksheet.Cell(i + 3, 10).Value = productos[i].FecVencimiento;
+
+                        // Aplicar estilo a las celdas
+                        worksheet.Cell(i + 3, 2).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 3).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 6).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 7).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 8).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 9).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 10).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    // Ajustar el ancho de las columnas
+                    worksheet.Columns().AdjustToContents();
+
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        return stream.ToArray();
+                    }
+                }
             }
             catch (Exception ex)
             {

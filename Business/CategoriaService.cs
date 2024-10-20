@@ -1,5 +1,7 @@
-﻿using Data;
+﻿using ClosedXML.Excel;
+using Data;
 using Entity.Models;
+using System.Drawing;
 
 namespace Business
 {
@@ -92,6 +94,51 @@ namespace Business
 
                 var resultado = await dao.EliminarCategoria(idCategoria);
                 return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Método para exportar categorias a un archivo Excel
+        public async Task<byte[]> ExportarListadoCategorias()
+        {
+            try
+            {
+                var categorias = await dao.ObtenerCategorias(string.Empty);
+
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Categorias");
+                    worksheet.Cell(2, 2).Value = "ID Categoria";
+                    worksheet.Cell(2, 3).Value = "Nombre";
+
+                    // Aplicar estilo al encabezado
+                    var headerRange = worksheet.Range("B2:C2");
+                    headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    headerRange.Style.Font.Bold = true;
+                    headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                    for (int i = 0; i < categorias.Count; i++)
+                    {
+                        worksheet.Cell(i + 3, 2).Value = categorias[i].IdCategoria;
+                        worksheet.Cell(i + 3, 3).Value = categorias[i].Nombre;
+
+                        // Aplicar estilo a las celdas
+                        worksheet.Cell(i + 3, 2).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 3).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    worksheet.Columns().AdjustToContents();
+
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        return stream.ToArray();
+                    }
+                }
             }
             catch (Exception ex)
             {

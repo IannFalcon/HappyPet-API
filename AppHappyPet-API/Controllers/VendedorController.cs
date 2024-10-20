@@ -91,5 +91,22 @@ namespace AppHappyPet_API.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        // GET api/<UsuarioController>/5
+        [HttpGet("exportar")]
+        public async Task<IActionResult> ExportarVendedores()
+        {
+            try
+            {
+                var content = await ven_service.ExportarListadoVendedores();
+                var fechaActual = DateTime.Now.ToString("yyyy-MM-dd");
+                var nombreArchivo = $"Listado-Vendedores-{fechaActual}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

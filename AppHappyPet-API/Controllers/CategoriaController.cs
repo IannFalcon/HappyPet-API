@@ -1,4 +1,5 @@
 ﻿using Business;
+using ClosedXML.Excel;
 using Entity.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,6 +71,23 @@ namespace AppHappyPet_API.Controllers
             {
                 var resultado = await cat_service.EliminarCategoria(idCategoria);
                 return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        // GET api/<CategoriaController>/5
+        [HttpGet("exportar")]
+        public async Task<IActionResult> ExportarCategorias()
+        {
+            try
+            {
+                var content = await cat_service.ExportarListadoCategorias();
+                var fechaActual = DateTime.Now.ToString("yyyy-MM-dd");
+                var nombreArchivo = $"Listado-Categorias-{fechaActual}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
             }
             catch (Exception ex)
             {

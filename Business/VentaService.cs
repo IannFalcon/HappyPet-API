@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using ClosedXML.Excel;
+using Data;
 using Entity.Models;
 
 namespace Business
@@ -49,6 +50,67 @@ namespace Business
                 }
 
                 return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Metodo para exportar listado de ventas a un archivo Excel
+        public async Task<byte[]> ExportarListadoVentas()
+        {
+            try
+            {
+                var ventas = await dao_venta.ObtenerVentas();
+
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Ventas");
+
+                    worksheet.Cell(2, 2).Value = "Id Venta";
+                    worksheet.Cell(2, 3).Value = "Id Transacción";
+                    worksheet.Cell(2, 4).Value = "Nombre Cliente";
+                    worksheet.Cell(2, 5).Value = "Total Productos";
+                    worksheet.Cell(2, 6).Value = "Monto Total";
+                    worksheet.Cell(2, 7).Value = "Fecha Venta";
+
+                    // Aplicar estilo al encabezado
+                    var headerRange = worksheet.Range("B2:G2");
+                    headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    headerRange.Style.Font.Bold = true;
+                    headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                    for (int i = 0; i < ventas.Count; i++)
+                    {
+                        worksheet.Cell(i + 3, 2).Value = ventas[i].IdVenta;
+                        worksheet.Cell(i + 3, 3).Value = ventas[i].IdTransaccion;
+                        worksheet.Cell(i + 3, 4).Value = (ventas[i].UsuarioVenta!.Nombre + " " + 
+                                                          ventas[i].UsuarioVenta!.ApellidoPaterno + " " +
+                                                          ventas[i].UsuarioVenta!.ApellidoMaterno);
+                        worksheet.Cell(i + 3, 5).Value = ventas[i].TotalProductos;
+                        worksheet.Cell(i + 3, 6).Value = ventas[i].MontoTotal;
+                        worksheet.Cell(i + 3, 7).Value = ventas[i].FecVenta;
+
+                        // Aplicar estilo a las celdas
+                        worksheet.Cell(i + 3, 2).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 3).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 4).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 6).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 7).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    // Ajustar el ancho de las columnas
+                    worksheet.Columns().AdjustToContents();
+
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        return stream.ToArray();
+                    }
+                }
             }
             catch (Exception ex)
             {

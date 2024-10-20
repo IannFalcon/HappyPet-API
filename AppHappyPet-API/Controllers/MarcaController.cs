@@ -77,5 +77,22 @@ namespace AppHappyPet_API.Controllers
                 return BadRequest(new { mensaje = ex.Message });
             }
         }
+
+        // GET api/<MarcaController>/5
+        [HttpGet("exportar")]
+        public async Task<IActionResult> ExportarMarcas()
+        {
+            try
+            {
+                var content = await mar_service.ExportarListadoMarcas();
+                var fechaActual = DateTime.Now.ToString("yyyy-MM-dd");
+                var nombreArchivo = $"Listado-Marcas-{fechaActual}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
     }
 }

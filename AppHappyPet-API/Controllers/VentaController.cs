@@ -35,6 +35,23 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
+        // GET api/<VentaController>/5
+        [HttpGet("exportar")]
+        public async Task<IActionResult> ExportarVentas()
+        {
+            try
+            {
+                var context = await venta_service.ExportarListadoVentas();
+                var fechaActual = DateTime.Now.ToString("yyyy-MM-dd");
+                var nombreArchivo = $"Listado-Ventas-{fechaActual}.xlsx";
+                return File(context, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         // POST api/<VentaController>
         [HttpPost("{idUsuario}/{totalPago}")]
         public async Task<IActionResult> RealizarVenta(int idUsuario, decimal totalPago)
