@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Entity.Models
+namespace Entity.Models;
+
+public partial class Categoria
 {
-    public partial class Categoria
-    {
-        public Categoria()
-        {
-            Productos = new HashSet<Producto>();
-        }
+    public int IdCategoria { get; set; }
 
-        public int IdCategoria { get; set; }
-        public string Nombre { get; set; } = null!;
+    public string Nombre { get; set; } = null!;
 
-        public virtual ICollection<Producto>? Productos { get; set; }
-    }
+    public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
 }
