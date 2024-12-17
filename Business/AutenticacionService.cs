@@ -15,7 +15,7 @@ namespace Business
         }
 
         // Método para iniciar sesión
-        public async Task<AutenticacionResponse> IniciarSesion(LoginRequest request)
+        public async Task<IniciarSesionResponse> IniciarSesion(IniciarSesionRequest request)
         {
             try
             {
@@ -23,11 +23,6 @@ namespace Business
                 if (request == null)
                 {
                     throw new Exception("Error: Por favor ingrese sus credenciales.");
-                }
-
-                if (request.idTipoUsuario == 0)
-                {
-                    throw new Exception("Error: Por favor seleccione su tipo de usuario.");
                 }
 
                 if (request.correo == "" || request.correo == null)
@@ -43,9 +38,9 @@ namespace Business
                 // Mandar a llamar al método de autenticación
                 var respuesta = await dao.IniciarSesion(request);
 
-                if (respuesta.Estado == "NO_EXISTE" && respuesta.IdUsuario == 0)
+                if (respuesta.IdUsuario == null)
                 {
-                    throw new Exception("Error: Credenciales incorrectas.");
+                    throw new Exception($"Error: {respuesta.MensajeError}");
                 }
 
                 return respuesta;
@@ -57,7 +52,59 @@ namespace Business
         }
 
         // Método para cambiar contraseña
-        public async Task<string> CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
+        public async Task<AutenticacionResponse> CambiarContrasenia(CambiarContraseniaRequest request)
+        {
+            try
+            {
+                // Validaciones
+                if (request == null)
+                {
+                    throw new Exception("Error: Por favor ingrese sus credenciales.");
+                }
+
+                if (request.IdUsuario == 0)
+                {
+                    throw new Exception("Error: Por favor ingrese su id de usuario.");
+                }
+
+                if (request.ContraseniaActual == "" || request.ContraseniaActual == null)
+                {
+                    throw new Exception("Error: Por favor ingrese su contraseña actual.");
+                }
+
+                if (request.NuevaContrasenia == "" || request.NuevaContrasenia == null)
+                {
+                    throw new Exception("Error: Por favor ingrese su nueva contraseña.");
+                }
+
+                if (request.ConfirmarContrasenia == "" || request.ConfirmarContrasenia == null)
+                {
+                    throw new Exception("Error: Por favor confirme su nueva contraseña.");
+                }
+
+                if (request.NuevaContrasenia != request.ConfirmarContrasenia)
+                {
+                    throw new Exception("Error: Las contraseñas no coinciden.");
+                }
+
+                // Mandar a llamar al método de cambio de contraseña
+                var respuesta = await dao.CambiarContrasenia(request);
+
+                if (respuesta.Exito == 0)
+                {
+                    throw new Exception($"Error: {respuesta.Mensaje}");
+                }
+
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Método para cambiar contraseña de un nuevo usuario creado desde la vista del administrador
+        public async Task<AutenticacionResponse> CambiarContraseniaNuevoUsuario(CambiarContraseniaNuevoUsuarioRequest request)
         {
             try
             {
@@ -90,14 +137,9 @@ namespace Business
                 // Mandar a llamar al método de cambio de contraseña
                 var respuesta = await dao.CambiarContraseniaNuevoUsuario(request);
 
-                if (respuesta == "NO_COINCIDE")
+                if (respuesta.Exito == 0)
                 {
-                    throw new Exception("Error: Las contraseñas no coinciden.");
-                }
-
-                if (respuesta == "IGUAL_DNI")
-                {
-                    throw new Exception("Error: La nueva contraseña no puede ser igual a su numero de documento.");
+                    throw new Exception($"Error: {respuesta.Mensaje}");
                 }
 
                 return respuesta;
@@ -109,75 +151,70 @@ namespace Business
         }
 
         // Método para crear una cuenta
-        public async Task<string> CrearCuenta(Usuario cliente)
+        public async Task<AutenticacionResponse> CrearCuenta(CrearCuentaRequest request)
         {
             try
             {
-                if (cliente == null)
+                if (request == null)
                 {
                     throw new Exception("Error: Por favor ingrese sus datos");
                 }
 
-                if (cliente.Nombre == null || cliente.Nombre == "")
+                if (request.Nombres == null || request.Nombres == "")
                 {
                     throw new Exception("Error: El nombre es requerido");
                 }
 
-                if (cliente.ApellidoPaterno == null || cliente.ApellidoPaterno == "")
+                if (request.ApellidoPaterno == null || request.ApellidoPaterno == "")
                 {
                     throw new Exception("Error: El apellido paterno es requerido");
                 }
 
-                if (cliente.ApellidoMaterno == null || cliente.ApellidoMaterno == "")
+                if (request.ApellidoMaterno == null || request.ApellidoMaterno == "")
                 {
                     throw new Exception("Error: El apellido materno es requerido");
                 }
 
-                if (cliente.IdTipoDocumento == 0)
+                if (request.IdTipoDoc <= 0)
                 {
                     throw new Exception("Error: El tipo de documento es requerido");
                 }
 
-                if (cliente.NroDocumento == null || cliente.NroDocumento == "")
+                if (request.NroDocumento == null || request.NroDocumento == "")
                 {
                     throw new Exception("Error: El número de documento es requerido");
                 }
 
-                if (cliente.Telefono == null || cliente.Telefono == "")
+                if (request.Telefono == null || request.Telefono == "")
                 {
                     throw new Exception("Error: El teléfono es requerido");
                 }
 
-                if (cliente.Direccion == null || cliente.Direccion == "")
-                {
-                    throw new Exception("Error: La dirección es requerida");
-                }
-
-                if (cliente.Correo == null || cliente.Correo == "")
+                if (request.Correo == null || request.Correo == "")
                 {
                     throw new Exception("Error: El correo es requerido");
                 }
 
-                if (cliente.Contrasenia == null || cliente.Contrasenia == "")
+                if (request.Contrasenia == null || request.Contrasenia == "")
                 {
                     throw new Exception("Error: La contraseña es requerida");
                 }
 
-                var respuesta = await dao.CrearCuenta(cliente);
-
-                if (respuesta == "DNI_EXISTE")
+                if (request.ConfirmarContrasenia == null || request.ConfirmarContrasenia == "")
                 {
-                    throw new Exception("Error: El número de documento ya existe.");
+                    throw new Exception("Error: Es necesario confirmar su contraseña");
                 }
 
-                if (respuesta == "TEL_EXISTE")
+                if (request.Contrasenia != request.ConfirmarContrasenia)
                 {
-                    throw new Exception("Error: El numero de teléfono ya existe.");
+                    throw new Exception("Error: Las contraseñas no coinciden");
                 }
 
-                if (respuesta == "CORREO_EXISTE")
+                var respuesta = await dao.CrearCuenta(request);
+
+                if (respuesta.Exito == 0)
                 {
-                    throw new Exception("Error: El correo ya existe.");
+                    throw new Exception($"Error: {respuesta.Mensaje}");
                 }
 
                 return respuesta;

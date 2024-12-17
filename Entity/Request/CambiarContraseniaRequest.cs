@@ -9,6 +9,7 @@ namespace Entity.Request
     public class CambiarContraseniaRequest
     {
         public int IdUsuario { get; set; }
+        public string ContraseniaActual { get; set; } = string.Empty;
         public string NuevaContrasenia { get; set; } = string.Empty;
         public string ConfirmarContrasenia { get; set; } = string.Empty;
     }

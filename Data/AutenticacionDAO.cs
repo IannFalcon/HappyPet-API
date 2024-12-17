@@ -1,5 +1,4 @@
-﻿using Entity.Models;
-using Entity.Reponse;
+﻿using Entity.Reponse;
 using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -16,30 +15,31 @@ namespace Data
         }
 
         // Validar inicio de sesión
-        public async Task<AutenticacionResponse> IniciarSesion(LoginRequest loginRequest)
+        public async Task<IniciarSesionResponse> IniciarSesion(IniciarSesionRequest request)
         {
             try
             {
                 SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ValidarInicioSesion",
-                                                       loginRequest.idTipoUsuario,
-                                                       loginRequest.correo,
-                                                       loginRequest.contrasenia);
+                                                       request.correo,
+                                                       request.contrasenia);
 
                 if (await dr.ReadAsync())
                 {
-                    var resultado = new AutenticacionResponse
+                    var resultado = new IniciarSesionResponse
                     {
-                        Estado = dr.GetString(0),
-                        IdUsuario = dr.GetInt32(1),
-                        IdTipoUsuario = dr.GetInt32(2),
-                        NombreUsuario = dr.IsDBNull(3) ? null : dr.GetString(3)
+                        IdUsuario = dr.IsDBNull(0) ? null : dr.GetInt32(0),
+                        IdCliente = dr.IsDBNull(1) ? null : dr.GetInt32(1),
+                        Rol = dr.IsDBNull(2) ? null : dr.GetString(2),
+                        NombreUsuario = dr.IsDBNull(3) ? null : dr.GetString(3),
+                        CambioContra = dr.IsDBNull(4) ? null : dr.GetInt32(4),
+                        MensajeError = dr.IsDBNull(4) ? null : dr.GetString(5),
                     };
 
                     return resultado;
                 }
                 else
                 {
-                    throw new Exception("Error: Ocurrio un error al iniciar sesión.");
+                    throw new Exception("Error: Ocurrio un error durante el inicio de sesión.");
                 }
             }
             catch (Exception ex)
@@ -49,11 +49,41 @@ namespace Data
 
         }
 
-        // Cambiar contraseña
-        public async Task<string> CambiarContraseniaNuevoUsuario(CambiarContraseniaRequest request)
+        // Cambio de contraseña
+        public async Task<AutenticacionResponse> CambiarContrasenia(CambiarContraseniaRequest request)
         {
-            string mensaje = string.Empty;
+            try
+            {
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "CambiarContrasenia",
+                                                       request.IdUsuario,
+                                                       request.ContraseniaActual,
+                                                       request.NuevaContrasenia,
+                                                       request.ConfirmarContrasenia);
 
+                if (await dr.ReadAsync())
+                {
+                    var resultado = new AutenticacionResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
+
+                    return resultado;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al cambiar la contraseña.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        // Cambio de contraseña para usuarios registrados desde la vista del administrador
+        public async Task<AutenticacionResponse> CambiarContraseniaNuevoUsuario(CambiarContraseniaNuevoUsuarioRequest request)
+        {
             try
             {
                 SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "CambiarContraseniaNuevoUsuario",
@@ -63,8 +93,13 @@ namespace Data
 
                 if (await dr.ReadAsync())
                 {
-                    mensaje = dr.GetString(0);
-                    return mensaje;
+                    var resultado = new AutenticacionResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
+
+                    return resultado;
                 }
                 else
                 {
@@ -78,31 +113,34 @@ namespace Data
         }
 
         // Crear cuenta
-        public async Task<string> CrearCuenta(Usuario usuario)
+        public async Task<AutenticacionResponse> CrearCuenta(CrearCuentaRequest request)
         {
-            string mensaje = string.Empty;
-
             try
             {
-                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarCliente",
-                                                        usuario.Nombre,
-                                                        usuario.ApellidoPaterno,
-                                                        usuario.ApellidoMaterno,
-                                                        usuario.IdTipoDocumento,
-                                                        usuario.NroDocumento,
-                                                        usuario.Telefono,
-                                                        usuario.Direccion,
-                                                        usuario.Correo,
-                                                        usuario.Contrasenia!);
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "CrearCuenta",
+                                                        request.Nombres,
+                                                        request.ApellidoPaterno,
+                                                        request.ApellidoMaterno,
+                                                        request.IdTipoDoc,
+                                                        request.NroDocumento,
+                                                        request.Telefono,
+                                                        request.Correo,
+                                                        request.Contrasenia,
+                                                        request.ConfirmarContrasenia);
 
                 if (await dr.ReadAsync())
                 {
-                    mensaje = dr.GetString(0);
-                    return mensaje;
+                    var resultado = new AutenticacionResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
+
+                    return resultado;
                 }
                 else
                 {
-                    throw new Exception("Error: Ocurrio un durante el registro.");
+                    throw new Exception("Error: Ocurrio un durante la creación de su cuenta.");
                 }
             }
             catch (Exception ex)
