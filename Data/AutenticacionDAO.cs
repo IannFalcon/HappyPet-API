@@ -31,8 +31,8 @@ namespace Data
                         IdCliente = dr.IsDBNull(1) ? null : dr.GetInt32(1),
                         Rol = dr.IsDBNull(2) ? null : dr.GetString(2),
                         NombreUsuario = dr.IsDBNull(3) ? null : dr.GetString(3),
-                        CambioContra = dr.IsDBNull(4) ? null : dr.GetInt32(4),
-                        MensajeError = dr.IsDBNull(4) ? null : dr.GetString(5),
+                        CambioContra = dr.IsDBNull(4) ? null : dr.GetBoolean(4),
+                        MensajeError = dr.IsDBNull(5) ? null : dr.GetString(5),
                     };
 
                     return resultado;

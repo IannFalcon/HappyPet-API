@@ -9,7 +9,7 @@ var conexion = builder.Configuration.GetConnectionString("conexion_bd");
 
 // Add services to the container.
 
-builder.Services.AddDbContext<BD_HAPPY_PETContext>(opt => opt.UseSqlServer(conexion));
+builder.Services.AddDbContext<BdHappyPetContext>(opt => opt.UseSqlServer(conexion));
 
 // DAO
 builder.Services.AddScoped<AutenticacionDAO>();
@@ -20,7 +20,7 @@ builder.Services.AddScoped<ContadoresDAO>();
 builder.Services.AddScoped<DetalleVentaDAO>();
 builder.Services.AddScoped<MarcaDAO>();
 builder.Services.AddScoped<ProductoDAO>();
-builder.Services.AddScoped<VendedorDAO>();
+builder.Services.AddScoped<EmpleadoDAO>();
 builder.Services.AddScoped<VentaDAO>();
 
 // Servicios
@@ -32,7 +32,7 @@ builder.Services.AddScoped<ContadoresService>();
 builder.Services.AddScoped<DetalleVentaService>();
 builder.Services.AddScoped<MarcaService>();
 builder.Services.AddScoped<ProductoService>();
-builder.Services.AddScoped<VendedorService>();
+builder.Services.AddScoped<EmpleadoService>();
 builder.Services.AddScoped<VentaService>();
 
 // Controllers

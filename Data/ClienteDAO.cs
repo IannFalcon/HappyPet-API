@@ -1,7 +1,8 @@
 ﻿using Entity.Models;
+using Entity.Reponse;
+using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 
 namespace Data
 {
@@ -15,21 +16,20 @@ namespace Data
         }
 
         // Obtener clientes
-        public async Task<List<Usuario>> ObtenerClientes(string? nro_documento, string? nombre)
+        public async Task<List<DatosClienteResponse>> ObtenerClientes(string? nro_documento, string? nombre)
         {
             // Crear lista de clientes
-            List<Usuario> clientes = new List<Usuario>();
+            List<DatosClienteResponse> clientes = new List<DatosClienteResponse>();
 
             // Query para obtener clientes
-            string query = @"SELECT id_usuario, u.id_tipo_usuario, tu.descripcion, nombre, apellido_paterno, apellido_materno,
-                            u.id_tipo_documento, td.descripcion, nro_documento, telefono, direccion, correo, fec_registro 
-                            FROM Usuario u
-                            INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
-                            INNER JOIN TipoDocumento td ON u.id_tipo_documento = td.id_tipo_documento
-                            WHERE u.id_tipo_usuario = 1
-                            AND u.activo = 'Si'
-                            AND (@nombre IS NULL OR CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) LIKE '%' + @nombre + '%')
-                            AND (@nro_documento IS NULL OR u.nro_documento LIKE @nro_documento + '%')";
+            string query = @"SELECT c.id_cliente, c.nombres, c.apellido_paterno, c.apellido_materno, td.id_tipo_doc, 
+                            td.nombre_tipo_doc, c.nro_documento, c.telefono, c.correo, c.fec_registro
+                            FROM Cliente c
+                            INNER JOIN Usuario u ON c.id_usuario = u.id_usuario
+                            INNER JOIN TipoDocumento td ON c.id_tipo_doc = td.id_tipo_doc
+                            WHERE u.activo = 1
+                            AND (@nombre IS NULL OR CONCAT(c.nombres, ' ', c.apellido_paterno, ' ', c.apellido_materno) LIKE '%' + @nombre + '%')
+                            AND (@nro_documento IS NULL OR c.nro_documento LIKE @nro_documento + '%')";
 
             try
             {
@@ -52,29 +52,21 @@ namespace Data
                     // Leer resultados
                     while (await dr.ReadAsync())
                     {
-                        Usuario cliente = new Usuario
+                        DatosClienteResponse cliente = new DatosClienteResponse
                         {
-                            IdUsuario = dr.GetInt32(0),
-                            IdTipoUsuario = dr.GetInt32(1),
-                            Nombre = dr.GetString(3),
-                            ApellidoPaterno = dr.GetString(4),
-                            ApellidoMaterno = dr.GetString(5),
-                            IdTipoDocumento = dr.GetInt32(6),
-                            NroDocumento = dr.GetString(8),
-                            Telefono = dr.GetString(9),
-                            Direccion = dr.GetString(10),
-                            Correo = dr.GetString(11),
-                            FecRegistro = dr.GetDateTime(12),
-                            UsuTipoUsu = new TipoUsuario
+                            IdCliente = dr.GetInt32(0),
+                            Nombres = dr.GetString(1),
+                            ApellidoPaterno = dr.GetString(2),
+                            ApellidoMaterno = dr.GetString(3),
+                            TipoDocumento = new TipoDocumentoResponse
                             {
-                                IdTipoUsuario = dr.GetInt32(1),
-                                Descripcion = dr.GetString(2)
+                                IdTipoDoc = dr.GetInt32(4),
+                                NombreTipoDoc = dr.GetString(5),
                             },
-                            UsuTipoDoc = new TipoDocumento
-                            {
-                                IdTipoDocumento = dr.GetInt32(6),
-                                Descripcion = dr.GetString(7)
-                            }
+                            NroDocumento = dr.GetString(6),
+                            Telefono = dr.GetString(7),
+                            Correo = dr.GetString(8),
+                            FecRegistro = dr.GetDateTime(9),
                         };
 
                         clientes.Add(cliente);
@@ -94,18 +86,17 @@ namespace Data
         }
 
         // Obtener cliente por id
-        public async Task<Usuario> ObtenerClienteId(int id_usuario)
+        public async Task<DatosClienteResponse> ObtenerClienteId(int id_cliente)
         {
-            Usuario? usuario = null;
+            DatosClienteResponse? usuario = null;
 
             // Query para obtener cliente por id
-            string query = @"SELECT id_usuario, u.id_tipo_usuario, tu.descripcion, nombre, apellido_paterno, apellido_materno,
-                            u.id_tipo_documento, td.descripcion, nro_documento, telefono, direccion, correo, fec_registro 
-                            FROM Usuario u
-                            INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
-                            INNER JOIN TipoDocumento td ON u.id_tipo_documento = td.id_tipo_documento
-                            WHERE u.id_tipo_usuario = 1
-                            AND u.id_usuario = @id_usuario";
+            string query = @"SELECT c.id_cliente, c.nombres, c.apellido_paterno, c.apellido_materno, td.id_tipo_doc, 
+                            td.nombre_tipo_doc, c.nro_documento, c.telefono, c.correo, c.fec_registro
+                            FROM Cliente c
+                            INNER JOIN Usuario u ON c.id_usuario = u.id_usuario
+                            INNER JOIN TipoDocumento td ON c.id_tipo_doc = td.id_tipo_doc
+                            WHERE c.id_cliente = @id_cliente";
 
             try
             {
@@ -116,7 +107,7 @@ namespace Data
                     SqlCommand cmd = new SqlCommand(query, con);
 
                     // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
+                    cmd.Parameters.AddWithValue("@id_cliente", id_cliente);
 
                     // Abrir conexión
                     con.Open();
@@ -127,29 +118,21 @@ namespace Data
                     // Leer resultados
                     if (await dr.ReadAsync())
                     {
-                        usuario = new Usuario
+                        usuario = new DatosClienteResponse
                         {
-                            IdUsuario = dr.GetInt32(0),
-                            IdTipoUsuario = dr.GetInt32(1),
-                            Nombre = dr.GetString(3),
-                            ApellidoPaterno = dr.GetString(4),
-                            ApellidoMaterno = dr.GetString(5),
-                            IdTipoDocumento = dr.GetInt32(6),
-                            NroDocumento = dr.GetString(8),
-                            Telefono = dr.GetString(9),
-                            Direccion = dr.GetString(10),
-                            Correo = dr.GetString(11),
-                            FecRegistro = dr.GetDateTime(12),
-                            UsuTipoUsu = new TipoUsuario
+                            IdCliente = dr.GetInt32(0),
+                            Nombres = dr.GetString(1),
+                            ApellidoPaterno = dr.GetString(2),
+                            ApellidoMaterno = dr.GetString(3),
+                            TipoDocumento = new TipoDocumentoResponse
                             {
-                                IdTipoUsuario = dr.GetInt32(1),
-                                Descripcion = dr.GetString(2)
+                                IdTipoDoc = dr.GetInt32(4),
+                                NombreTipoDoc = dr.GetString(5),
                             },
-                            UsuTipoDoc = new TipoDocumento
-                            {
-                                IdTipoDocumento = dr.GetInt32(6),
-                                Descripcion = dr.GetString(7)
-                            }
+                            NroDocumento = dr.GetString(6),
+                            Telefono = dr.GetString(7),
+                            Correo = dr.GetString(8),
+                            FecRegistro = dr.GetDateTime(9),
                         };
                     }
 
@@ -166,28 +149,29 @@ namespace Data
             }
         }
 
-        // Nuevo cliente desde la vista de administrador
-        public async Task<string> NuevoCliente(Usuario cliente)
+        // Nuevo cliente
+        public async Task<CrudResponse> NuevoCliente(DatosClienteRequest request)
         {
-            string mensaje = string.Empty;
-
             try
             {
                 SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarCliente",
-                                                        cliente.Nombre,
-                                                        cliente.ApellidoPaterno,
-                                                        cliente.ApellidoMaterno,
-                                                        cliente.IdTipoDocumento,
-                                                        cliente.NroDocumento,
-                                                        cliente.Telefono,
-                                                        cliente.Direccion,
-                                                        cliente.Correo,
-                                                        cliente.NroDocumento);
+                                                        request.Nombres,
+                                                        request.ApellidoPaterno,
+                                                        request.ApellidoMaterno,
+                                                        request.IdTipoDoc,
+                                                        request.NroDocumento,
+                                                        request.Telefono,
+                                                        request.Correo);
 
                 if (await dr.ReadAsync())
                 {
-                    mensaje = dr.GetString(0);
-                    return mensaje;
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
+
+                    return resultado;
                 }
                 else
                 {
@@ -201,19 +185,18 @@ namespace Data
         }
 
         // Actualizar cliente
-        public async Task<string> ActualizarCliente(Usuario cliente)
+        public async Task<string> ActualizarCliente(DatosClienteRequest request, int id_cliente)
         {
             // Query para actualizar cliente
-            string query = @"UPDATE Usuario SET 
-                            nombre = @nombre, 
+            string query = @"UPDATE Cliente SET 
+                            nombres = @nombre, 
                             apellido_paterno = @apellido_paterno, 
                             apellido_materno = @apellido_materno,
-                            id_tipo_documento = @id_tipo_documento, 
+                            id_tipo_doc = @id_tipo_documento, 
                             nro_documento = @nro_documento, 
                             telefono = @telefono,
-                            direccion = @direccion, 
                             correo = @correo
-                            WHERE id_usuario = @id_usuario";
+                            WHERE id_cliente = @id_cliente";
 
             try
             {
@@ -224,15 +207,14 @@ namespace Data
                     SqlCommand cmd = new SqlCommand(query, con);
 
                     // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
-                    cmd.Parameters.AddWithValue("@apellido_paterno", cliente.ApellidoPaterno);
-                    cmd.Parameters.AddWithValue("@apellido_materno", cliente.ApellidoMaterno);
-                    cmd.Parameters.AddWithValue("@id_tipo_documento", cliente.IdTipoDocumento);
-                    cmd.Parameters.AddWithValue("@nro_documento", cliente.NroDocumento);
-                    cmd.Parameters.AddWithValue("@telefono", cliente.Telefono);
-                    cmd.Parameters.AddWithValue("@direccion", cliente.Direccion);
-                    cmd.Parameters.AddWithValue("@correo", cliente.Correo);
-                    cmd.Parameters.AddWithValue("@id_usuario", cliente.IdUsuario);
+                    cmd.Parameters.AddWithValue("@nombre", request.Nombres);
+                    cmd.Parameters.AddWithValue("@apellido_paterno", request.ApellidoPaterno);
+                    cmd.Parameters.AddWithValue("@apellido_materno", request.ApellidoMaterno);
+                    cmd.Parameters.AddWithValue("@id_tipo_documento", request.IdTipoDoc);
+                    cmd.Parameters.AddWithValue("@nro_documento", request.NroDocumento);
+                    cmd.Parameters.AddWithValue("@telefono", request.Telefono);
+                    cmd.Parameters.AddWithValue("@correo", request.Correo);
+                    cmd.Parameters.AddWithValue("@id_cliente", id_cliente);
 
                     // Abrir conexión
                     await con.OpenAsync();
@@ -243,8 +225,8 @@ namespace Data
                     // Cerrar conexión
                     con.Close();
 
-                    // Retornar cantidad de filas afectadas
-                    return $"El cliente {cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno} fue actualizado correctamente.";
+                    // Retornar mensaje de exito
+                    return $"El cliente {request.Nombres} {request.ApellidoPaterno} {request.ApellidoMaterno} fue actualizado correctamente.";
                 }
             }
             catch (Exception ex)
@@ -254,33 +236,25 @@ namespace Data
         }
 
         // Eliminar cliente
-        public async Task<string> EliminarCliente(int id_usuario)
+        public async Task<CrudResponse> EliminarCliente(int id_cliente)
         {
-            // Query para eliminar cliente
-            string query = @"UPDATE Usuario SET activo = 'No' WHERE id_usuario = @id_usuario";
-
             try
             {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "EliminarCliente", id_cliente);
+
+                if (await dr.ReadAsync())
                 {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
 
-                    // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@id_usuario", id_usuario);
-
-                    // Abrir conexión
-                    await con.OpenAsync();
-
-                    // Ejecutar query
-                    await cmd.ExecuteNonQueryAsync();
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar cantidad de filas afectadas
-                    return $"El cliente con id {id_usuario} fue eliminado correctamente.";
+                    return resultado;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al eliminar al cliente.");
                 }
             }
             catch (Exception ex)

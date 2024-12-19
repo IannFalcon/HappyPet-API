@@ -1,5 +1,6 @@
 ﻿using Business;
 using Entity.Models;
+using Entity.Request;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -8,23 +9,23 @@ namespace AppHappyPet_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VendedorController : ControllerBase
+    public class EmpleadoController : ControllerBase
     {
-        private readonly VendedorService ven_service;
+        private readonly EmpleadoService emp_service;
 
-        public VendedorController(VendedorService ven_service)
+        public EmpleadoController(EmpleadoService emp_service)
         {
-            this.ven_service = ven_service;
+            this.emp_service = emp_service;
         }
 
-        // GET: api/<UsuarioController>
-        [HttpGet]
-        public async Task<IActionResult> ListarVendedores([FromQuery] string? nro_documento, [FromQuery] string? nombre)
+        // GET: api/<EmpleadoController>
+        [HttpGet("listar")]
+        public async Task<IActionResult> ListarEmpleados([FromQuery] string? nro_documento, [FromQuery] string? nombre)
         {
             try
             {
-                var vendedores = await ven_service.ListarVendedores(nro_documento, nombre);
-                return Ok(new { mensaje = "Vendedores encontrados", data = vendedores });
+                var vendedores = await emp_service.ListarEmpleados(nro_documento, nombre);
+                return Ok(new { mensaje = "Empleados encontrados", data = vendedores });
             }
             catch (Exception ex)
             {
@@ -32,14 +33,14 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
-        // GET api/<UsuarioController>/5
-        [HttpGet("{idUsuario}")]
-        public async Task<IActionResult> ObtenerVendedorId(int idUsuario)
+        // GET api/<EmpleadoController>/5
+        [HttpGet("obtener/{id_empleado}")]
+        public async Task<IActionResult> ObtenerEmpleadoId(int id_empleado)
         {
             try
             {
-                var vendedor = await ven_service.ObtenerVendedorId(idUsuario);
-                return Ok(new { mensaje = "Vendedor encontrado", data = vendedor });
+                var vendedor = await emp_service.ObtenerEmpleadoId(id_empleado);
+                return Ok(new { mensaje = "Empleado encontrado", data = vendedor });
             }
             catch (Exception ex)
             {
@@ -48,12 +49,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // POST api/<UsuarioController>
-        [HttpPost]
-        public async Task<IActionResult> RegistrarVendedor([FromBody] Usuario usuario)
+        [HttpPost("registrar")]
+        public async Task<IActionResult> RegistrarEmpleado([FromBody] DatosEmpleadoRequest request)
         {
             try
             {
-                var resultado = await ven_service.RegistrarVendedor(usuario);
+                var resultado = await emp_service.RegistrarEmpleado(request);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -63,12 +64,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // PUT api/<UsuarioController>/5
-        [HttpPut]
-        public async Task<IActionResult> ActualizarVendedor([FromBody] Usuario usuario)
+        [HttpPut("actualizar/{id_empleado}")]
+        public async Task<IActionResult> ActualizarEmpleado([FromBody] DatosEmpleadoRequest request, int id_empleado)
         {
             try
             {
-                var resultado = await ven_service.ActualizarVendedor(usuario);
+                var resultado = await emp_service.ActualizarEmpleado(request, id_empleado);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -78,12 +79,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // DELETE api/<UsuarioController>/5
-        [HttpDelete("{idUsuario}")]
-        public async Task<IActionResult> EliminarVendedor(int idUsuario)
+        [HttpDelete("eliminar/{id_empleado}")]
+        public async Task<IActionResult> EliminarEmpleado(int id_empleado)
         {
             try
             {
-                var resultado = await ven_service.EliminarVendedor(idUsuario);
+                var resultado = await emp_service.EliminarEmpleado(id_empleado);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -94,11 +95,11 @@ namespace AppHappyPet_API.Controllers
 
         // GET api/<UsuarioController>/5
         [HttpGet("exportar")]
-        public async Task<IActionResult> ExportarVendedores()
+        public async Task<IActionResult> ExportarEmpleados()
         {
             try
             {
-                var content = await ven_service.ExportarListadoVendedores();
+                var content = await emp_service.ExportarListaEmpleados();
                 var fechaActual = DateTime.Now.ToString("yyyy-MM-dd");
                 var nombreArchivo = $"Listado-Vendedores-{fechaActual}.xlsx";
                 return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);

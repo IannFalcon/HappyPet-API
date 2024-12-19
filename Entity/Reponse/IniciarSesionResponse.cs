@@ -6,7 +6,7 @@
         public int? IdCliente { get; set; }
         public string? Rol { get; set; }
         public string? NombreUsuario { get; set; }
-        public int? CambioContra { get; set; }
+        public bool? CambioContra { get; set; }
         public string? MensajeError { get; set; }
     }
 }

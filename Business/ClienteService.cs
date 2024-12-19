@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Data;
-using Entity.Models;
+using Entity.Reponse;
+using Entity.Request;
 
 namespace Business
 {
@@ -14,7 +15,7 @@ namespace Business
         }
 
         // Método para listar clientes
-        public async Task<List<Usuario>> ListarClientes(string nro_documento, string nombre)
+        public async Task<List<DatosClienteResponse>> ListarClientes(string nro_documento, string nombre)
         {
             try
             {
@@ -28,15 +29,15 @@ namespace Business
         }
 
         // Método para obtener un cliente por ID
-        public async Task<Usuario> ObtenerClienteId(int idUsuario)
+        public async Task<DatosClienteResponse> ObtenerClienteId(int id_cliente)
         {
             try
             {
-                var cliente = await dao_cliente.ObtenerClienteId(idUsuario);
+                var cliente = await dao_cliente.ObtenerClienteId(id_cliente);
 
                 if (cliente == null)
                 {
-                    throw new Exception($"El cliente con ID: {idUsuario} no fue encontrado.");
+                    throw new Exception($"El cliente con ID: {id_cliente} no fue encontrado.");
                 }
 
                 return cliente!;
@@ -48,7 +49,7 @@ namespace Business
         }
 
         // Método para registrar un cliente desde la vista de administrador
-        public async Task<string> RegistrarCliente(Usuario cliente)
+        public async Task<CrudResponse> RegistrarCliente(DatosClienteRequest cliente)
         {
             try
             {
@@ -57,7 +58,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese los datos del cliente");
                 }
 
-                if (cliente.Nombre == null || cliente.Nombre == "")
+                if (cliente.Nombres == null || cliente.Nombres == "")
                 {
                     throw new Exception("Error: El nombre del cliente es requerido");
                 }
@@ -72,7 +73,7 @@ namespace Business
                     throw new Exception("Error: El apellido materno del cliente es requerido");
                 }
 
-                if (cliente.IdTipoDocumento == 0)
+                if (cliente.IdTipoDoc <= 0)
                 {
                     throw new Exception("Error: El tipo de documento del cliente es requerido");
                 }
@@ -87,11 +88,6 @@ namespace Business
                     throw new Exception("Error: El teléfono del cliente es requerido");
                 }
 
-                if (cliente.Direccion == null || cliente.Direccion == "")
-                {
-                    throw new Exception("Error: La dirección del cliente es requerida");
-                }
-
                 if (cliente.Correo == null || cliente.Correo == "")
                 {
                     throw new Exception("Error: El correo del cliente es requerido");
@@ -99,19 +95,9 @@ namespace Business
 
                 var respuesta = await dao_cliente.NuevoCliente(cliente);
 
-                if (respuesta == "DNI_EXISTE")
+                if (respuesta.Exito == 0)
                 {
-                    throw new Exception("Error: El número de documento ya existe.");
-                }
-
-                if (respuesta == "TEL_EXISTE")
-                {
-                    throw new Exception("Error: El numero de teléfono ya existe.");
-                }
-
-                if (respuesta == "CORREO_EXISTE")
-                {
-                    throw new Exception("Error: El correo ya existe.");
+                    throw new Exception($"Error: {respuesta.Mensaje}");
                 }
 
                 return respuesta;
@@ -123,7 +109,7 @@ namespace Business
         }
 
         // Método para actualizar un cliente
-        public async Task<string> ActualizarCliente(Usuario cliente)
+        public async Task<string> ActualizarCliente(DatosClienteRequest cliente, int id_cliente)
         {
             try
             {
@@ -132,7 +118,12 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese los datos del cliente");
                 }
 
-                if (cliente.Nombre == null || cliente.Nombre == "")
+                if (id_cliente <= 0)
+                {
+                    throw new Exception("Error: El id del cliente es requerido");
+                }
+
+                if (cliente.Nombres == null || cliente.Nombres == "")
                 {
                     throw new Exception("Error: El nombre del cliente es requerido");
                 }
@@ -147,7 +138,7 @@ namespace Business
                     throw new Exception("Error: El apellido materno del cliente es requerido");
                 }
 
-                if (cliente.IdTipoDocumento == 0)
+                if (cliente.IdTipoDoc <= 0)
                 {
                     throw new Exception("Error: El tipo de documento del cliente es requerido");
                 }
@@ -162,17 +153,12 @@ namespace Business
                     throw new Exception("Error: El teléfono del cliente es requerido");
                 }
 
-                if (cliente.Direccion == null || cliente.Direccion == "")
-                {
-                    throw new Exception("Error: La dirección del cliente es requerida");
-                }
-
                 if (cliente.Correo == null || cliente.Correo == "")
                 {
                     throw new Exception("Error: El correo del cliente es requerido");
                 }
 
-                var respuesta = await dao_cliente.ActualizarCliente(cliente);
+                var respuesta = await dao_cliente.ActualizarCliente(cliente, id_cliente);
                 return respuesta;
             }
             catch (Exception ex)
@@ -182,16 +168,22 @@ namespace Business
         }
 
         // Método para eliminar un cliente
-        public async Task<string> EliminarCliente(int idUsuario)
+        public async Task<CrudResponse> EliminarCliente(int id_cliente)
         {
             try
             {
-                if (idUsuario == 0)
+                if (id_cliente == 0)
                 {
                     throw new Exception("Error: El id del cliente es requerido");
                 }
 
-                var respuesta = await dao_cliente.EliminarCliente(idUsuario);
+                var respuesta = await dao_cliente.EliminarCliente(id_cliente);
+
+                if (respuesta.Exito == 0)
+                {
+                    throw new Exception($"Error: {respuesta.Mensaje}");
+                }
+
                 return respuesta;
             }
             catch (Exception ex)
@@ -210,19 +202,17 @@ namespace Business
                 using (var workbook = new XLWorkbook())
                 {
                     var worksheet = workbook.Worksheets.Add("Clientes");
-                    worksheet.Cell(2, 2).Value = "ID Cliente";
-                    worksheet.Cell(2, 3).Value = "Nombre";
-                    worksheet.Cell(2, 4).Value = "Apellido Paterno";
-                    worksheet.Cell(2, 5).Value = "Apellido Materno";
-                    worksheet.Cell(2, 6).Value = "Tipo de Documento";
-                    worksheet.Cell(2, 7).Value = "Número de Documento";
-                    worksheet.Cell(2, 8).Value = "Teléfono";
-                    worksheet.Cell(2, 9).Value = "Dirección";
-                    worksheet.Cell(2, 10).Value = "Correo";
-                    worksheet.Cell(2, 11).Value = "Fecha de Registro";
+                    worksheet.Cell(2, 2).Value = "Nombre";
+                    worksheet.Cell(2, 3).Value = "Apellido Paterno";
+                    worksheet.Cell(2, 4).Value = "Apellido Materno";
+                    worksheet.Cell(2, 5).Value = "Tipo de Documento";
+                    worksheet.Cell(2, 6).Value = "Número de Documento";
+                    worksheet.Cell(2, 7).Value = "Teléfono";
+                    worksheet.Cell(2, 8).Value = "Correo";
+                    worksheet.Cell(2, 9).Value = "Fecha de Registro";
 
                     // Aplicar estilo al encabezado
-                    var headerRange = worksheet.Range("B2:K2");
+                    var headerRange = worksheet.Range("B2:I2");
                     headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
                     headerRange.Style.Font.Bold = true;
                     headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -230,16 +220,14 @@ namespace Business
 
                     for (int i = 0; i < clientes.Count; i++)
                     {
-                        worksheet.Cell(i + 3, 2).Value = clientes[i].IdUsuario;
-                        worksheet.Cell(i + 3, 3).Value = clientes[i].Nombre;
-                        worksheet.Cell(i + 3, 4).Value = clientes[i].ApellidoPaterno;
-                        worksheet.Cell(i + 3, 5).Value = clientes[i].ApellidoMaterno;
-                        worksheet.Cell(i + 3, 6).Value = clientes[i].UsuTipoDoc?.Descripcion;
-                        worksheet.Cell(i + 3, 7).Value = clientes[i].NroDocumento;
-                        worksheet.Cell(i + 3, 8).Value = clientes[i].Telefono;
-                        worksheet.Cell(i + 3, 9).Value = clientes[i].Direccion;
-                        worksheet.Cell(i + 3, 10).Value = clientes[i].Correo;
-                        worksheet.Cell(i + 3, 11).Value = clientes[i].FecRegistro;
+                        worksheet.Cell(i + 3, 2).Value = clientes[i].Nombres;
+                        worksheet.Cell(i + 3, 3).Value = clientes[i].ApellidoPaterno;
+                        worksheet.Cell(i + 3, 4).Value = clientes[i].ApellidoMaterno;
+                        worksheet.Cell(i + 3, 5).Value = clientes[i].TipoDocumento.NombreTipoDoc;
+                        worksheet.Cell(i + 3, 6).Value = clientes[i].NroDocumento;
+                        worksheet.Cell(i + 3, 7).Value = clientes[i].Telefono;
+                        worksheet.Cell(i + 3, 8).Value = clientes[i].Correo;
+                        worksheet.Cell(i + 3, 9).Value = clientes[i].FecRegistro;
 
                         // Aplicar estilo a las celdas
                         worksheet.Cell(i + 3, 2).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -250,8 +238,6 @@ namespace Business
                         worksheet.Cell(i + 3, 7).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                         worksheet.Cell(i + 3, 8).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                         worksheet.Cell(i + 3, 9).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                        worksheet.Cell(i + 3, 10).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-                        worksheet.Cell(i + 3, 11).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                     }
 
                     // Ajustar el ancho de las columnas

@@ -146,7 +146,6 @@ public partial class BdHappyPetContext : DbContext
             entity.Property(e => e.NroDocumento)
                 .HasMaxLength(12)
                 .IsUnicode(false)
-                .IsFixedLength()
                 .HasColumnName("nro_documento");
             entity.Property(e => e.Telefono)
                 .HasMaxLength(12)
@@ -284,7 +283,6 @@ public partial class BdHappyPetContext : DbContext
             entity.Property(e => e.NroDocumento)
                 .HasMaxLength(12)
                 .IsUnicode(false)
-                .IsFixedLength()
                 .HasColumnName("nro_documento");
             entity.Property(e => e.Telefono)
                 .HasMaxLength(12)
