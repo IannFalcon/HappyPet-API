@@ -17,7 +17,7 @@ namespace AppHappyPet_API.Controllers
         }
 
         // GET: api/<DetalleVentaController>
-        [HttpGet("{id_venta}")]
+        [HttpGet("consultar/{id_venta}")]
         public async Task<IActionResult> ListarDetalleVenta(int id_venta)
         {
             try

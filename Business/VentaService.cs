@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Data;
 using Entity.Models;
+using Entity.Reponse;
 
 namespace Business
 {
@@ -14,7 +15,7 @@ namespace Business
         }
 
         // Metodo para listar ventas
-        public async Task<List<Venta>> ListarVentas()
+        public async Task<List<VentaResponse>> ListarVentas()
         {
             try
             {
@@ -71,12 +72,13 @@ namespace Business
                     worksheet.Cell(2, 2).Value = "Id Venta";
                     worksheet.Cell(2, 3).Value = "Id Transacción";
                     worksheet.Cell(2, 4).Value = "Nombre Cliente";
-                    worksheet.Cell(2, 5).Value = "Total Productos";
-                    worksheet.Cell(2, 6).Value = "Monto Total";
-                    worksheet.Cell(2, 7).Value = "Fecha Venta";
+                    worksheet.Cell(2, 5).Value = "Dirección de envío";
+                    worksheet.Cell(2, 6).Value = "Total Productos";
+                    worksheet.Cell(2, 7).Value = "Monto Total";
+                    worksheet.Cell(2, 8).Value = "Fecha Venta";
 
                     // Aplicar estilo al encabezado
-                    var headerRange = worksheet.Range("B2:G2");
+                    var headerRange = worksheet.Range("B2:H2");
                     headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
                     headerRange.Style.Font.Bold = true;
                     headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -86,12 +88,11 @@ namespace Business
                     {
                         worksheet.Cell(i + 3, 2).Value = ventas[i].IdVenta;
                         worksheet.Cell(i + 3, 3).Value = ventas[i].IdTransaccion;
-                        worksheet.Cell(i + 3, 4).Value = (ventas[i].UsuarioVenta!.Nombre + " " + 
-                                                          ventas[i].UsuarioVenta!.ApellidoPaterno + " " +
-                                                          ventas[i].UsuarioVenta!.ApellidoMaterno);
-                        worksheet.Cell(i + 3, 5).Value = ventas[i].TotalProductos;
-                        worksheet.Cell(i + 3, 6).Value = ventas[i].MontoTotal;
-                        worksheet.Cell(i + 3, 7).Value = ventas[i].FecVenta;
+                        worksheet.Cell(i + 3, 4).Value = ventas[i].NombreCliente;
+                        worksheet.Cell(i + 3, 5).Value = ventas[i].DireccionEnvio;
+                        worksheet.Cell(i + 3, 6).Value = ventas[i].TotalProductos;
+                        worksheet.Cell(i + 3, 7).Value = ventas[i].MontoTotal;
+                        worksheet.Cell(i + 3, 8).Value = ventas[i].FecVenta;
 
                         // Aplicar estilo a las celdas
                         worksheet.Cell(i + 3, 2).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -100,6 +101,7 @@ namespace Business
                         worksheet.Cell(i + 3, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                         worksheet.Cell(i + 3, 6).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                         worksheet.Cell(i + 3, 7).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                        worksheet.Cell(i + 3, 8).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                     }
 
                     // Ajustar el ancho de las columnas

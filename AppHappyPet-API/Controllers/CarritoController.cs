@@ -1,4 +1,5 @@
 ﻿using Business;
+using Entity.Request;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,12 +18,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // GET: api/<CarritoController>
-        [HttpGet("{idUsuario}")]
-        public async Task<IActionResult> ListarProductosCarrito(int idUsuario)
+        [HttpGet("productos/{id_usuario}")]
+        public async Task<IActionResult> ListarProductosCarrito(int id_usuario)
         {
             try
             {
-                var resultado = await cart_service.ListarProductosCarrito(idUsuario);
+                var resultado = await cart_service.ListarProductosCarrito(id_usuario);
 
                 if (resultado.Count == 0)
                 {
@@ -39,11 +40,11 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<CarritoController>
         [HttpPost]
-        public async Task<IActionResult> AgregarQuitarProductosCarrito([FromQuery] int idUsuario, [FromQuery] int idProducto, [FromQuery] bool accion)
+        public async Task<IActionResult> AgregarQuitarProductosCarrito(OperacionesCarritoRequest request)
         {
             try
             {
-                var resultado = await cart_service.AgregarQuitarProductoCarrito(idUsuario, idProducto, accion);
+                var resultado = await cart_service.AgregarQuitarProductoCarrito(request);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)

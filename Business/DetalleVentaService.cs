@@ -1,5 +1,5 @@
 ﻿using Data;
-using Entity.Models;
+using Entity.Reponse;
 
 namespace Business
 {
@@ -13,7 +13,7 @@ namespace Business
         }
 
         // Método para listar detalles de venta por ID de venta
-        public async Task<List<DetalleVenta>> ListarDetalleVenta(int id_venta)
+        public async Task<List<DetalleVentaResponse>> ListarDetalleVenta(int id_venta)
         {
             try
             {

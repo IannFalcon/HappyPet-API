@@ -1,4 +1,5 @@
 ﻿using Entity.Models;
+using Entity.Reponse;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -16,13 +17,19 @@ namespace Data
         }
 
         // Obtener ventas
-        public async Task<List<Venta>> ObtenerVentas()
+        public async Task<List<VentaResponse>> ObtenerVentas()
         {
             // Crear lista de ventas
-            List<Venta> ventas = new List<Venta>();
+            List<VentaResponse> ventas = new List<VentaResponse>();
 
             // Query para obtener ventas
-            string query = @"SELECT * FROM Venta";
+            string query = @"SELECT v.id_venta, v.id_transaccion,
+	                       CONCAT(c.nombres, ' ', c.apellido_paterno, ' ', c.apellido_materno) as nombre_cliente,
+	                       CONCAT(dv.pais, ', ', dv.ciudad,'. ', dv.direccion, ' ', dv.codigo_postal) as direccion_envio,
+	                       v.total_productos, v.monto_total, v.fec_venta
+                           FROM Venta v
+                           INNER JOIN DestinoVenta dv ON v.id_destino = dv.id_destino
+                           INNER JOIN Cliente c ON v.id_cliente = c.id_cliente";
 
             try
             {
@@ -41,15 +48,15 @@ namespace Data
                     // Leer resultados
                     while (await dr.ReadAsync())
                     {
-                        Venta venta = new Venta
+                        VentaResponse venta = new VentaResponse
                         {
                             IdVenta = dr.GetInt32(0),
-                            IdUsuario = dr.GetInt32(1),
-                            TotalProductos = dr.GetInt32(2),
-                            MontoTotal = dr.GetDecimal(3),
-                            IdTransaccion = dr.GetString(4),
-                            FecVenta = dr.GetDateTime(5),
-                            UsuarioVenta = await dao_cli.ObtenerClienteId(dr.GetInt32(1))
+                            IdTransaccion = dr.GetString(1),
+                            NombreCliente = dr.GetString(2),
+                            DireccionEnvio = dr.GetString(3),
+                            TotalProductos = dr.GetInt32(4),
+                            MontoTotal = dr.GetDecimal(5),
+                            FecVenta = dr.GetDateTime(6)
                         };
 
                         ventas.Add(venta);

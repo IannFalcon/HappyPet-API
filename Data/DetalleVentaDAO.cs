@@ -1,4 +1,4 @@
-﻿using Entity.Models;
+﻿using Entity.Reponse;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -16,13 +16,15 @@ namespace Data
         }
 
         // Obtener detalles de venta
-        public async Task<List<DetalleVenta>> ObtenerDetallesVenta(int id_venta)
+        public async Task<List<DetalleVentaResponse>> ObtenerDetallesVenta(int id_venta)
         {
             // Crear lista de detalles de venta
-            List<DetalleVenta> detallesVenta = new List<DetalleVenta>();
+            List<DetalleVentaResponse> detallesVenta = new List<DetalleVentaResponse>();
 
             // Query para obtener detalles de venta
-            string query = @"SELECT * FROM DetalleVenta
+            string query = @"SELECT dv.cantidad, p.nombre, p.precio_unitario, dv.total
+                            FROM DetalleVenta dv
+                            INNER JOIN Producto p ON dv.id_producto = p.id_producto
                             WHERE id_venta = @id_venta";
 
             try
@@ -44,14 +46,12 @@ namespace Data
                     // Leer resultados
                     while (await dr.ReadAsync())
                     {
-                        DetalleVenta detalleVenta = new DetalleVenta
+                        DetalleVentaResponse detalleVenta = new DetalleVentaResponse
                         {
-                            IdDetalleVenta = dr.GetInt32(0),
-                            IdVenta = dr.GetInt32(1),
-                            IdProducto = dr.GetInt32(2),
-                            Cantidad = dr.GetInt32(3),
-                            Total = dr.GetDecimal(4),
-                            ProductoDetalle = await dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
+                            Cantidad = dr.GetInt32(0),
+                            NombreProducto = dr.GetString(1),
+                            PrecioUnitario = dr.GetDecimal(2),
+                            Total = dr.GetDecimal(3)
                         };
                         detallesVenta.Add(detalleVenta);
                     }

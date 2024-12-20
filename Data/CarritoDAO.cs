@@ -1,4 +1,5 @@
-﻿using Entity.Models;
+﻿using Entity.Reponse;
+using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -15,12 +16,15 @@ namespace Data
             this.dao_prod = dao_prod;
         }
 
-        public async Task<List<Carrito>> ListarProductosCarrito(int idUsuario)
+        public async Task<List<ProductosCarritoResponse>> ListarProductosCarrito(int id_cliente)
         {
-            List<Carrito> listado = new List<Carrito>();
+            List<ProductosCarritoResponse> listado = new List<ProductosCarritoResponse>();
 
             // Query para listar los productos del carrito
-            string query = "SELECT * FROM Carrito WHERE id_usuario = @idUsuario";
+            string query = @"SELECT c.id_producto, p.ruta_imagen, p.nombre, p.descripcion, p.precio_unitario, c.cantidad
+                            FROM Carrito c
+                            INNER JOIN Producto p ON c.id_producto = p.id_producto
+                            WHERE c.id_cliente = @id_cliente";
 
             try
             {
@@ -31,7 +35,7 @@ namespace Data
                     SqlCommand cmd = new SqlCommand(query, con);
 
                     // Agregar el parámetro idUsuario
-                    cmd.Parameters.AddWithValue("@idUsuario", idUsuario);
+                    cmd.Parameters.AddWithValue("@id_cliente", id_cliente);
 
                     // Abrir la conexión
                     con.Open();
@@ -41,13 +45,14 @@ namespace Data
 
                     while (await dr.ReadAsync())
                     {
-                        Carrito carrito = new Carrito
+                        ProductosCarritoResponse carrito = new ProductosCarritoResponse
                         {
-                            IdCarrito = dr.GetInt32(0),
-                            IdUsuario = dr.GetInt32(1),
-                            IdProducto = dr.GetInt32(2),
-                            Cantidad = dr.GetInt32(3),
-                            ProductosCarrito = await dao_prod.ObtenerProductoPorId(dr.GetInt32(2))
+                            IdProducto = dr.GetInt32(0),
+                            RutaImagen = dr.GetString(1),
+                            Nombre = dr.GetString(2),
+                            Descripcion = dr.GetString(3),
+                            PrecioUnitario = dr.GetDecimal(4),
+                            Cantidad = dr.GetInt32(5)
                         };
 
                         listado.Add(carrito);
@@ -65,23 +70,30 @@ namespace Data
             }
         }
 
-        public async Task<string> AccionesCarrito(int idUsuario, int idProducto, bool accion)
+        public async Task<CrudResponse> AccionesCarrito(OperacionesCarritoRequest request)
         {
-            string mensaje = string.Empty;
-
             try
             {
                 SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "AccionesCarrito",
-                                                    idUsuario,
-                                                    idProducto,
-                                                    accion);
+                                                    request.IdCliente,
+                                                    request.IdProducto,
+                                                    request.Cantidad,
+                                                    request.Accion);
 
                 if (await dr.ReadAsync())
                 {
-                    mensaje = dr.IsDBNull(0) ? "VACIO" : dr.GetString(0);
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1)
+                    };
+                    
+                    return resultado;
                 }
-
-                return mensaje;
+                else
+                {
+                    throw new Exception("Error: No se pudo realizar la operación");
+                }
             }
             catch (Exception ex)
             {

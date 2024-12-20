@@ -1,5 +1,7 @@
 ﻿using Data;
 using Entity.Models;
+using Entity.Reponse;
+using Entity.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +20,16 @@ namespace Business
         }
 
         // Método para listar los productos del carrito
-        public async Task<List<Carrito>> ListarProductosCarrito(int idUsuario)
+        public async Task<List<ProductosCarritoResponse>> ListarProductosCarrito(int id_cliente)
         {
             try
             {
-                if (idUsuario == 0)
+                if (id_cliente == 0)
                 {
-                    throw new Exception("Error: Por favor ingrese un idUsuario.");
+                    throw new Exception("Error: Por favor inicie sesión para continuar.");
                 }
 
-                var listado = await dao_carrito.ListarProductosCarrito(idUsuario);
+                var listado = await dao_carrito.ListarProductosCarrito(id_cliente);
                 return listado;
             }
             catch (Exception ex)
@@ -37,21 +39,26 @@ namespace Business
         }
 
         // Metodo para agregar o quitar productos del carrito
-        public async Task<string> AgregarQuitarProductoCarrito(int idUsuario, int idProducto, bool accion)
+        public async Task<CrudResponse> AgregarQuitarProductoCarrito(OperacionesCarritoRequest request)
         {
             try
             {
-                if (idUsuario <= 0)
+                if (request.IdCliente <= 0)
                 {
                     throw new Exception("Error: Por favor inicie sesión para continuar.");
                 }
 
-                if (idProducto <= 0)
+                if (request.IdProducto <= 0)
                 {
                     throw new Exception("Error: Por favor seleccione un producto.");
                 }
 
-                var resultado = await dao_carrito.AccionesCarrito(idUsuario, idProducto, accion);
+                if (request.Cantidad <= 0)
+                {
+                    throw new Exception("Error: La cantidad debe ser mayor a 0.");
+                }
+
+                var resultado = await dao_carrito.AccionesCarrito(request);
                 return resultado;
             }
             catch (Exception ex)
