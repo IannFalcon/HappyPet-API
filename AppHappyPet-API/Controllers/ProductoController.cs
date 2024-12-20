@@ -1,5 +1,6 @@
 ﻿using Business;
 using Entity.Models;
+using Entity.Request;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,7 +19,7 @@ namespace AppHappyPet_API.Controllers
         }
 
         // GET: api/<ProductoController>
-        [HttpGet]
+        [HttpGet("listar")]
         public async Task<IActionResult> ListarProductos([FromQuery] int? id_categoria, [FromQuery] int? id_marca, [FromQuery] string? nombre)
         {
             try
@@ -34,7 +35,7 @@ namespace AppHappyPet_API.Controllers
         }
 
         // GET api/<ProductoController>/5
-        [HttpGet("{id_producto}")]
+        [HttpGet("obtener/{id_producto}")]
         public async Task<IActionResult> ObtenerProductoPorId(int id_producto)
         {
             try
@@ -49,9 +50,25 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
+        // GET: api/<ProductoController>
+        [HttpGet("listar-ingreso")]
+        public async Task<IActionResult> ListarIngresoProductos([FromQuery] string? ruc_proveedor, [FromQuery] string? nombre_proveedor, [FromQuery] DateTime? fecha_ingreso)
+        {
+            try
+            {
+                // Mandar a llamar al método de obtener productos
+                var productos = await prod_service.ListarIngresoProductos(ruc_proveedor, nombre_proveedor, fecha_ingreso);
+                return Ok(new { mensaje = "Registros encontrados", data = productos });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
         // POST api/<ProductoController>
-        [HttpPost]
-        public async Task<IActionResult> RegistrarProductos([FromBody] Producto producto)
+        [HttpPost("registrar")]
+        public async Task<IActionResult> RegistrarProducto([FromBody] RegistrarProductoRequest producto)
         {
             try
             {
@@ -64,13 +81,28 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
-        // PUT api/<ProductoController>/5
-        [HttpPut]
-        public async Task<IActionResult> ActualizarProducto([FromBody] Producto producto)
+        // POST api/<ProductoController>
+        [HttpPost("registrar-ingreso")]
+        public async Task<IActionResult> RegistrarIngresoProducto([FromBody] IngresoProductoRequest ingreso)
         {
             try
             {
-                var resultado = await prod_service.ActualizarProducto(producto);
+                var resultado = await prod_service.RegistrarIngresoProducto(ingreso);
+                return Ok(new { mensaje = resultado });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        // PUT api/<ProductoController>/5
+        [HttpPut("actualizar/{id_producto}")]
+        public async Task<IActionResult> ActualizarProducto([FromBody] ActualizarProductoRequest producto, int id_producto)
+        {
+            try
+            {
+                var resultado = await prod_service.ActualizarProducto(producto, id_producto);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -80,12 +112,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // DELETE api/<ProductoController>/5
-        [HttpDelete("{idProducto}")]
-        public async Task<IActionResult> EliminarProducto(int idProducto)
+        [HttpDelete("eliminar/{id_producto}")]
+        public async Task<IActionResult> EliminarProducto(int id_producto)
         {
             try
             {
-                var resultado = await prod_service.EliminarProducto(idProducto);
+                var resultado = await prod_service.EliminarProducto(id_producto);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -103,6 +135,23 @@ namespace AppHappyPet_API.Controllers
                 var content = await prod_service.ExportarListadoProductos();
                 var fechaActual = DateTime.Now.ToString("yyyy-MM-dd");
                 var nombreArchivo = $"Listado-Productos-{fechaActual}.xlsx";
+                return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        // GET api/<ProductoController>/5
+        [HttpGet("exportar-lista-ingreso")]
+        public async Task<IActionResult> ExportarIngresoProductos()
+        {
+            try
+            {
+                var content = await prod_service.ExportarListaIngresoProductos();
+                var fechaActual = DateTime.Now.ToString("yyyy-MM-dd");
+                var nombreArchivo = $"Ingreso-Productos-{fechaActual}.xlsx";
                 return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
             }
             catch (Exception ex)
