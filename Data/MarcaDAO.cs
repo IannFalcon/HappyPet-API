@@ -1,4 +1,5 @@
-﻿using Entity.Models;
+﻿using Entity.Reponse;
+using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -14,10 +15,10 @@ namespace Data
         }
 
         // Obtener marcas
-        public async Task<List<Marca>> ObtenerMarcas(string? nombre)
+        public async Task<List<MarcaResponse>> ObtenerMarcas(string? nombre)
         {
             // Crear lista de marcas
-            List<Marca> marcas = new List<Marca>();
+            List<MarcaResponse> marcas = new List<MarcaResponse>();
 
             // Query para obtener marcas
             string query = @"SELECT id_marca, nombre FROM Marca
@@ -43,7 +44,7 @@ namespace Data
                     // Leer resultados
                     while (await dr.ReadAsync())
                     {
-                        Marca marca = new Marca
+                        MarcaResponse marca = new MarcaResponse
                         {
                             IdMarca = dr.GetInt32(0),
                             Nombre = dr.GetString(1),
@@ -65,56 +66,8 @@ namespace Data
             }
         }
 
-        // Obtener marca por id
-        public async Task<Marca> ObtenerMarcaPorId(int id_categoria)
-        {
-            Marca? categoria = null;
-
-            // Query para obtener marca por id
-            string query = "SELECT id_marca, nombre FROM Marca WHERE id_marca = @id_marca";
-
-            try
-            {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
-                {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
-
-                    // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@id_marca", id_categoria);
-
-                    // Abrir conexión
-                    con.Open();
-
-                    // Ejecutar query
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    // Leer resultados
-                    if (await dr.ReadAsync())
-                    {
-                        categoria = new Marca
-                        {
-                            IdMarca = dr.GetInt32(0),
-                            Nombre = dr.GetString(1),
-                        };
-                    }
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar marca
-                    return categoria!;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         // Nueva marca
-        public async Task<string> NuevaMarca(Marca marca)
+        public async Task<string> NuevaMarca(RegistrarMarcaCategoriaRequest marca)
         {
             // Query para insertar marca
             string query = "INSERT INTO Marca (nombre) VALUES (@nombre)";
@@ -150,7 +103,7 @@ namespace Data
         }
 
         // Actualizar marca
-        public async Task<string> ActualizarMarca(Marca marca)
+        public async Task<string> ActualizarMarca(RegistrarMarcaCategoriaRequest marca, int id_marca)
         {
             // Query para actualizar marca
             string query = "UPDATE Marca SET nombre = @nombre WHERE id_marca = @id_marca";
@@ -165,7 +118,7 @@ namespace Data
 
                     // Agregar parámetros al comando
                     cmd.Parameters.AddWithValue("@nombre", marca.Nombre);
-                    cmd.Parameters.AddWithValue("@id_marca", marca.IdMarca);
+                    cmd.Parameters.AddWithValue("@id_marca", id_marca);
 
                     // Abrir conexión
                     await con.OpenAsync();

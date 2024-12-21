@@ -1,4 +1,5 @@
-﻿using Entity.Models;
+﻿using Entity.Reponse;
+using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -14,10 +15,10 @@ namespace Data
         }
 
         // Obtener categorías
-        public async Task<List<Categoria>> ObtenerCategorias(string? nombre)
+        public async Task<List<CategoriaResponse>> ObtenerCategorias(string? nombre)
         {
             // Crear lista de categorías
-            List<Categoria> categorias = new List<Categoria>();
+            List<CategoriaResponse> categorias = new List<CategoriaResponse>();
 
             // Query para obtener categorías
             string query = @"SELECT id_categoria, nombre FROM Categoria
@@ -43,7 +44,7 @@ namespace Data
                     // Leer resultados
                     while (await dr.ReadAsync())
                     {
-                        Categoria categoria = new Categoria
+                        CategoriaResponse categoria = new CategoriaResponse
                         {
                             IdCategoria = dr.GetInt32(0),
                             Nombre = dr.GetString(1),
@@ -66,56 +67,8 @@ namespace Data
 
         }
 
-        // Obtener categoria por id
-        public async Task<Categoria> ObtenerCategoriaPorId(int id_categoria)
-        {
-            Categoria? categoria = null;
-
-            // Query para obtener categoría
-            string query = "SELECT id_categoria, nombre FROM Categoria WHERE id_categoria = @id_categoria";
-
-            try
-            {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
-                {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
-
-                    // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
-
-                    // Abrir conexión
-                    con.Open();
-
-                    // Ejecutar query
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    // Leer resultados
-                    if (await dr.ReadAsync())
-                    {
-                        categoria = new Categoria
-                        {
-                            IdCategoria = dr.GetInt32(0),
-                            Nombre = dr.GetString(1),
-                        };
-                    }
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar nulo
-                    return categoria!;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         // Nueva categoría
-        public async Task<string> NuevaCategoria(Categoria categoria)
+        public async Task<string> NuevaCategoria(RegistrarMarcaCategoriaRequest categoria)
         {
             // Query para insertar categoría
             string query = "INSERT INTO Categoria (nombre) VALUES (@nombre)";
@@ -140,7 +93,7 @@ namespace Data
                     // Cerrar conexión
                     con.Close();
 
-                    return $"La categoría {categoria.Nombre} fue registrada correctamente";
+                    return "La categoría fue registrada correctamente";
                 }
             }
             catch (Exception ex)
@@ -151,7 +104,7 @@ namespace Data
         }
 
         // Actualizar categoría
-        public async Task<string> ActualizarCatergoria(Categoria categoria)
+        public async Task<string> ActualizarCatergoria(RegistrarMarcaCategoriaRequest categoria, int id_categoria)
         {
             // Query para actualizar categoría
             string query = "UPDATE Categoria SET nombre = @nombre WHERE id_categoria = @id_categoria";
@@ -166,7 +119,7 @@ namespace Data
 
                     // Agregar parámetros al comando
                     cmd.Parameters.AddWithValue("@nombre", categoria.Nombre);
-                    cmd.Parameters.AddWithValue("@id_categoria", categoria.IdCategoria);
+                    cmd.Parameters.AddWithValue("@id_categoria", id_categoria);
 
                     // Abrir conexión
                     await con.OpenAsync();

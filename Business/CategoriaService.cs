@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Data;
-using Entity.Models;
-using System.Drawing;
+using Entity.Reponse;
+using Entity.Request;
 
 namespace Business
 {
@@ -15,7 +15,7 @@ namespace Business
         }
 
         // Método para listar categorias
-        public async Task<List<Categoria>> ListarCategorias(string nombre)
+        public async Task<List<CategoriaResponse>> ListarCategorias(string nombre)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace Business
         }
 
         // Método para registrar categorias
-        public async Task<string> RegistrarCategorias(Categoria categoria)
+        public async Task<string> RegistrarCategorias(RegistrarMarcaCategoriaRequest categoria)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Business
         }
 
         // Método para actualizar categorias
-        public async Task<string> ActualizarCategoria(Categoria categoria)
+        public async Task<string> ActualizarCategoria(RegistrarMarcaCategoriaRequest categoria, int id_categoria)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese los datos de la categoría");
                 }
 
-                if (categoria.IdCategoria == 0)
+                if (id_categoria <= 0)
                 {
                     throw new Exception("Error: Por favor ingrese el id de la categoría");
                 }
@@ -73,7 +73,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el nombre de la categoría");
                 }
 
-                var resultado = await dao.ActualizarCatergoria(categoria);
+                var resultado = await dao.ActualizarCatergoria(categoria, id_categoria);
                 return resultado;
             }
             catch (Exception ex)

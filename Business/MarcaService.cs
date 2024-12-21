@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Data;
-using Entity.Models;
+using Entity.Reponse;
+using Entity.Request;
 
 namespace Business
 {
@@ -14,7 +15,7 @@ namespace Business
         }
 
         // Método para listar marcas
-        public async Task<List<Marca>> ListarMarcas(string nombre)
+        public async Task<List<MarcaResponse>> ListarMarcas(string nombre)
         {
             try
             {
@@ -30,7 +31,7 @@ namespace Business
         }
 
         // Método para registrar marcas
-        public async Task<string> RegistrarMarcas(Marca marca)
+        public async Task<string> RegistrarMarcas(RegistrarMarcaCategoriaRequest marca)
         {
             try
             {
@@ -54,7 +55,7 @@ namespace Business
         }
 
         // Método para actualizar marcas
-        public async Task<string> ActualizarMarca(Marca marca)
+        public async Task<string> ActualizarMarca(RegistrarMarcaCategoriaRequest marca, int id_marca)
         {
             try
             {
@@ -62,7 +63,7 @@ namespace Business
                 {
                     throw new Exception("Error: Por favor ingrese los datos de la marca");
                 }
-                if (marca.IdMarca == 0)
+                if (id_marca == 0)
                 {
                     throw new Exception("Error: Por favor ingrese el id de la marca");
                 }
@@ -71,7 +72,7 @@ namespace Business
                     throw new Exception("Error: Por favor ingrese el nombre de la marca");
                 }
 
-                var resultado = await dao.ActualizarMarca(marca);
+                var resultado = await dao.ActualizarMarca(marca, id_marca);
                 return resultado;
             }
             catch (Exception ex)

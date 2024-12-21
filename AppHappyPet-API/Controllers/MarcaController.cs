@@ -1,5 +1,5 @@
 ﻿using Business;
-using Entity.Models;
+using Entity.Request;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,7 +18,7 @@ namespace AppHappyPet_API.Controllers
         }
 
         // GET: api/<MarcaController>
-        [HttpGet]
+        [HttpGet("listar")]
         public async Task<IActionResult> ListarMarcas([FromQuery] string? nombre)
         {
             try
@@ -34,8 +34,8 @@ namespace AppHappyPet_API.Controllers
         }
 
         // POST api/<MarcaController>
-        [HttpPost]
-        public async Task<IActionResult> RegistrarMarcas([FromBody] Marca marca)
+        [HttpPost("registrar")]
+        public async Task<IActionResult> RegistrarMarcas([FromBody] RegistrarMarcaCategoriaRequest marca)
         {
             try
             {
@@ -49,12 +49,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // PUT api/<MarcaController>/5
-        [HttpPut]
-        public async Task<IActionResult> ActualizarMarca([FromBody] Marca marca)
+        [HttpPut("actualizar/{id_marca}")]
+        public async Task<IActionResult> ActualizarMarca([FromBody] RegistrarMarcaCategoriaRequest marca, int id_marca)
         {
             try
             {
-                var resultado = await mar_service.ActualizarMarca(marca);
+                var resultado = await mar_service.ActualizarMarca(marca, id_marca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
@@ -64,12 +64,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // DELETE api/<MarcaController>/5
-        [HttpDelete("{idMarca}")]
-        public async Task<IActionResult> EliminarMarca(int idMarca)
+        [HttpDelete("eliminar/{id_marca}")]
+        public async Task<IActionResult> EliminarMarca(int id_marca)
         {
             try
             {
-                var resultado = await mar_service.EliminarMarca(idMarca);
+                var resultado = await mar_service.EliminarMarca(id_marca);
                 return Ok(new { mensaje = resultado });
             }
             catch (Exception ex)
