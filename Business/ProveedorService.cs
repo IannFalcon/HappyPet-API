@@ -54,7 +54,7 @@ namespace Business
         }
 
         // Metodo para agregar un proveedor
-        public async Task<string> RegistrarProveedor(DatosProveedorRequest proveedor)
+        public async Task<CrudResponse> RegistrarProveedor(DatosProveedorRequest proveedor)
         {
             try
             {
@@ -85,6 +85,11 @@ namespace Business
 
                 var resultado = await dao.RegistrarProveedor(proveedor);
 
+                if (resultado.Exito == 0)
+                {
+                    throw new Exception(resultado.Mensaje);
+                }
+
                 if (resultado == null) 
                 {
                     throw new Exception("No se pudo registrar el proveedor.");
@@ -99,7 +104,7 @@ namespace Business
         }
 
         // Metodo para actualizar un proveedor
-        public async Task<string> ActualizarProveedor(DatosProveedorRequest proveedor, int id_proveedor)
+        public async Task<CrudResponse> ActualizarProveedor(DatosProveedorRequest proveedor, int id_proveedor)
         {
             try
             {
@@ -134,6 +139,11 @@ namespace Business
                 }
 
                 var resultado = await dao.ActualizarProveedor(proveedor, id_proveedor);
+
+                if (resultado.Exito == 0)
+                {
+                    throw new Exception(resultado.Mensaje);
+                }
 
                 if (resultado == null)
                 {

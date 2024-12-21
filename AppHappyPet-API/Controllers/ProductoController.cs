@@ -68,12 +68,12 @@ namespace AppHappyPet_API.Controllers
 
         // POST api/<ProductoController>
         [HttpPost("registrar")]
-        public async Task<IActionResult> RegistrarProducto([FromBody] RegistrarProductoRequest producto)
+        public async Task<IActionResult> RegistrarProducto([FromBody] RegistrarProductoRequest request)
         {
             try
             {
-                var resultado = await prod_service.RegistrarProducto(producto);
-                return Ok(new { mensaje = resultado });
+                var resultado = await prod_service.RegistrarProducto(request);
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var resultado = await prod_service.RegistrarIngresoProducto(ingreso);
-                return Ok(new { mensaje = resultado });
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {

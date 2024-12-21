@@ -56,7 +56,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var resultado = await pro_service.RegistrarProveedor(request);
-                return Ok(new { mensaje = resultado });
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var resultado = await pro_service.ActualizarProveedor(request, id_proveedor);
-                return Ok(new { mensaje = resultado });
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {

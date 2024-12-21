@@ -4,6 +4,7 @@ using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Data
 {
@@ -28,7 +29,7 @@ namespace Data
 
             // Query para obtener productos
             string query = @"SELECT p.id_producto, p.nombre, p.id_categoria, c.nombre, p.id_marca, m.nombre, descripcion, 
-                            precio_unitario, stock, nombre_imagen, ruta_imagen, activo, fec_vencimiento, fec_registro
+                            precio_unitario, stock, nombre_imagen, ruta_imagen, fec_vencimiento, fec_registro
                             FROM Producto p
                             INNER JOIN Categoria c ON p.id_categoria = c.id_categoria
                             INNER JOIN Marca m ON p.id_marca = m.id_marca
@@ -106,11 +107,11 @@ namespace Data
 
             // Query para obtener producto por id
             string query = @"SELECT p.id_producto, p.nombre, p.id_categoria, c.nombre, p.id_marca, m.nombre, descripcion, 
-                            precio_unitario, stock, nombre_imagen, ruta_imagen, activo, fec_vencimiento, fec_registro
+                            precio_unitario, stock, nombre_imagen, ruta_imagen, fec_vencimiento, fec_registro
                             FROM Producto p
                             INNER JOIN Categoria c ON p.id_categoria = c.id_categoria
                             INNER JOIN Marca m ON p.id_marca = m.id_marca
-                            WHERE p.producto = @id_producto";
+                            WHERE p.id_producto = @id_producto";
 
             try
             {
@@ -195,7 +196,7 @@ namespace Data
                     // Agregar parámetros al comando
                     cmd.Parameters.AddWithValue("@nombre_proveedor", string.IsNullOrEmpty(nombre_proveedor) ? DBNull.Value : nombre_proveedor);
                     cmd.Parameters.AddWithValue("@nombre_producto", string.IsNullOrEmpty(nombre_producto) ? DBNull.Value : nombre_producto);
-                    cmd.Parameters.AddWithValue("@fecha_ingreso", fecha_ingreso == DateTime.MinValue ? DBNull.Value : fecha_ingreso);
+                    cmd.Parameters.AddWithValue("@fecha_ingreso", fecha_ingreso.HasValue ? (object)fecha_ingreso.Value : DBNull.Value);
 
                     // Abrir conexión
                     con.Open();
@@ -239,9 +240,10 @@ namespace Data
                                                         request.IdCategoria,
                                                         request.IdMarca,
                                                         request.Descripcion,
-                                                        request.NombreImagen!,
-                                                        request.RutaImagen!,
-                                                        request.FecVencimiento!,
+                                                        request.PrecioUnitario,
+                                                        request.NombreImagen ?? (object)DBNull.Value,
+                                                        request.RutaImagen ?? (object)DBNull.Value,
+                                                        request.FecVencimiento ?? (object)DBNull.Value,
                                                         request.IdProveedor,
                                                         request.CantidadProductos);
 
@@ -271,9 +273,9 @@ namespace Data
         {
             try
             {
-                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarIngresoProducto",
-                                                        request.IdProducto,
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistarIngresoProducto",
                                                         request.IdProveedor,
+                                                        request.IdProducto,
                                                         request.Cantidad);
 
                 if (await dr.ReadAsync())
@@ -288,7 +290,7 @@ namespace Data
                 }
                 else
                 {
-                    throw new Exception("Error: Ocurrio un error al registrar el ingreso de productos.");
+                    throw new Exception("Error: Ocurrio un error al registrar el ingreso de los productos.");
                 }
             }
             catch (Exception ex)

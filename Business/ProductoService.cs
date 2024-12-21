@@ -68,50 +68,55 @@ namespace Business
         }
 
         // Método para agregar un producto
-        public async Task<CrudResponse> RegistrarProducto(RegistrarProductoRequest producto)
+        public async Task<CrudResponse> RegistrarProducto(RegistrarProductoRequest request)
         {
             try
             {
-                if (producto == null)
+                if (request == null)
                 {
                     throw new Exception("No se recibieron datos para registrar el producto.");
                 }
 
-                if (producto.Nombre == null || producto.Nombre == "")
+                if (request.Nombre == null || request.Nombre == "")
                 {
                     throw new Exception("El nombre del producto es requerido.");
                 }
 
-                if (producto.IdCategoria <= 0)
+                if (request.IdCategoria <= 0)
                 {
                     throw new Exception("La categoría del producto es requerida.");
                 }
 
-                if (producto.IdMarca <= 0)
+                if (request.IdMarca <= 0)
                 {
                     throw new Exception("La marca del producto es requerida.");
                 }
 
-                if (producto.PrecioUnitario <= 0)
+                if (request.Descripcion == null || request.Descripcion == "")
+                {
+                    throw new Exception("La descripción del producto es requerida.");
+                }
+
+                if (request.PrecioUnitario <= 0)
                 {
                     throw new Exception("El precio del producto es requerido.");
                 }
 
-                if (producto.CantidadProductos <= 0)
+                if (request.IdProveedor <= 0)
                 {
-                    throw new Exception("El stock del producto es requerido.");
+                    throw new Exception("El proveedor del producto es requerido.");
                 }
 
-                var resultado = await dao.NuevoProducto(producto);
+                if (request.CantidadProductos <= 0)
+                {
+                    throw new Exception("La cantidad de productos es requerida.");
+                }
+
+                var resultado = await dao.NuevoProducto(request);
 
                 if (resultado.Exito == 0)
                 {
                     throw new Exception(resultado.Mensaje);
-                }
-
-                if (resultado == null)
-                {
-                    throw new Exception("No se pudo registrar el producto.");
                 }
 
                 return resultado;
@@ -148,6 +153,12 @@ namespace Business
                 }
 
                 var resultado = await dao.RegistrarIngresoProducto(ingreso);
+
+                if (resultado.Exito == 0)
+                {
+                    throw new Exception(resultado.Mensaje);
+                }
+
                 return resultado;
             }
             catch (Exception ex)

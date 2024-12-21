@@ -20,6 +20,7 @@ builder.Services.AddScoped<ContadoresDAO>();
 builder.Services.AddScoped<DetalleVentaDAO>();
 builder.Services.AddScoped<MarcaDAO>();
 builder.Services.AddScoped<ProductoDAO>();
+builder.Services.AddScoped<ProveedorDAO>();
 builder.Services.AddScoped<EmpleadoDAO>();
 builder.Services.AddScoped<VentaDAO>();
 
@@ -32,6 +33,7 @@ builder.Services.AddScoped<ContadoresService>();
 builder.Services.AddScoped<DetalleVentaService>();
 builder.Services.AddScoped<MarcaService>();
 builder.Services.AddScoped<ProductoService>();
+builder.Services.AddScoped<ProveedorService>();
 builder.Services.AddScoped<EmpleadoService>();
 builder.Services.AddScoped<VentaService>();
 

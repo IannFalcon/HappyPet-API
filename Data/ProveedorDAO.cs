@@ -22,10 +22,11 @@ namespace Data
             List<DatosProveedorResponse> proveedores = new List<DatosProveedorResponse>();
 
             // Query para obtener proveedores
-            string query = @"SELECT id_proveedor, ruc_proveedor, nombre_proveedor, nro_telefono, correo, direccion
+            string query = @"SELECT id_proveedor, ruc_proveedor, nombre_proveedor, nro_telefono, correo, direccion, fec_registro
                             FROM Proveedor
-                            WHERE (@ruc_proveedor IS NULL OR ruc_proveedor LIKE '%' + @nro_documento + '%')
-                            AND (@nombre IS NULL OR nombre_proveedor LIKE '%' + @nombre + '%')";
+                            WHERE activo = 1
+                            AND (@ruc_proveedor IS NULL OR ruc_proveedor LIKE '%' + @ruc_proveedor + '%')
+                            AND (@nombre_proveedor IS NULL OR nombre_proveedor LIKE '%' + @nombre_proveedor + '%')";
 
             try
             {
@@ -37,7 +38,7 @@ namespace Data
 
                     // Agregar parámetros al comando
                     cmd.Parameters.AddWithValue("@ruc_proveedor", string.IsNullOrEmpty(ruc) ? DBNull.Value : ruc);
-                    cmd.Parameters.AddWithValue("@nombre", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
+                    cmd.Parameters.AddWithValue("@nombre_proveedor", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre);
 
                     // Abrir conexión
                     con.Open();
@@ -82,7 +83,8 @@ namespace Data
 
             // Query para obtener proveedor
             string query = @"SELECT id_proveedor, ruc_proveedor, nombre_proveedor, nro_telefono, correo, direccion, fec_registro
-                            FROM Proveedor WHERE id_proveedor = @id_proveedor";
+                            FROM Proveedor
+                            WHERE id_proveedor = @id_proveedor";
 
             try
             {
@@ -130,38 +132,30 @@ namespace Data
         }
 
         // Nuevo proveedor
-        public async Task<string> RegistrarProveedor(DatosProveedorRequest request)
+        public async Task<CrudResponse> RegistrarProveedor(DatosProveedorRequest request)
         {
-            // Query para insertar proveedor
-            string query = @"INSERT INTO Proveedor (ruc_proveedor, nombre_proveedor, nro_telefono, correo, direccion)
-                            VALUES (@ruc_proveedor, @nombre_proveedor, @nro_telefono, @correo, @direccion)";
-
             try
             {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarProveedor",
+                                                        request.RucProveedor,
+                                                        request.NombreProveedor,
+                                                        request.NroTelefono,
+                                                        request.Correo,
+                                                        request.Direccion);
+
+                if (await dr.ReadAsync())
                 {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
 
-                    // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@ruc_proveedor", request.RucProveedor);
-                    cmd.Parameters.AddWithValue("@nombre_proveedor", request.NombreProveedor);
-                    cmd.Parameters.AddWithValue("@nro_telefono", request.NroTelefono);
-                    cmd.Parameters.AddWithValue("@correo", request.Correo);
-                    cmd.Parameters.AddWithValue("@direccion", request.Direccion);
-
-                    // Abrir conexión
-                    await con.OpenAsync();
-
-                    // Ejecutar query
-                    await cmd.ExecuteNonQueryAsync();
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar mensaje de éxito
-                    return "Proveedor registrado correctamente";
+                    return resultado;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al registrar el proveedor.");
                 }
             }
             catch (Exception ex)
@@ -171,44 +165,31 @@ namespace Data
         }
 
         // Actualizar proveedor
-        public async Task<string> ActualizarProveedor(DatosProveedorRequest request, int id_proveedor)
+        public async Task<CrudResponse> ActualizarProveedor(DatosProveedorRequest request, int id_proveedor)
         {
-            // Query para actualizar proveedor
-            string query = @"UPDATE Proveedor SET 
-                            ruc_proveedor = @ruc_proveedor, 
-                            nombre_proveedor = @nombre_proveedor,
-                            nro_telefono = @nro_telefono, 
-                            correo = @correo, 
-                            direccion = @direccion
-                            WHERE id_proveedor = @id_proveedor";
-
             try
             {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ActualizarProveedor",
+                                                        id_proveedor,
+                                                        request.RucProveedor,
+                                                        request.NombreProveedor,
+                                                        request.NroTelefono,
+                                                        request.Correo,
+                                                        request.Direccion);
+
+                if (await dr.ReadAsync())
                 {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
 
-                    // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@ruc_proveedor", request.RucProveedor);
-                    cmd.Parameters.AddWithValue("@nombre_proveedor", request.NombreProveedor);
-                    cmd.Parameters.AddWithValue("@nro_telefono", request.NroTelefono);
-                    cmd.Parameters.AddWithValue("@correo", request.Correo);
-                    cmd.Parameters.AddWithValue("@direccion", request.Direccion);
-                    cmd.Parameters.AddWithValue("@id_proveedor", id_proveedor);
-
-                    // Abrir conexión
-                    await con.OpenAsync();
-
-                    // Ejecutar query
-                    await cmd.ExecuteNonQueryAsync();
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar mensaje de éxito
-                    return "Proveedor actualizado correctamente";
+                    return resultado;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al registrar el proveedor.");
                 }
             }
             catch (Exception ex)

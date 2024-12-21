@@ -7,9 +7,9 @@
         public int IdMarca { get; set; }
         public string Descripcion { get; set; } = string.Empty;
         public decimal PrecioUnitario { get; set; }
-        public string? NombreImagen { get; set; } = string.Empty;
-        public string? RutaImagen { get; set; } = string.Empty;
-        public DateTime? FecVencimiento { get; set; } = null;
+        public string? NombreImagen { get; set; }
+        public string? RutaImagen { get; set; }
+        public DateTime? FecVencimiento { get; set; }
         public int IdProveedor { get; set; }
         public int CantidadProductos { get; set; }
     }
