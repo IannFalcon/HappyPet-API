@@ -55,7 +55,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var resultado = await emp_service.RegistrarEmpleado(request);
-                return Ok(new { mensaje = resultado });
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var resultado = await emp_service.ActualizarEmpleado(request, id_empleado);
-                return Ok(new { mensaje = resultado });
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var resultado = await emp_service.EliminarEmpleado(id_empleado);
-                return Ok(new { mensaje = resultado });
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {

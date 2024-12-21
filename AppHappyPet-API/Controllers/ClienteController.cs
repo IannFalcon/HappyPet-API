@@ -69,7 +69,7 @@ namespace AppHappyPet_API.Controllers
             try
             {
                 var respuesta = await cli_service.ActualizarCliente(request, id_cliente);
-                return Ok(new { mensaje = respuesta });
+                return Ok(new { mensaje = respuesta.Mensaje });
             }
             catch (Exception ex)
             {

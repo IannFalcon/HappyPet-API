@@ -2,6 +2,7 @@
 using Data;
 using Entity.Models;
 using Entity.Reponse;
+using Entity.Request;
 
 namespace Business
 {
@@ -29,25 +30,45 @@ namespace Business
         }
 
         // Metodo para realizar venta
-        public async Task<string> RealizarVenta(int idUsuario, string idTransaccion)
+        public async Task<CrudResponse> RealizarVenta(RegistrarVentaRequest request)
         {
             try
             {
-                if (idUsuario <= 0)
+                if (request.IdCliente <= 0)
                 {
                     throw new Exception("Error: El id del usuario no es válido.");
                 }
 
-                if (idTransaccion == null)
+                if (request.IdTransaccion == null)
                 {
                     throw new Exception("Error: El id de la transacción no es válido.");
                 }
 
-                var resultado = await dao_venta.RealizarVenta(idUsuario, idTransaccion);
-
-                if (resultado == "VACIO")
+                if (string.IsNullOrEmpty(request.Pais))
                 {
-                    throw new Exception("Error: No existen productos en el carrito");
+                    throw new Exception("Error: El país no es válido.");
+                }
+
+                if (string.IsNullOrEmpty(request.Ciudad))
+                {
+                    throw new Exception("Error: La ciudad no es válida.");
+                }
+
+                if (string.IsNullOrEmpty(request.Direccion))
+                {
+                    throw new Exception("Error: La dirección no es válida.");
+                }
+
+                if (string.IsNullOrEmpty(request.CodigoPostal))
+                {
+                    throw new Exception("Error: El código postal no es válido.");
+                }
+
+                var resultado = await dao_venta.RealizarVenta(request);
+
+                if (resultado.Exito == 0)
+                {
+                    throw new Exception($"Error: {resultado.Mensaje}");
                 }
 
                 return resultado;

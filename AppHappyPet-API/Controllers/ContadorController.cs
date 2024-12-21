@@ -45,13 +45,6 @@ namespace AppHappyPet_API.Controllers
             return Ok(new { data = resultado });
         }
 
-        [HttpGet("Usuarios")]
-        public async Task<IActionResult> ObtenerTotalUsuarios()
-        {
-            var resultado = await cont_service.ObtenerTotalUsuarios();
-            return Ok(new { data = resultado });
-        }
-
         [HttpGet("Clientes")]
         public async Task<IActionResult> ObtenerTotalClientes()
         {
@@ -59,10 +52,10 @@ namespace AppHappyPet_API.Controllers
             return Ok(new { data = resultado });
         }
 
-        [HttpGet("Vendedores")]
-        public async Task<IActionResult> ObtenerTotalVendedores()
+        [HttpGet("Empleados")]
+        public async Task<IActionResult> ObtenerTotalEmpleados()
         {
-            var resultado = await cont_service.ObtenerTotalVendedores();
+            var resultado = await cont_service.ObtenerTotalEmpleados();
             return Ok(new { data = resultado });
         }
 

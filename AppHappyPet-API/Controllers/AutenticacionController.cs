@@ -26,7 +26,7 @@ namespace AppHappyPet_API.Controllers
             {
                 var respuesta = await aut_service.IniciarSesion(request);
 
-                if (respuesta.CambioContra == false)
+                if (respuesta.CambioContra == true)
                 {
                     return Ok(new { mensaje = "Es necesario cambiar la contraseña", data = respuesta });
                 }

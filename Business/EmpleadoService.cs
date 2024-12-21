@@ -120,7 +120,7 @@ namespace Business
         }
 
         // Método para actualizar a un empleado
-        public async Task<string> ActualizarEmpleado(DatosEmpleadoRequest request, int id_empleado)
+        public async Task<CrudResponse> ActualizarEmpleado(DatosEmpleadoRequest request, int id_empleado)
         {
             try
             {
@@ -180,6 +180,12 @@ namespace Business
                 }
 
                 var resultado = await dao_ven.ActualizarEmpleado(request, id_empleado);
+
+                if (resultado.Exito == 0)
+                {
+                    throw new Exception($"Error: {resultado.Mensaje}");
+                }
+
                 return resultado;
             }
             catch (Exception ex)

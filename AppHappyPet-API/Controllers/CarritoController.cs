@@ -18,12 +18,12 @@ namespace AppHappyPet_API.Controllers
         }
 
         // GET: api/<CarritoController>
-        [HttpGet("productos/{id_usuario}")]
-        public async Task<IActionResult> ListarProductosCarrito(int id_usuario)
+        [HttpGet("productos/{id_cliente}")]
+        public async Task<IActionResult> ListarProductosCarrito(int id_cliente)
         {
             try
             {
-                var resultado = await cart_service.ListarProductosCarrito(id_usuario);
+                var resultado = await cart_service.ListarProductosCarrito(id_cliente);
 
                 if (resultado.Count == 0)
                 {
@@ -39,13 +39,13 @@ namespace AppHappyPet_API.Controllers
         }
 
         // POST api/<CarritoController>
-        [HttpPost]
+        [HttpPost("acciones")]
         public async Task<IActionResult> AgregarQuitarProductosCarrito(OperacionesCarritoRequest request)
         {
             try
             {
                 var resultado = await cart_service.AgregarQuitarProductoCarrito(request);
-                return Ok(new { mensaje = resultado });
+                return Ok(new { mensaje = resultado.Mensaje });
             }
             catch (Exception ex)
             {

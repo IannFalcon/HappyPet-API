@@ -48,7 +48,7 @@ namespace Data
                         ProductosCarritoResponse carrito = new ProductosCarritoResponse
                         {
                             IdProducto = dr.GetInt32(0),
-                            RutaImagen = dr.GetString(1),
+                            RutaImagen = dr.IsDBNull(1) ? null : dr.GetString(1),
                             Nombre = dr.GetString(2),
                             Descripcion = dr.GetString(3),
                             PrecioUnitario = dr.GetDecimal(4),

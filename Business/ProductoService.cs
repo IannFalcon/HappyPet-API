@@ -82,6 +82,11 @@ namespace Business
                     throw new Exception("El nombre del producto es requerido.");
                 }
 
+                if (request.Descripcion == null || request.Descripcion == "")
+                {
+                    throw new Exception("La descripción del producto es requerida.");
+                }
+
                 if (request.IdCategoria <= 0)
                 {
                     throw new Exception("La categoría del producto es requerida.");
@@ -90,11 +95,6 @@ namespace Business
                 if (request.IdMarca <= 0)
                 {
                     throw new Exception("La marca del producto es requerida.");
-                }
-
-                if (request.Descripcion == null || request.Descripcion == "")
-                {
-                    throw new Exception("La descripción del producto es requerida.");
                 }
 
                 if (request.PrecioUnitario <= 0)

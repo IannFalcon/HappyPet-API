@@ -68,7 +68,7 @@ namespace Data
             try
             {
                 // Query para obtener el total de productos
-                string query = @"SELECT COUNT(*) FROM Producto WHERE eliminado = 'No'";
+                string query = @"SELECT COUNT(*) FROM Producto WHERE activo = 1";
 
                 // Crear conexión a la base de datos
                 using (SqlConnection con = new SqlConnection(cnx))
@@ -181,55 +181,14 @@ namespace Data
             }
         }
 
-        public async Task<int> ObtenerTotalUsuarios()
-        {
-            int totalUsuarios = 0;
-
-            // Query para obtener el total de usuarios
-            string query = @"SELECT COUNT(*) FROM Usuario WHERE activo = 'Si'";
-
-            try
-            {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
-                {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
-
-                    // Abrir conexión
-                    con.Open();
-
-                    // Ejecutar query
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    // Si se encontraron resultados
-                    if (await dr.ReadAsync())
-                    {
-                        totalUsuarios = dr.GetInt32(0);
-                    }
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar contador vacío
-                    return totalUsuarios;
-                }
-            }
-            catch (SqlException ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-        }
-
         public async Task<int> ObtenerTotalClientes()
         {
             int totalClientes = 0;
 
             // Query para obtener el total de clientes
-            string query = @"SELECT COUNT(*) FROM Usuario 
-                            WHERE id_tipo_usuario = 1
-                            AND activo = 'Si'";
+            string query = @"SELECT COUNT(*) FROM Cliente c
+                            INNER JOIN Usuario u ON c.id_usuario = u.id_usuario
+                            WHERE u.activo = 1";
 
             try
             {
@@ -264,14 +223,14 @@ namespace Data
             }
         }
 
-        public async Task<int> ObtenerTotalVendedores()
+        public async Task<int> ObtenerTotalEmpleados()
         {
             int totalVendedores = 0;
 
             // Query para obtener el total de vendedores
-            string query = @"SELECT COUNT(*) FROM Usuario 
-                            WHERE id_tipo_usuario = 2
-                            AND activo = 'Si'";
+            string query = @"SELECT COUNT(*) FROM Empleado e
+                            INNER JOIN Usuario u ON e.id_usuario = u.id_usuario
+                            WHERE u.activo = 1";
 
             try
             {

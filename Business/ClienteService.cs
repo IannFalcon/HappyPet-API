@@ -109,7 +109,7 @@ namespace Business
         }
 
         // Método para actualizar un cliente
-        public async Task<string> ActualizarCliente(DatosClienteRequest cliente, int id_cliente)
+        public async Task<CrudResponse> ActualizarCliente(DatosClienteRequest cliente, int id_cliente)
         {
             try
             {
@@ -159,6 +159,12 @@ namespace Business
                 }
 
                 var respuesta = await dao_cliente.ActualizarCliente(cliente, id_cliente);
+
+                if (respuesta.Exito == 0)
+                {
+                    throw new Exception($"Error: {respuesta.Mensaje}");
+                }
+
                 return respuesta;
             }
             catch (Exception ex)

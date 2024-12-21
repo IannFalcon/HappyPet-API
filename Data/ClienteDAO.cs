@@ -185,48 +185,33 @@ namespace Data
         }
 
         // Actualizar cliente
-        public async Task<string> ActualizarCliente(DatosClienteRequest request, int id_cliente)
+        public async Task<CrudResponse> ActualizarCliente(DatosClienteRequest request, int id_cliente)
         {
-            // Query para actualizar cliente
-            string query = @"UPDATE Cliente SET 
-                            nombres = @nombre, 
-                            apellido_paterno = @apellido_paterno, 
-                            apellido_materno = @apellido_materno,
-                            id_tipo_doc = @id_tipo_documento, 
-                            nro_documento = @nro_documento, 
-                            telefono = @telefono,
-                            correo = @correo
-                            WHERE id_cliente = @id_cliente";
-
             try
             {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ActualizarCliente",
+                                                        id_cliente,
+                                                        request.Nombres,
+                                                        request.ApellidoPaterno,
+                                                        request.ApellidoMaterno,
+                                                        request.IdTipoDoc,
+                                                        request.NroDocumento,
+                                                        request.Telefono,
+                                                        request.Correo);
+
+                if (await dr.ReadAsync())
                 {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1),
+                    };
 
-                    // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@nombre", request.Nombres);
-                    cmd.Parameters.AddWithValue("@apellido_paterno", request.ApellidoPaterno);
-                    cmd.Parameters.AddWithValue("@apellido_materno", request.ApellidoMaterno);
-                    cmd.Parameters.AddWithValue("@id_tipo_documento", request.IdTipoDoc);
-                    cmd.Parameters.AddWithValue("@nro_documento", request.NroDocumento);
-                    cmd.Parameters.AddWithValue("@telefono", request.Telefono);
-                    cmd.Parameters.AddWithValue("@correo", request.Correo);
-                    cmd.Parameters.AddWithValue("@id_cliente", id_cliente);
-
-                    // Abrir conexión
-                    await con.OpenAsync();
-
-                    // Ejecutar query
-                    await cmd.ExecuteNonQueryAsync();
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar mensaje de exito
-                    return $"El cliente {request.Nombres} {request.ApellidoPaterno} {request.ApellidoMaterno} fue actualizado correctamente.";
+                    return resultado;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al actualizar el cliente.");
                 }
             }
             catch (Exception ex)

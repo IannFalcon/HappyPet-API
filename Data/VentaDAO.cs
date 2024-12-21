@@ -1,5 +1,6 @@
 ﻿using Entity.Models;
 using Entity.Reponse;
+using Entity.Request;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -77,25 +78,36 @@ namespace Data
         }
 
         // Realizar nueva venta
-        public async Task<string> RealizarVenta(int idUsuario, string idTransaccion)
+        public async Task<CrudResponse> RealizarVenta(RegistrarVentaRequest request)
         {
-            string mensaje = string.Empty;
-
             try
             {
                 SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "RegistrarVenta", 
-                                                            idUsuario, idTransaccion);
+                                                            request.IdCliente,
+                                                            request.IdTransaccion,
+                                                            request.Pais,
+                                                            request.Ciudad,
+                                                            request.Direccion,
+                                                            request.CodigoPostal);
 
                 if (await dr.ReadAsync())
                 {
-                    mensaje = dr.GetString(0);        
-                }
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1)
+                    };
 
-                return mensaje;
+                    return resultado;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al registrar la venta.");
+                }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                throw new Exception(ex.Message);
             }
         }
     }

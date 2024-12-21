@@ -1,4 +1,5 @@
 ﻿using Business;
+using Entity.Request;
 using Microsoft.AspNetCore.Mvc;
 using PayPal;
 using PayPal.Api;
@@ -53,8 +54,8 @@ namespace AppHappyPet_API.Controllers
         }
 
         // POST api/<VentaController>
-        [HttpPost("{idUsuario}/{totalPago}")]
-        public async Task<IActionResult> RealizarVenta(int idUsuario, decimal totalPago)
+        [HttpPost("realizar")]
+        public async Task<IActionResult> RealizarVenta([FromBody] RegistrarVentaRequest request)
         {
             try
             {
@@ -62,7 +63,7 @@ namespace AppHappyPet_API.Controllers
                 var apiContext = GetAPIContext();
 
                 // Validar que el total de pago sea mayor a 0
-                if (totalPago <= 0)
+                if (request.TotalPago <= 0)
                 {
                     return BadRequest(new { mensaje = "Por favor, agregue productos al carrito para continuar." });
                 }
@@ -80,7 +81,7 @@ namespace AppHappyPet_API.Controllers
                             amount = new Amount // Monto de la transacción
                             {
                                 currency = "USD", // Tipo de moneda
-                                total = totalPago.ToString("F2").Replace(",", ".") // Total de la transacción
+                                total = request.TotalPago.ToString("F2").Replace(",", ".") // Total de la transacción
                             }
                         }
                     },
@@ -117,7 +118,7 @@ namespace AppHappyPet_API.Controllers
         }
 
         [HttpGet("ConfirmarVenta")]
-        public async Task<IActionResult> ConfirmarVenta(string paymentId, string token, string PayerID, int idUsuario)
+        public async Task<IActionResult> ConfirmarVenta([FromBody] RegistrarVentaRequest request)
         {
             try
             {
@@ -125,10 +126,10 @@ namespace AppHappyPet_API.Controllers
                 var apiContext = GetAPIContext();
 
                 // Crear el objeto de pago
-                var payment = new Payment() { id = paymentId };
+                var payment = new Payment() { id = request.IdTransaccion };
 
                 // Obtener el pago
-                var executedPayment = Payment.Get(apiContext, paymentId); // Obtener el estado del pago
+                var executedPayment = Payment.Get(apiContext, request.IdTransaccion); // Obtener el estado del pago
 
                 // Validar si el pago ya ha sido realizado
                 if (executedPayment.state.ToLower() == "approved")
@@ -137,7 +138,7 @@ namespace AppHappyPet_API.Controllers
                 }
 
                 // Ejecutar el pago
-                var paymentExecution = new PaymentExecution() { payer_id = PayerID };
+                var paymentExecution = new PaymentExecution() { payer_id = request.PayerID };
                 executedPayment = payment.Execute(apiContext, paymentExecution);
 
                 // Validar si el pago fue aprobado
@@ -149,13 +150,23 @@ namespace AppHappyPet_API.Controllers
                 // Obtener el id de la transacción
                 var idTransaccion = executedPayment.id;
 
+                var venta = new RegistrarVentaRequest
+                {
+                    IdCliente = request.IdCliente,
+                    IdTransaccion = idTransaccion,
+                    Pais = request.Pais,
+                    Ciudad = request.Ciudad,
+                    Direccion = request.Direccion,
+                    CodigoPostal = request.CodigoPostal
+                };
+
                 // Realizar la venta
-                var respuesta = await venta_service.RealizarVenta(idUsuario, idTransaccion);
+                var respuesta = await venta_service.RealizarVenta(venta);
 
                 // Validar si la venta fue realizada con éxito
-                if (respuesta != "EXITO")
+                if (respuesta.Exito == 0)
                 {
-                    return BadRequest(new { mensaje = respuesta });
+                    return BadRequest(new { mensaje = respuesta.Mensaje });
                 }
 
                 // Retornar mensaje de éxito

@@ -32,19 +32,14 @@ namespace Business
             return await dao_contador.ObtenerTotalMarcas();
         }
 
-        public async Task<int> ObtenerTotalUsuarios()
-        {
-            return await dao_contador.ObtenerTotalUsuarios();
-        }
-
         public async Task<int> ObtenerTotalClientes()
         {
             return await dao_contador.ObtenerTotalClientes();
         }
 
-        public async Task<int> ObtenerTotalVendedores()
+        public async Task<int> ObtenerTotalEmpleados()
         {
-            return await dao_contador.ObtenerTotalVendedores();
+            return await dao_contador.ObtenerTotalEmpleados();
         }
     }
 }

@@ -59,6 +59,12 @@ namespace Business
                 }
 
                 var resultado = await dao_carrito.AccionesCarrito(request);
+
+                if (resultado.Exito == 0)
+                {
+                    throw new Exception($"Error: {resultado.Mensaje}");
+                }
+
                 return resultado;
             }
             catch (Exception ex)

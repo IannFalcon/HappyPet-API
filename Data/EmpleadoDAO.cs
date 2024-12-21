@@ -15,10 +15,10 @@ namespace Data
             cnx = cfg.GetConnectionString("conexion_bd")!;
         }
 
-        // Obtener empleado
+        // Obtener empleados
         public async Task<List<DatosEmpleadoResponse>> ObtenerEmpleados(string? nro_documento, string? nombre)
         {
-            // Crear lista de vendedores
+            // Crear lista de empleados
             List<DatosEmpleadoResponse> empleados = new List<DatosEmpleadoResponse>();
 
             // Query para obtener lista de empleados
@@ -71,8 +71,8 @@ namespace Data
                             },
                             NroDocumento = dr.GetString(8),
                             Telefono = dr.GetString(9),
-                            Direccion = dr.GetString(10),
-                            Correo = dr.GetString(11),
+                            Correo = dr.GetString(10),
+                            Direccion = dr.GetString(11),
                             FecRegistro = dr.GetDateTime(12),
                         };
 
@@ -202,52 +202,35 @@ namespace Data
         }
 
         // Actualizar empleado
-        public async Task<string> ActualizarEmpleado(DatosEmpleadoRequest request, int id_empleado)
+        public async Task<CrudResponse> ActualizarEmpleado(DatosEmpleadoRequest request, int id_empleado)
         {
-            // Query para actualizar empleado
-            string query = @"UPDATE Empleado SET
-                            id_cargo = @id_cargo,
-                            nombres = @nombre, 
-                            apellido_paterno = @apellido_paterno, 
-                            apellido_materno = @apellido_materno,
-                            id_tipo_doc = @id_tipo_documento, 
-                            nro_documento = @nro_documento, 
-                            telefono = @telefono,
-                            direccion = @direccion, 
-                            correo = @correo
-                            WHERE id_empleado = @id_empleado";
-
             try
             {
-                // Crear conexión a la base de datos
-                using (SqlConnection con = new SqlConnection(cnx))
+                SqlDataReader dr = SqlHelper.ExecuteReader(cnx, "ActualizarEmpleado",
+                                                        id_empleado,
+                                                        request.IdCargo,
+                                                        request.Nombres,
+                                                        request.ApellidoPaterno,
+                                                        request.ApellidoMaterno,
+                                                        request.IdTipoDoc,
+                                                        request.NroDocumento,
+                                                        request.Telefono,
+                                                        request.Correo,
+                                                        request.Direccion);
+
+                if (await dr.ReadAsync())
                 {
-                    // Crear comando para ejecutar query
-                    SqlCommand cmd = new SqlCommand(query, con);
+                    var resultado = new CrudResponse
+                    {
+                        Exito = dr.GetInt32(0),
+                        Mensaje = dr.GetString(1)
+                    };
 
-                    // Agregar parámetros al comando
-                    cmd.Parameters.AddWithValue("@id_cargo", request.IdCargo);
-                    cmd.Parameters.AddWithValue("@nombre", request.Nombres);
-                    cmd.Parameters.AddWithValue("@apellido_paterno", request.ApellidoPaterno);
-                    cmd.Parameters.AddWithValue("@apellido_materno", request.ApellidoMaterno);
-                    cmd.Parameters.AddWithValue("@id_tipo_documento", request.IdTipoDoc);
-                    cmd.Parameters.AddWithValue("@nro_documento", request.NroDocumento);
-                    cmd.Parameters.AddWithValue("@telefono", request.Telefono);
-                    cmd.Parameters.AddWithValue("@direccion", request.Direccion);
-                    cmd.Parameters.AddWithValue("@correo", request.Correo);
-                    cmd.Parameters.AddWithValue("@id_empleado", id_empleado);
-
-                    // Abrir conexión
-                    await con.OpenAsync();
-
-                    // Ejecutar query
-                    await cmd.ExecuteNonQueryAsync();
-
-                    // Cerrar conexión
-                    con.Close();
-
-                    // Retornar cantidad de filas afectadas
-                    return $"El empleado {request.Nombres} {request.ApellidoPaterno} {request.ApellidoMaterno} fue actualizado correctamente.";
+                    return resultado;
+                }
+                else
+                {
+                    throw new Exception("Error: Ocurrio un error al actualizar al empleado.");
                 }
             }
             catch (Exception ex)
