@@ -117,7 +117,7 @@ namespace AppHappyPet_API.Controllers
             }
         }
 
-        [HttpGet("ConfirmarVenta")]
+        [HttpPost("ConfirmarVenta")]
         public async Task<IActionResult> ConfirmarVenta([FromBody] RegistrarVentaRequest request)
         {
             try
@@ -154,6 +154,7 @@ namespace AppHappyPet_API.Controllers
                 {
                     IdCliente = request.IdCliente,
                     IdTransaccion = idTransaccion,
+                    TotalPago = request.TotalPago,
                     Pais = request.Pais,
                     Ciudad = request.Ciudad,
                     Direccion = request.Direccion,
